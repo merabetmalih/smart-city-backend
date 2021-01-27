@@ -1,4 +1,4 @@
-package com.example.springmvcrest.user.controller;
+package com.example.springmvcrest.user.user;
 
 import com.example.springmvcrest.product.api.dto.ProductDTO;
 import lombok.Data;

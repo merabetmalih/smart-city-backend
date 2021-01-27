@@ -1,6 +1,8 @@
-package com.example.springmvcrest.user.domain;
+package com.example.springmvcrest.user.provider.domain;
 
-import com.example.springmvcrest.product.domain.Category;
+import com.example.springmvcrest.user.user.domain.Authority;
+import com.example.springmvcrest.user.user.domain.Role;
+import com.example.springmvcrest.user.user.domain.User;
 import lombok.*;
 
 import javax.persistence.*;
@@ -13,35 +15,17 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @Builder
 @Entity
-@Table(name="users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
-//@NoArgsConstructor
-public class User  {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-
-    private String email;
-    private String userName;
-    private String passWord;
-
-
-    @ManyToMany
-    @JoinTable(name = "users_category",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "users_id"))
-    private Set<Category> categories= new HashSet<>();
-
-
+public class Provider extends User {
 
     @Singular
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role",
-            joinColumns = {@JoinColumn(name = "USER_ID", referencedColumnName = "ID")},
+    @JoinTable(name = "provider_role",
+            joinColumns = {@JoinColumn(name = "Provider_ID", referencedColumnName = "ID")},
             inverseJoinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")})
-    private Set<Role> roles;
+    private Set<Role> roles=new HashSet<Role>();
 
     @Transient
-    private Set<Authority> authorities;
+    private Set<Authority> authorities=new HashSet<Authority>();
 
     public Set<Authority> getAuthorities() {
         return this.roles.stream()

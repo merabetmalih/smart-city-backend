@@ -2,7 +2,7 @@ package com.example.springmvcrest.product.controller;
 
 import com.example.springmvcrest.product.api.dto.ProductDTO;
 import com.example.springmvcrest.product.service.ProductSearchService;
-import com.example.springmvcrest.user.controller.Results;
+import com.example.springmvcrest.user.user.Results;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

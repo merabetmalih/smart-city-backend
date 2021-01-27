@@ -1,10 +1,11 @@
 package com.example.springmvcrest.security;
 
-import com.example.springmvcrest.user.domain.Role;
-import com.example.springmvcrest.user.domain.RoleContext;
-import com.example.springmvcrest.user.domain.User;
-import com.example.springmvcrest.user.service.UserService;
-
+import com.example.springmvcrest.user.provider.domain.Provider;
+import com.example.springmvcrest.user.provider.service.ProviderService;
+import com.example.springmvcrest.user.simple.domain.SimpleUser;
+import com.example.springmvcrest.user.simple.service.SimpleUserService;
+import com.example.springmvcrest.user.user.domain.Role;
+import com.example.springmvcrest.user.user.domain.RoleContext;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
@@ -24,7 +25,9 @@ public class JwtProvider {
 
     private String SECRET_KEY = "secret";
     @Autowired
-    private UserService userService;
+    private SimpleUserService simpleUserService;
+    @Autowired
+    private ProviderService providerService;
 
     public String generateToken(UserDetails userDetails) {
         return Jwts.builder()
@@ -45,7 +48,7 @@ public class JwtProvider {
     }
 
     public UserDetails loadUserByUsername(String username) {
-        User user = userService.findUserByEmail(username)
+        SimpleUser user = simpleUserService.findSimpleUserByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("error.user.not-found"));
         List<SimpleGrantedAuthority> roles = user.getRoles()
                 .stream()
@@ -54,7 +57,19 @@ public class JwtProvider {
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
 
+        return new org.springframework.security.core.userdetails.User(user.getEmail(),
+                user.getPassWord(), roles);
+    }
 
+    public UserDetails loadProviderByUsername(String username) {
+        Provider user = providerService.findProviderByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("error.user.not-found"));
+        List<SimpleGrantedAuthority> roles = user.getRoles()
+                .stream()
+                .map(Role::getName)
+                .map(RoleContext::name)
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
 
         return new org.springframework.security.core.userdetails.User(user.getEmail(),
                 user.getPassWord(), roles);

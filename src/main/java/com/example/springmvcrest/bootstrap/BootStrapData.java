@@ -4,10 +4,8 @@ package com.example.springmvcrest.bootstrap;
 import com.example.springmvcrest.product.domain.*;
 import com.example.springmvcrest.product.repository.AttributeRepository;
 import com.example.springmvcrest.product.repository.CategoryRepository;
-import com.example.springmvcrest.product.repository.ProductRepository;
-
-import com.example.springmvcrest.user.domain.User;
-import com.example.springmvcrest.user.repository.UserRepository;
+import com.example.springmvcrest.user.user.repository.RoleRepository;
+import com.example.springmvcrest.user.simple.repository.SimpleUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -19,8 +17,8 @@ import java.util.List;
 @Component
 @AllArgsConstructor
 public class BootStrapData implements ApplicationListener<ContextRefreshedEvent> {
-    private final UserRepository userRepository;
-    private final ProductRepository productRepository;
+    private final SimpleUserRepository simpleUserRepository;
+    private final RoleRepository roleRepository;
     private final CategoryRepository categoryRepository ;
     private final AttributeRepository attributeRepository;
 
@@ -29,8 +27,22 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
 
+        /*SimpleUser simpleUser =new SimpleUser();
+        simpleUser.setEmail("email");
+        simpleUser.setUserName("username");
+        simpleUser.setPassWord("password");
 
-        if(productRepository.count()==0){
+        Role role=new Role();
+        role.setName(RoleContext.USER);
+        role.getUsers().add(simpleUser);
+        role=roleRepository.save(role);
+
+        simpleUserRepository.save(simpleUser);
+        simpleUser.getRoles().add(roleRepository.findById(role.getId()).get());*/
+
+
+
+        /*if(productRepository.count()==0){
             productRepository.saveAll(getProducts());
 
             System.out.println("Loading customer Data");
@@ -43,8 +55,8 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
             userRepository.save(c1);*/
 
 
-            System.out.println("Customer saved: "+userRepository.count());
-        }
+         /*   System.out.println("Customer saved: "+userRepository.count());
+        }*/
 
 
 

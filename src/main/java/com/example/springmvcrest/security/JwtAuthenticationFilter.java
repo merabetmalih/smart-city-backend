@@ -1,8 +1,9 @@
 package com.example.springmvcrest.security;
 
-import com.example.springmvcrest.user.api.dto.UserDto;
+import com.example.springmvcrest.security.JwtProvider;
+import com.example.springmvcrest.security.User;
+import com.example.springmvcrest.security.UserDetailsImp;
 import com.example.springmvcrest.user.api.dto.UserLoginDto;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,10 +18,12 @@ import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 
 import static com.example.springmvcrest.security.SecurityUtils.*;
+import static com.example.springmvcrest.security.SecurityUtils.TOKE_PREFIX;
 
 public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter implements WebMvcConfigurer {
 
@@ -29,10 +32,10 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     private Gson gson = new Gson();
 
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtProvider jwtProvider) {
+    public JwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtProvider jwtProvider,String authUrl) {
         this.jwtProvider = jwtProvider;
         this.authenticationManager = authenticationManager;
-        setFilterProcessesUrl(AUTH_URL);
+        setFilterProcessesUrl(authUrl);
     }
 
     @Override
@@ -40,7 +43,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
         return authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getParameter("email"),
-                        request.getParameter("password")));
+                request.getParameter("password")));
 
           /* try {
                UserDto creds = new ObjectMapper()
@@ -67,8 +70,9 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         response.addHeader("Access-Control-Expose-Headers", "Authorization");
         response.addHeader(TOKEN_HEADER, TOKE_PREFIX + token);
 
+        //System.out.println(credentials.getUsername());
         try {
-            UserLoginDto userLoginDto=new UserLoginDto(credentials.getId(),credentials.getUsername(),"successfully login",TOKE_PREFIX + token);
+            UserLoginDto userLoginDto =new UserLoginDto(credentials.getId(),credentials.getUsername(),"successfully login",TOKE_PREFIX + token);
             String userLoginDtoString = this.gson.toJson(userLoginDto);
             PrintWriter out = response.getWriter();
             response.setContentType("application/json");

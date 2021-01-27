@@ -1,13 +1,12 @@
-package com.example.springmvcrest.user.controller;
+package com.example.springmvcrest.user.simple.controller;
 
 
 import com.example.springmvcrest.product.api.dto.ProductDTO;
 import com.example.springmvcrest.product.service.ProductSearchService;
-
-import com.example.springmvcrest.user.api.dto.UserRegestrationDto;
-import com.example.springmvcrest.user.domain.User;
 import com.example.springmvcrest.user.api.dto.UserDto;
-import com.example.springmvcrest.user.service.UserService;
+import com.example.springmvcrest.user.api.dto.UserRegestrationDto;
+import com.example.springmvcrest.user.simple.domain.SimpleUser;
+import com.example.springmvcrest.user.simple.service.SimpleUserService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -25,23 +24,23 @@ import java.util.List;
 @AllArgsConstructor
 @RequestMapping("/api/user")
 public class UserController {
-    private final UserService userService;
+    private final SimpleUserService simpleUserService;
     private final ProductSearchService searchService;
 
     @GetMapping
-    List<User> getAllUsers() {
-        return userService.findAllUsers();
+    List<SimpleUser> getAllUsers() {
+        return simpleUserService.findAllSimpleUsers();
     }
 
-    @GetMapping("/categories/{id}")
+   /* @GetMapping("/categories/{id}")
     public Results userCategoriesProductList(@PathVariable Long id) {
-        return new Results(userService.userCategoriesList(id));
-    }
+        return new Results(simpleUserService.userCategoriesList(id));
+    }*/
 
     @PostMapping("/register")
     @ResponseStatus(value = HttpStatus.CREATED)
     public UserRegestrationDto registerUser(@ModelAttribute UserDto userDto) {
-        return userService.saveUser(userDto);
+        return simpleUserService.saveUser(userDto);
     }
 
     @GetMapping(value = "/image/{id}.jpg", produces = MediaType.IMAGE_JPEG_VALUE)

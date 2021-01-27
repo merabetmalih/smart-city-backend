@@ -15,4 +15,6 @@ public interface UserRegestrationMapper {
         userRegestrationDto.setResponse("successfully registered");
         return userRegestrationDto;
     }
+
+
 }

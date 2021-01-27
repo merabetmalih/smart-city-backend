@@ -1,9 +1,9 @@
-package com.example.springmvcrest.security;
+package com.example.springmvcrest.security.simple;
 
-import com.example.springmvcrest.user.domain.Role;
-import com.example.springmvcrest.user.domain.RoleContext;
-import com.example.springmvcrest.user.domain.User;
-import com.example.springmvcrest.user.service.UserService;
+import com.example.springmvcrest.user.user.domain.Role;
+import com.example.springmvcrest.user.user.domain.RoleContext;
+import com.example.springmvcrest.user.simple.domain.SimpleUser;
+import com.example.springmvcrest.user.simple.service.SimpleUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -14,15 +14,14 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+
 @Service
 @RequiredArgsConstructor
 public class UserDetailService implements UserDetailsService {
-
-    private final UserService userService;
-
+    private final SimpleUserService simpleUserService;
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userService.findUserByEmail(email)
+        SimpleUser user = simpleUserService.findSimpleUserByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("error.user.not-found"));
         List<SimpleGrantedAuthority> roles = user.getRoles()
                 .stream()
@@ -38,8 +37,8 @@ public class UserDetailService implements UserDetailsService {
         return  userSec;
     }
 
-    public User getUser(String username) {
-        return userService.findUserByEmail(username)
+    /*public User getUser(String username) {
+        return simpleUserService.findSimpleUserByEmail(username)
                 .orElseThrow(() -> new UsernameNotFoundException("error.user.not-found"));
-    }
+    }*/
 }

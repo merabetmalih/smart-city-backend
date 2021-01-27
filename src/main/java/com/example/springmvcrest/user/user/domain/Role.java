@@ -1,8 +1,10 @@
-package com.example.springmvcrest.user.domain;
+package com.example.springmvcrest.user.user.domain;
 
+import com.example.springmvcrest.user.simple.domain.SimpleUser;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.HashSet;
 import java.util.Set;
 
 
@@ -21,12 +23,12 @@ public class Role {
     private RoleContext name;
 
     @ManyToMany(mappedBy = "roles")
-    private Set<User> users;
+    private Set<SimpleUser> simpleUsers =new HashSet<SimpleUser>();
 
     @Singular
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "role_authority",
             joinColumns = {@JoinColumn(name = "ROLE_ID", referencedColumnName = "ID")},
             inverseJoinColumns = {@JoinColumn(name = "AUTHORITY_ID", referencedColumnName = "ID")})
-    private Set<Authority> authorities;
+    private Set<Authority> authorities =new HashSet<Authority>();
 }

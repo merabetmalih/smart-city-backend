@@ -1,5 +1,6 @@
-package com.example.springmvcrest.security;
+package com.example.springmvcrest.security.simple;
 
+import com.example.springmvcrest.security.JwtProvider;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,12 +15,12 @@ import java.io.IOException;
 
 import static com.example.springmvcrest.security.SecurityUtils.TOKEN_HEADER;
 
-public class JWTAuthorizationFilter extends BasicAuthenticationFilter {
+public class JWTAuthorizationUserFilter extends BasicAuthenticationFilter {
 
     public AuthenticationManager authenticationManager;
     private JwtProvider jwtProvider;
 
-    public JWTAuthorizationFilter(AuthenticationManager authenticationManager, JwtProvider jwtProvider) {
+    public JWTAuthorizationUserFilter(AuthenticationManager authenticationManager, JwtProvider jwtProvider) {
         super(authenticationManager);
         this.authenticationManager = authenticationManager;
         this.jwtProvider = jwtProvider;

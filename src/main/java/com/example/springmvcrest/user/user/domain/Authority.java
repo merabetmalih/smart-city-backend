@@ -1,4 +1,4 @@
-package com.example.springmvcrest.user.domain;
+package com.example.springmvcrest.user.user.domain;
 
 import lombok.*;
 
