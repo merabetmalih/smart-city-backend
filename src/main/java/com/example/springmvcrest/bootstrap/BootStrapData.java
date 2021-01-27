@@ -1,9 +1,14 @@
 package com.example.springmvcrest.bootstrap;
 
 
-import com.example.springmvcrest.domain.*;
-import com.example.springmvcrest.repositories.*;
+import com.example.springmvcrest.product.domain.*;
+import com.example.springmvcrest.product.repository.AttributeRepository;
+import com.example.springmvcrest.product.repository.CategoryRepository;
+import com.example.springmvcrest.product.repository.ProductRepository;
 
+import com.example.springmvcrest.user.domain.User;
+import com.example.springmvcrest.user.repository.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
@@ -12,20 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Component
+@AllArgsConstructor
 public class BootStrapData implements ApplicationListener<ContextRefreshedEvent> {
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final CategoryRepository categoryRepository ;
-    private final DimensionRepository dimensionRepository ;
-    private final ColorRepository colorRepository;
+    private final AttributeRepository attributeRepository;
 
-    public BootStrapData(UserRepository userRepository, ProductRepository productRepository, CategoryRepository categoryRepository, DimensionRepository dimensionRepository, ColorRepository colorRepository) {
-        this.userRepository = userRepository;
-        this.productRepository = productRepository;
-        this.categoryRepository = categoryRepository;
-        this.dimensionRepository = dimensionRepository;
-        this.colorRepository = colorRepository;
-    }
+
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
@@ -36,12 +35,12 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
 
             System.out.println("Loading customer Data");
 
-            User c1= new User();
+           /* User c1= new User();
             c1.setEmail("a@a.com");
             c1.setUserName("ibrahim");
             c1.setPassWord1("123");
             c1.setPassWord2("123");
-            userRepository.save(c1);
+            userRepository.save(c1);*/
 
 
             System.out.println("Customer saved: "+userRepository.count());
@@ -60,75 +59,7 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
         String BASE_URL = "http://192.168.1.37:8085/api/v1/";
 
 
-        Dimension xs=new Dimension("XS");
-        dimensionRepository.save(xs);
-        Dimension s=new Dimension("S");
-        dimensionRepository.save(s);
-        Dimension m=new Dimension("M");
-        dimensionRepository.save(m);
-        Dimension ms=new Dimension("MS");
-        dimensionRepository.save(ms);
-        Dimension mt=new Dimension("MT");
-        dimensionRepository.save(mt);
-        Dimension l=new Dimension("L");
-        dimensionRepository.save(l);
-        Dimension ls=new Dimension("LS");
-        dimensionRepository.save(ls);
-        Dimension lt=new Dimension("LT");
-        dimensionRepository.save(lt);
-        Dimension xl=new Dimension("XL");
-        dimensionRepository.save(xl);
-        Dimension xls=new Dimension("XLS");
-        dimensionRepository.save(xls);
-        Dimension xl2=new Dimension("2XL");
-        dimensionRepository.save(xl2);
-        Dimension xl3=new Dimension("3XL");
-        dimensionRepository.save(xl3);
 
-
-        Dimension shoe35=new Dimension("35");
-        dimensionRepository.save(shoe35);
-        Dimension shoe36=new Dimension("36");
-        dimensionRepository.save(shoe36);
-        Dimension shoe37=new Dimension("37");
-        dimensionRepository.save(shoe37);
-        Dimension shoe38=new Dimension("38");
-        dimensionRepository.save(shoe38);
-        Dimension shoe39=new Dimension("39");
-        dimensionRepository.save(shoe39);
-        Dimension shoe40=new Dimension("40");
-        dimensionRepository.save(shoe40);
-        Dimension shoe41=new Dimension("41");
-        dimensionRepository.save(shoe41);
-        Dimension shoe42=new Dimension("42");
-        dimensionRepository.save(shoe42);
-        Dimension shoe43=new Dimension("43");
-        dimensionRepository.save(shoe43);
-        Dimension shoe44=new Dimension("44");
-        dimensionRepository.save(shoe44);
-        Dimension shoe45=new Dimension("45");
-        dimensionRepository.save(shoe45);
-
-        Color yellow=new Color("yellow");
-        colorRepository.save(yellow);
-        Color red=new Color("red");
-        colorRepository.save(red);
-        Color blue=new Color("blue");
-        colorRepository.save(blue);
-        Color green=new Color("green");
-        colorRepository.save(green);
-        Color orange=new Color("orange");
-        colorRepository.save(orange);
-        Color pink=new Color("pink");
-        colorRepository.save(pink);
-        Color black=new Color("black");
-        colorRepository.save(black);
-        Color purple=new Color("purple");
-        colorRepository.save(purple);
-        Color white=new Color("white");
-        colorRepository.save(white);
-        Color grey=new Color("grey");
-        colorRepository.save(grey);
         /* *********Electronics************/
 
         Category Electronics=new Category("Electronics");
@@ -276,6 +207,160 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
         categoryRepository.save(SportsFitness);
 
 
+        Product dell=new Product();
+        dell.setName("Dell Inspiron 15 3000 15.6\" HD LED-Backlit Screen");
+        dell.setDescription("15.6\" HD Energy-efficient LED-backlit (1366 x 768) Display, AMD Athlon Silver 3050U up to 3.2GHz, Integrated graphics with AMD 4GB high-bandwidth RAM to smoothly run multiple applications and browser tabs all at once; 128GB NVMe SSD allows fast bootup and data transfer. 1x USB 2.0 port, 2x USB 3.2 Gen 1 ports, 1x Headset (headphone and microphone combo) port, 1x RJ45 - 10/100Mbps Ethernet port, 1x HDMI 1.4 port, 1x Power-adapter port, 1 x TWE Mouse Pad");
+        dell.getImages().add(new Images("https://images-na.ssl-images-amazon.com/images/I/4184m0GW8AL._AC_.jpg",dell));
+        dell.getImages().add(new Images("https://images-na.ssl-images-amazon.com/images/I/31eJ7soz%2BYL._AC_.jpg",dell));
+        dell.getImages().add(new Images("https://images-na.ssl-images-amazon.com/images/I/41Pc2mBwlOL._AC_.jpg",dell));
+        dell.getCategories().add(AccessoriesSupplies);
+        dell.getTags().add(new Tags("dell",dell));
+        dell.getProductVariants().add(new ProductVariant(dell,20.0,5));
+
+        products.add(dell);
+
+
+        Product shirt=new Product();
+        shirt.setName("Organic Signatures Men's Short-Sleeve Crewneck 100% Organic Cotton T-Shirt");
+        shirt.setDescription("100% COTTON T-SHIRTS FOR MEN – ECO-FRIENDLY, COOL & COMFORTABLE – Spruce up your eco-conscious attire with the perfect mix of casual style and trendy organic. Fashionable, contemporary, featuring a tagless neckline, our men’s short sleeve t-shirts are made from the purest, high-quality cotton for an exceptional handfeel. Enjoy a comfortable & relaxed fit with extra peace of mind – our cotton is farm-grown without pesticides or chemical fertilizers. 100% safe for your skin AND for the planet!");
+        shirt.getImages().add(new Images("https://images-na.ssl-images-amazon.com/images/I/81-%2B2YdVqCL._AC_UX466_.jpg",shirt));
+        shirt.getImages().add(new Images("https://m.media-amazon.com/images/I/81eLanBH+kL._AC_SX466._SX._UX._SY._UY_.jpg",shirt));
+        shirt.getCategories().add(AccessoriesSupplies);
+        shirt.getTags().add(new Tags("shirt",shirt));
+
+
+        Attribute color=new Attribute();
+        color.setName("color");
+        AttributeValue red =new AttributeValue(color);
+        red.setValue("red");
+        red.setImage("https://images-na.ssl-images-amazon.com/images/I/81uzH-WDhoL._AC_UX466_.jpg");
+
+        AttributeValue grey =new AttributeValue(color);
+        grey.setValue("grey");
+        grey.setImage("https://images-na.ssl-images-amazon.com/images/I/91P5kRomY5L._AC_UX466_.jpg");
+        color.getAttributeValues().add(red);
+        color.getAttributeValues().add(grey);
+
+        Attribute size=new Attribute();
+        size.setName("size");
+        AttributeValue small =new AttributeValue(size);
+        small.setValue("small");
+        small.setImage("null");
+
+        AttributeValue large =new AttributeValue(size);
+        large.setValue("large");
+        large.setImage("null");
+        size.getAttributeValues().add(small);
+        size.getAttributeValues().add(large);
+
+
+        ProductVariant shirt_red_small=new ProductVariant();
+        shirt_red_small.setPrice(20.0);
+        shirt_red_small.setUnit(5);
+        shirt_red_small.setProduct(shirt);
+        shirt_red_small.getAttributeValues().add(red);
+        shirt_red_small.getAttributeValues().add(small);
+
+        red.getProductVariants().add(shirt_red_small);
+        small.getProductVariants().add(shirt_red_small);
+
+        ProductVariant shirt_red_large=new ProductVariant();
+        shirt_red_large.setPrice(25.0);
+        shirt_red_large.setUnit(3);
+        shirt_red_large.setProduct(shirt);
+        shirt_red_large.getAttributeValues().add(red);
+        shirt_red_large.getAttributeValues().add(large);
+
+        red.getProductVariants().add(shirt_red_large);
+        large.getProductVariants().add(shirt_red_large);
+
+        ProductVariant shirt_grey_small=new ProductVariant();
+        shirt_grey_small.setPrice(25.0);
+        shirt_grey_small.setUnit(3);
+        shirt_grey_small.setProduct(shirt);
+        shirt_grey_small.getAttributeValues().add(grey);
+        shirt_grey_small.getAttributeValues().add(small);
+
+        grey.getProductVariants().add(shirt_grey_small);
+        small.getProductVariants().add(shirt_grey_small);
+
+        shirt.getProductVariants().add(shirt_red_small);
+        shirt.getProductVariants().add(shirt_red_large);
+        shirt.getProductVariants().add(shirt_grey_small);
+
+        attributeRepository.save(size);
+        attributeRepository.save(color);
+
+
+        products.add(shirt);
+
+
+        Product ssd=new Product();
+        ssd.setName("Samsung SSD 860 EVO 1TB 2.5 Inch SATA III Internal SSD (MZ-76E1T0B/AM)");
+        ssd.setDescription("Innovative V-Nand Technology: Powered by Samsung V-Nand Technology, the 860 Evo SSD offers optimized performance for everyday computing as well as rendering large-sized 4K videos and 3D data used by the latest applications");
+        ssd.getImages().add(new Images("https://images-na.ssl-images-amazon.com/images/I/91JA5-hAnoL._AC_SX569_.jpg",ssd));
+        ssd.getImages().add(new Images("https://images-na.ssl-images-amazon.com/images/I/91uXmOzjQNL._AC_SX569_.jpg",ssd));
+        ssd.getCategories().add(AccessoriesSupplies);
+        ssd.getTags().add(new Tags("ssd",ssd));
+
+
+        Attribute storageCapcity=new Attribute();
+        storageCapcity.setName("storage Capcity");
+        AttributeValue _256 =new AttributeValue(storageCapcity);
+        _256.setValue("256");
+        _256.setImage("null");
+        AttributeValue _1tb =new AttributeValue(storageCapcity);
+        _1tb.setValue("1 TB");
+        _1tb.setImage("null");
+        AttributeValue _512 =new AttributeValue(storageCapcity);
+        _512.setValue("512");
+        _512.setImage("null");
+
+        storageCapcity.getAttributeValues().add(_256);
+        storageCapcity.getAttributeValues().add(_1tb);
+        storageCapcity.getAttributeValues().add(_512);
+
+
+        ProductVariant ssd_256=new ProductVariant();
+        ssd_256.setPrice(20.0);
+        ssd_256.setUnit(5);
+        ssd_256.setProduct(ssd);
+        ssd_256.getAttributeValues().add(_256);
+
+        _256.getProductVariants().add(ssd_256);
+
+        ProductVariant ssd_512=new ProductVariant();
+        ssd_512.setPrice(30.0);
+        ssd_512.setUnit(10);
+        ssd_512.setProduct(ssd);
+        ssd_512.getAttributeValues().add(_512);
+
+        _512.getProductVariants().add(ssd_512);
+
+        ProductVariant ssd_1tb=new ProductVariant();
+        ssd_1tb.setPrice(35.0);
+        ssd_1tb.setUnit(50);
+        ssd_1tb.setProduct(ssd);
+        ssd_1tb.getAttributeValues().add(_1tb);
+
+        _1tb.getProductVariants().add(ssd_1tb);
+
+
+        ssd.getProductVariants().add(ssd_256);
+        ssd.getProductVariants().add(ssd_512);
+        ssd.getProductVariants().add(ssd_1tb);
+
+        attributeRepository.save(storageCapcity);
+
+        products.add(ssd);
+
+
+
+
+
+
+
+/*
 
         Product p1c1=new Product();
         p1c1.setDescription("Please note: \n1. The light stand is packed in a separate box inside the big package box (under the ring light box at the extreme bottom of the box)as shown in the 2nd picture. If you can't find it, please contact seller customer service;\n 2. Instructions for unfolding the stand are in the 8th picture. The legs are upwards, so please unfold the legs upside down");
@@ -754,7 +839,7 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
         p10c2.getTags().add(new Tags("DDR4",p10c2));
         p10c2.getTags().add(new Tags("256 SSD",p10c2));
         products.add(p10c2);
-
+*/
 
         /*
         * Product p6c2=new Product();
