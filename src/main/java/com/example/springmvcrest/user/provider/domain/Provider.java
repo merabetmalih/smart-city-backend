@@ -1,5 +1,6 @@
 package com.example.springmvcrest.user.provider.domain;
 
+import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.user.user.domain.Authority;
 import com.example.springmvcrest.user.user.domain.Role;
 import com.example.springmvcrest.user.user.domain.User;
@@ -16,6 +17,9 @@ import java.util.stream.Collectors;
 @Builder
 @Entity
 public class Provider extends User {
+
+    @OneToOne(cascade = CascadeType.ALL , mappedBy = "provider")
+    private Store store;
 
     @Singular
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)

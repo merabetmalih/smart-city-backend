@@ -4,6 +4,9 @@ package com.example.springmvcrest.bootstrap;
 import com.example.springmvcrest.product.domain.*;
 import com.example.springmvcrest.product.repository.AttributeRepository;
 import com.example.springmvcrest.product.repository.CategoryRepository;
+import com.example.springmvcrest.product.repository.ProductRepository;
+import com.example.springmvcrest.store.domain.CategoryStore;
+import com.example.springmvcrest.store.repository.CategoryStoreRepository;
 import com.example.springmvcrest.user.user.repository.RoleRepository;
 import com.example.springmvcrest.user.simple.repository.SimpleUserRepository;
 import lombok.AllArgsConstructor;
@@ -21,7 +24,8 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
     private final RoleRepository roleRepository;
     private final CategoryRepository categoryRepository ;
     private final AttributeRepository attributeRepository;
-
+    private final CategoryStoreRepository categoryStoreRepository;
+    private final ProductRepository productRepository;
 
 
     @Override
@@ -58,7 +62,7 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
          /*   System.out.println("Customer saved: "+userRepository.count());
         }*/
 
-
+        productRepository.saveAll(getProducts());
 
 
     }
@@ -71,6 +75,11 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
         String BASE_URL = "http://192.168.1.37:8085/api/v1/";
 
 
+        CategoryStore AccessoriesSuppliesc=new CategoryStore("AccessoriesSupplies");
+        categoryStoreRepository.save(AccessoriesSuppliesc);
+
+        CategoryStore CameraPhotoc=new CategoryStore("CameraPhoto");
+        categoryStoreRepository.save(CameraPhotoc);
 
         /* *********Electronics************/
 

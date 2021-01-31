@@ -6,6 +6,7 @@ import com.example.springmvcrest.user.api.mapper.ProviderMapper;
 import com.example.springmvcrest.user.api.mapper.UserRegestrationMapper;
 import com.example.springmvcrest.user.provider.domain.Provider;
 import com.example.springmvcrest.user.provider.repository.ProviderRepository;
+import com.example.springmvcrest.user.provider.service.exception.ProviderNotFoundException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,14 @@ public class ProviderService {
     private final ProviderMapper providerMapper;
     private final UserRegestrationMapper userRegestrationMapper;
 
+
+    public Provider findById(Long id) {
+        return providerRepository.findById(id)
+                .orElseThrow(ProviderNotFoundException::new);
+    }
+    public Optional<Provider> findByIdOptional(Long id) {
+        return providerRepository.findById(id);
+    }
 
     public Optional<Provider> findProviderByEmail(String email) {
         return providerRepository.findByEmail(email);

@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -31,7 +32,7 @@ public class ProductSearchService {
 
 
     @Transactional(readOnly = true)
-    public List<ProductDTO> search(String query) {
+    public Set<ProductDTO> search(String query) {
         SearchSession session = Search.session(entityManager);
 
         SearchScope<Product> scope = session.scope( Product.class );
@@ -98,13 +99,13 @@ public class ProductSearchService {
 
 
 
-        return result.hits().stream().map(productMapper::productToProductDTO).collect(Collectors.toList());
+        return result.hits().stream().map(productMapper::productToProductDTO).collect(Collectors.toSet());
     }
 
-    public List<ProductDTO> findAllProduct() {
+    public Set<ProductDTO> findAllProduct() {
         return productRepository.findAll()
                 .stream()
                 .map(productMapper::productToProductDTO)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
     }
 }
