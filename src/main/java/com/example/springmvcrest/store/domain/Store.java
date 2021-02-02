@@ -29,6 +29,7 @@ public class Store {
     @Lob
     private String address;
 
+    private String imageStore;
 
 
     @OneToOne

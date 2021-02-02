@@ -14,4 +14,5 @@ public class StoreDto {
     private String address;
     private Set<String> categories= new HashSet<>();
     private Long provider;
+    private String imageStore;
 }

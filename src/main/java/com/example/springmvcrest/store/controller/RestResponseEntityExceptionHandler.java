@@ -3,6 +3,7 @@ package com.example.springmvcrest.store.controller;
 import com.example.springmvcrest.store.service.exception.CategoryStoreNotFoundException;
 import com.example.springmvcrest.user.provider.service.exception.ProviderNotFoundException;
 import com.example.springmvcrest.utils.GenericErrorResponse;
+import com.example.springmvcrest.utils.ImageStoreNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @ExceptionHandler({CategoryStoreNotFoundException.class})
     public ResponseEntity<Object> handleCategoryStoreNotFoundException(Exception exception, WebRequest request){
         return returnErrorMessage("CategoryStoreNotFound",HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({ImageStoreNotFoundException.class})
+    public ResponseEntity<Object> handleImageStoreNotFoundException(Exception exception, WebRequest request){
+        return returnErrorMessage("ImageStoreNotFound",HttpStatus.NOT_FOUND);
     }
 
      private ResponseEntity<Object> returnErrorMessage(String errorMessage,HttpStatus httpStatus){
