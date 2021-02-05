@@ -11,10 +11,8 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
-//@NoArgsConstructor
 public abstract class User  {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

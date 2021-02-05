@@ -25,6 +25,7 @@ public class ProviderService {
         return providerRepository.findById(id)
                 .orElseThrow(ProviderNotFoundException::new);
     }
+
     public Optional<Provider> findByIdOptional(Long id) {
         return providerRepository.findById(id);
     }

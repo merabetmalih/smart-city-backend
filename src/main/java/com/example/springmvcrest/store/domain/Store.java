@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -37,8 +38,13 @@ public class Store {
     private Provider provider;
 
     @ManyToMany
-    @JoinTable(name = "store_categoryStore",
+    @JoinTable(name = "store_defaultCategory",
             joinColumns = @JoinColumn(name = "store_id"),
-            inverseJoinColumns = @JoinColumn(name = "categoryStore_id"))
-    private Set<CategoryStore> categories=new HashSet<CategoryStore>();
+            inverseJoinColumns = @JoinColumn(name = "defaultCategory_id"))
+    private Set<DefaultCategory> defaultCategories =new HashSet<DefaultCategory>();
+
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
+    @IndexedEmbedded
+    private Set<CustomCategory> customCategories = new HashSet<>();
 }

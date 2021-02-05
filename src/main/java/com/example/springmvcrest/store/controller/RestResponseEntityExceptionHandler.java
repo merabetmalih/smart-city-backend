@@ -1,6 +1,9 @@
 package com.example.springmvcrest.store.controller;
 
-import com.example.springmvcrest.store.service.exception.CategoryStoreNotFoundException;
+import com.example.springmvcrest.store.service.exception.CustomCategoryNotFoundExeption;
+import com.example.springmvcrest.store.service.exception.DefaultCategoryNotFoundException;
+import com.example.springmvcrest.store.service.exception.MultipleStoreException;
+import com.example.springmvcrest.store.service.exception.StoreNotFoundException;
 import com.example.springmvcrest.user.provider.service.exception.ProviderNotFoundException;
 import com.example.springmvcrest.utils.GenericErrorResponse;
 import com.example.springmvcrest.utils.ImageStoreNotFoundException;
@@ -20,7 +23,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return returnErrorMessage("ProviderNotFound",HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({CategoryStoreNotFoundException.class})
+    @ExceptionHandler({DefaultCategoryNotFoundException.class})
     public ResponseEntity<Object> handleCategoryStoreNotFoundException(Exception exception, WebRequest request){
         return returnErrorMessage("CategoryStoreNotFound",HttpStatus.NOT_FOUND);
     }
@@ -28,6 +31,20 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     @ExceptionHandler({ImageStoreNotFoundException.class})
     public ResponseEntity<Object> handleImageStoreNotFoundException(Exception exception, WebRequest request){
         return returnErrorMessage("ImageStoreNotFound",HttpStatus.NOT_FOUND);
+    }
+    @ExceptionHandler({StoreNotFoundException.class})
+    public ResponseEntity<Object> handleStoreNotFoundException(Exception exception, WebRequest request){
+        return returnErrorMessage("StoreNotFound",HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({MultipleStoreException.class})
+    public ResponseEntity<Object> handleMultipleStoreException(Exception exception, WebRequest request){
+        return returnErrorMessage("MultipleStore",HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({CustomCategoryNotFoundExeption.class})
+    public ResponseEntity<Object> handleCustomCategoryNotFoundExeption(Exception exception, WebRequest request){
+        return returnErrorMessage("CustomCategoryNotFound",HttpStatus.NOT_FOUND);
     }
 
      private ResponseEntity<Object> returnErrorMessage(String errorMessage,HttpStatus httpStatus){
