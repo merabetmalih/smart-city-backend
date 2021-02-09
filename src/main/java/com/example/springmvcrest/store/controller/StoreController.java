@@ -1,7 +1,7 @@
 package com.example.springmvcrest.store.controller;
 
-import com.example.springmvcrest.store.api.CustomCategoryDto;
-import com.example.springmvcrest.store.api.StoreDto;
+import com.example.springmvcrest.store.api.dto.CustomCategoryDto;
+import com.example.springmvcrest.store.api.dto.StoreDto;
 import com.example.springmvcrest.store.service.CustomCategoryService;
 import com.example.springmvcrest.store.service.DefaultCategoryService;
 import com.example.springmvcrest.store.service.StoreService;

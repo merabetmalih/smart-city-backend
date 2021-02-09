@@ -3,7 +3,9 @@ package com.example.springmvcrest.product.domain;
 
 
 
-import lombok.Data;
+import com.example.springmvcrest.store.domain.CustomCategory;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
 
 import javax.persistence.*;
@@ -15,10 +17,13 @@ import java.util.Set;
 @Entity
 @Indexed()
 @Data
-//@NoArgsConstructor
+@EqualsAndHashCode(exclude = {"customCategory"})
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class Product {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToMany
@@ -32,11 +37,14 @@ public class Product {
     @IndexedEmbedded
     private Set<Tags> tags = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "product")
     @IndexedEmbedded
     private Set<ProductVariant> productVariants = new HashSet<>();
 
 
+    @ManyToOne
+    @JsonBackReference
+    private CustomCategory customCategory;
 
     @Lob
     @FullTextField

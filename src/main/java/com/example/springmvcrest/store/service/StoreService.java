@@ -1,7 +1,7 @@
 package com.example.springmvcrest.store.service;
 
-import com.example.springmvcrest.store.api.StoreDto;
-import com.example.springmvcrest.store.api.StoreMapper;
+import com.example.springmvcrest.store.api.dto.StoreDto;
+import com.example.springmvcrest.store.api.mapper.StoreMapper;
 import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.store.repository.StoreRepository;
 import com.example.springmvcrest.store.service.exception.MultipleStoreException;

@@ -2,10 +2,10 @@ package com.example.springmvcrest.bootstrap;
 
 
 import com.example.springmvcrest.product.domain.*;
-import com.example.springmvcrest.product.repository.AttributeRepository;
-import com.example.springmvcrest.product.repository.CategoryRepository;
-import com.example.springmvcrest.product.repository.ProductRepository;
+import com.example.springmvcrest.product.repository.*;
+import com.example.springmvcrest.store.domain.CustomCategory;
 import com.example.springmvcrest.store.domain.DefaultCategory;
+import com.example.springmvcrest.store.repository.CustomCategoryRepository;
 import com.example.springmvcrest.store.repository.DefaultCategoryRepository;
 import com.example.springmvcrest.user.user.repository.RoleRepository;
 import com.example.springmvcrest.user.simple.repository.SimpleUserRepository;
@@ -14,8 +14,7 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 @AllArgsConstructor
@@ -26,7 +25,10 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
     private final AttributeRepository attributeRepository;
     private final DefaultCategoryRepository defaultCategoryRepository;
     private final ProductRepository productRepository;
-
+    private final CustomCategoryRepository customCategoryRepository;
+    private final AttributeValueRepository attributeValueRepository;
+    private final ProductVariantRepository productVariantRepository;
+    private final ProductVariantAttributeValueRepository productVariantAttributeValueRepository;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
@@ -62,9 +64,10 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
          /*   System.out.println("Customer saved: "+userRepository.count());
         }*/
 
-        productRepository.saveAll(getProducts());
+       // productRepository.saveAll(getProducts());
 
-
+        insertProduct();
+        getProducts();
     }
 
 
@@ -228,7 +231,12 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
         categoryRepository.save(SportsFitness);
 
 
-        Product dell=new Product();
+        CustomCategory customCategory=new CustomCategory();
+        customCategory.setName("customCategory");
+        customCategoryRepository.save(customCategory);
+
+
+     /*   Product dell=new Product();
         dell.setName("Dell Inspiron 15 3000 15.6\" HD LED-Backlit Screen");
         dell.setDescription("15.6\" HD Energy-efficient LED-backlit (1366 x 768) Display, AMD Athlon Silver 3050U up to 3.2GHz, Integrated graphics with AMD 4GB high-bandwidth RAM to smoothly run multiple applications and browser tabs all at once; 128GB NVMe SSD allows fast bootup and data transfer. 1x USB 2.0 port, 2x USB 3.2 Gen 1 ports, 1x Headset (headphone and microphone combo) port, 1x RJ45 - 10/100Mbps Ethernet port, 1x HDMI 1.4 port, 1x Power-adapter port, 1 x TWE Mouse Pad");
         dell.getImages().add(new Images("https://images-na.ssl-images-amazon.com/images/I/4184m0GW8AL._AC_.jpg",dell));
@@ -237,10 +245,10 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
         dell.getCategories().add(AccessoriesSupplies);
         dell.getTags().add(new Tags("dell",dell));
         dell.getProductVariants().add(new ProductVariant(dell,20.0,5));
+        dell.setCustomCategory(customCategory);
+        products.add(dell);*/
 
-        products.add(dell);
-
-
+/*
         Product shirt=new Product();
         shirt.setName("Organic Signatures Men's Short-Sleeve Crewneck 100% Organic Cotton T-Shirt");
         shirt.setDescription("100% COTTON T-SHIRTS FOR MEN – ECO-FRIENDLY, COOL & COMFORTABLE – Spruce up your eco-conscious attire with the perfect mix of casual style and trendy organic. Fashionable, contemporary, featuring a tagless neckline, our men’s short sleeve t-shirts are made from the purest, high-quality cotton for an exceptional handfeel. Enjoy a comfortable & relaxed fit with extra peace of mind – our cotton is farm-grown without pesticides or chemical fertilizers. 100% safe for your skin AND for the planet!");
@@ -250,73 +258,83 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
         shirt.getTags().add(new Tags("shirt",shirt));
 
 
+
+
         Attribute color=new Attribute();
         color.setName("color");
-        AttributeValue red =new AttributeValue(color);
-        red.setValue("red");
-        red.setImage("https://images-na.ssl-images-amazon.com/images/I/81uzH-WDhoL._AC_UX466_.jpg");
-
-        AttributeValue grey =new AttributeValue(color);
-        grey.setValue("grey");
-        grey.setImage("https://images-na.ssl-images-amazon.com/images/I/91P5kRomY5L._AC_UX466_.jpg");
-        color.getAttributeValues().add(red);
-        color.getAttributeValues().add(grey);
-
         Attribute size=new Attribute();
         size.setName("size");
-        AttributeValue small =new AttributeValue(size);
-        small.setValue("small");
-        small.setImage("null");
 
-        AttributeValue large =new AttributeValue(size);
+        Attribute sizeSaved=attributeRepository.save(size);
+        Attribute colorSaved=attributeRepository.save(color);
+
+
+        AttributeValue red =new AttributeValue(colorSaved);
+        red.setValue("red");
+        AttributeValue grey =new AttributeValue(colorSaved);
+        grey.setValue("grey");
+
+        colorSaved.getAttributeValues().add(red);
+        colorSaved.getAttributeValues().add(grey);
+
+
+        AttributeValue small =new AttributeValue(sizeSaved);
+        small.setValue("small");
+        AttributeValue large =new AttributeValue(sizeSaved);
         large.setValue("large");
-        large.setImage("null");
-        size.getAttributeValues().add(small);
-        size.getAttributeValues().add(large);
+
+        sizeSaved.getAttributeValues().add(small);
+        sizeSaved.getAttributeValues().add(large);
+
+        AttributeValue redSaved=attributeValueRepository.save(red);
+        AttributeValue greySaved=attributeValueRepository.save(grey);
+        AttributeValue smallSaved=attributeValueRepository.save(small);
+        AttributeValue largeSaved=attributeValueRepository.save(large);
 
 
         ProductVariant shirt_red_small=new ProductVariant();
         shirt_red_small.setPrice(20.0);
         shirt_red_small.setUnit(5);
-        shirt_red_small.setProduct(shirt);
-        shirt_red_small.getAttributeValues().add(red);
-        shirt_red_small.getAttributeValues().add(small);
-
-        red.getProductVariants().add(shirt_red_small);
-        small.getProductVariants().add(shirt_red_small);
+        shirt_red_small.addAttributeValue(smallSaved);
+        shirt_red_small.addAttributeValue(redSaved);
+        shirt_red_small.setImage("https://images-na.ssl-images-amazon.com/images/I/81uzH-WDhoL._AC_UX466_.jpg");
+        ProductVariant shirt_red_small_saved=productVariantRepository.save(shirt_red_small);
+        shirt_red_small_saved.setProduct(shirt);
 
         ProductVariant shirt_red_large=new ProductVariant();
         shirt_red_large.setPrice(25.0);
         shirt_red_large.setUnit(3);
-        shirt_red_large.setProduct(shirt);
-        shirt_red_large.getAttributeValues().add(red);
-        shirt_red_large.getAttributeValues().add(large);
-
-        red.getProductVariants().add(shirt_red_large);
-        large.getProductVariants().add(shirt_red_large);
+        shirt_red_large.addAttributeValue(largeSaved);
+        shirt_red_large.addAttributeValue(redSaved);
+        shirt_red_large.setImage("https://images-na.ssl-images-amazon.com/images/I/81uzH-WDhoL._AC_UX466_.jpg");
+        ProductVariant shirt_red_large_saved=productVariantRepository.save(shirt_red_large);
+        shirt_red_large_saved.setProduct(shirt);
 
         ProductVariant shirt_grey_small=new ProductVariant();
         shirt_grey_small.setPrice(25.0);
         shirt_grey_small.setUnit(3);
-        shirt_grey_small.setProduct(shirt);
-        shirt_grey_small.getAttributeValues().add(grey);
-        shirt_grey_small.getAttributeValues().add(small);
+        shirt_grey_small.addAttributeValue(greySaved);
+        shirt_grey_small.addAttributeValue(smallSaved);
+        shirt_grey_small.setImage("https://images-na.ssl-images-amazon.com/images/I/91P5kRomY5L._AC_UX466_.jpg");
+        ProductVariant shirt_grey_small_saved=productVariantRepository.save(shirt_grey_small);
+        shirt_grey_small_saved.setProduct(shirt);
 
-        grey.getProductVariants().add(shirt_grey_small);
-        small.getProductVariants().add(shirt_grey_small);
 
-        shirt.getProductVariants().add(shirt_red_small);
-        shirt.getProductVariants().add(shirt_red_large);
-        shirt.getProductVariants().add(shirt_grey_small);
 
-        attributeRepository.save(size);
-        attributeRepository.save(color);
+        shirt.getProductVariants().add(shirt_red_small_saved);
+        shirt.getProductVariants().add(shirt_red_large_saved);
+        shirt.getProductVariants().add(shirt_grey_small_saved);
+
+       // productRepository.save(shirt);
+
+
+
 
 
         products.add(shirt);
+*/
 
-
-        Product ssd=new Product();
+        /*Product ssd=new Product();
         ssd.setName("Samsung SSD 860 EVO 1TB 2.5 Inch SATA III Internal SSD (MZ-76E1T0B/AM)");
         ssd.setDescription("Innovative V-Nand Technology: Powered by Samsung V-Nand Technology, the 860 Evo SSD offers optimized performance for everyday computing as well as rendering large-sized 4K videos and 3D data used by the latest applications");
         ssd.getImages().add(new Images("https://images-na.ssl-images-amazon.com/images/I/91JA5-hAnoL._AC_SX569_.jpg",ssd));
@@ -329,13 +347,13 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
         storageCapcity.setName("storage Capcity");
         AttributeValue _256 =new AttributeValue(storageCapcity);
         _256.setValue("256");
-        _256.setImage("null");
+
         AttributeValue _1tb =new AttributeValue(storageCapcity);
         _1tb.setValue("1 TB");
-        _1tb.setImage("null");
+
         AttributeValue _512 =new AttributeValue(storageCapcity);
         _512.setValue("512");
-        _512.setImage("null");
+
 
         storageCapcity.getAttributeValues().add(_256);
         storageCapcity.getAttributeValues().add(_1tb);
@@ -373,7 +391,7 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
 
         attributeRepository.save(storageCapcity);
 
-        products.add(ssd);
+        products.add(ssd);*/
 
 
 
@@ -884,4 +902,64 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
         return products;
     }
 
+
+    public void insertProduct(){
+        Tags tag1 = Tags.builder()
+                .name("tage")
+                .build();
+
+        Attribute color = Attribute.builder()
+                .name("color")
+                .build();
+
+        Attribute size = Attribute.builder()
+                .name("size")
+                .build();
+
+
+
+        Attribute savedColor = attributeRepository.save(color);
+        Attribute savedSize = attributeRepository.save(size);
+
+
+        AttributeValue red = attributeValueRepository.save(AttributeValue.builder()
+                .value("red")
+                .attribute(savedColor)
+                .build());
+
+        AttributeValue small = attributeValueRepository.save(AttributeValue.builder()
+                .value("small")
+                .attribute(savedSize)
+                .build());
+
+
+        ProductVariantAttributeValue savedProductVariantAttributeValue = productVariantAttributeValueRepository.save(
+                ProductVariantAttributeValue.builder()
+                        .attributeValue(small)
+                        .build());
+
+
+        ProductVariant productVariantSaved = productVariantRepository.save(
+                ProductVariant.builder()
+                        .image("imageVar1")
+                        .price(20.0)
+                        .productVariantAttributeValues(new HashSet<ProductVariantAttributeValue>(Arrays.asList(savedProductVariantAttributeValue)))
+                        .build()
+        );
+
+        savedProductVariantAttributeValue.setProductVariant(productVariantSaved);
+        ProductVariantAttributeValue saved2ProductVariantAttributeValue = productVariantAttributeValueRepository.save(savedProductVariantAttributeValue);
+
+
+        Product savedProduct = productRepository.save(Product.builder()
+                .name("p1")
+                .description("description")
+                .images(new HashSet<Images>(Arrays.asList(Images.builder().image("image1").build())))
+                .tags(new HashSet<Tags>(Arrays.asList(tag1)))
+                .productVariants(new HashSet<ProductVariant>(Arrays.asList(productVariantSaved)))
+                .build());
+
+        productVariantSaved.setProduct(savedProduct);
+        productVariantRepository.save(productVariantSaved);
+    }
 }

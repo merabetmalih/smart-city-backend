@@ -1,7 +1,5 @@
-package com.example.springmvcrest.store.api;
+package com.example.springmvcrest.store.api.dto;
 
-import com.example.springmvcrest.product.domain.Category;
-import com.example.springmvcrest.user.provider.domain.Provider;
 import lombok.Data;
 
 import java.util.HashSet;

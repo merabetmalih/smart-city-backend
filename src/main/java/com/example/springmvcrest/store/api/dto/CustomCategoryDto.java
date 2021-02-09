@@ -1,4 +1,4 @@
-package com.example.springmvcrest.store.api;
+package com.example.springmvcrest.store.api.dto;
 
 import lombok.Data;
 

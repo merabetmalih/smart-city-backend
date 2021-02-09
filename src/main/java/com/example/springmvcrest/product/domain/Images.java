@@ -1,9 +1,7 @@
 package com.example.springmvcrest.product.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,9 +9,11 @@ import javax.persistence.*;
 @Data
 @EqualsAndHashCode(exclude = {"product"})
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Images {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String image;
 

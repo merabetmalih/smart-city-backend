@@ -1,5 +1,6 @@
-package com.example.springmvcrest.store.api;
+package com.example.springmvcrest.store.api.mapper;
 
+import com.example.springmvcrest.store.api.dto.CustomCategoryDto;
 import com.example.springmvcrest.store.domain.CustomCategory;
 import com.example.springmvcrest.store.service.StoreService;
 import org.mapstruct.Mapper;

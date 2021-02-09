@@ -99,13 +99,13 @@ public class ProductSearchService {
 
 
 
-        return result.hits().stream().map(productMapper::productToProductDTO).collect(Collectors.toSet());
+        return result.hits().stream().map(productMapper::ToDto).collect(Collectors.toSet());
     }
 
     public Set<ProductDTO> findAllProduct() {
         return productRepository.findAll()
                 .stream()
-                .map(productMapper::productToProductDTO)
+                .map(productMapper::ToDto)
                 .collect(Collectors.toSet());
     }
 }

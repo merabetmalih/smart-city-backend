@@ -1,14 +1,13 @@
 package com.example.springmvcrest.store.service;
 
-import com.example.springmvcrest.store.api.CustomCategoryDto;
-import com.example.springmvcrest.store.api.CustomCategoryMapper;
+import com.example.springmvcrest.store.api.dto.CustomCategoryDto;
+import com.example.springmvcrest.store.api.mapper.CustomCategoryMapper;
 import com.example.springmvcrest.store.repository.CustomCategoryRepository;
 import com.example.springmvcrest.store.service.exception.CustomCategoryNotFoundExeption;
 import com.example.springmvcrest.utils.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;

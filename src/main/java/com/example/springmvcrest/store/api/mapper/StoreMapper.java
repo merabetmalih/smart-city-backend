@@ -1,5 +1,6 @@
-package com.example.springmvcrest.store.api;
+package com.example.springmvcrest.store.api.mapper;
 
+import com.example.springmvcrest.store.api.dto.StoreDto;
 import com.example.springmvcrest.store.domain.DefaultCategory;
 import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.store.service.DefaultCategoryService;
