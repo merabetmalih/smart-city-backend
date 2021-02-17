@@ -1,12 +1,15 @@
 package com.example.springmvcrest.product.api.dto;
 
-import com.example.springmvcrest.product.domain.AttributeValue;
 import lombok.Data;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Data
 public class ProductVariantDto {
-    private Long id;
-    AttributeValue attributeValue;
+    List<ProductVariantAttributeValueDto> productVariantAttributeValuesProductVariant=new ArrayList<>();
     private Double price;
     private Integer unit;
     private String image;

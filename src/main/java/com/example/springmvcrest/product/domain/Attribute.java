@@ -2,6 +2,7 @@ package com.example.springmvcrest.product.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -21,7 +22,6 @@ public class Attribute {
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "attribute")
-    @JsonBackReference
     private Set<AttributeValue> attributeValues = new HashSet<>();
 
 

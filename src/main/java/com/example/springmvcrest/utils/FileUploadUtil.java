@@ -12,7 +12,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Objects;
 
 public class FileUploadUtil {
-
+/*
     private static final String UPLOAD_DIR = "upload/";
 
     public static String saveFile(
@@ -47,5 +47,5 @@ public class FileUploadUtil {
                 || contentType.equals("image/jpg")
                 || contentType.equals("image/jpeg")
                 || contentType.equals("image/*");
-    }
+    }*/
 }

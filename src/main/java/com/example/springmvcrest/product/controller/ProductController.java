@@ -6,12 +6,19 @@ import com.example.springmvcrest.product.domain.Product;
 import com.example.springmvcrest.product.service.AttributeService;
 import com.example.springmvcrest.product.service.ProductSearchService;
 import com.example.springmvcrest.product.service.ProductService;
+import com.example.springmvcrest.storage.FileStorage;
+import com.example.springmvcrest.storage.FileStorageException;
+import com.example.springmvcrest.utils.FileUploadUtil;
 import com.example.springmvcrest.utils.Results;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -37,12 +44,15 @@ public class ProductController {
         return  new Results(productSearchService.findAllProduct());
     }
 
-    @PostMapping("/create")
+    @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
-    public ProductDTO createCustomCategory(@RequestBody ProductDTO productDTO){
-        return productService.create(productDTO);
-    }
+    public ProductDTO createCustomCategory(@RequestPart(value = "product") ProductDTO productDTO,
+                                             @RequestPart(value = "productImagesFile",required = false)List<MultipartFile>  productImages,
+                                                 @RequestPart(value = "variantesImagesFile",required = false)List<MultipartFile>  variantsImages)  {
 
+
+        return productService.create(productDTO,productImages,variantsImages);
+    }
 
 
 }

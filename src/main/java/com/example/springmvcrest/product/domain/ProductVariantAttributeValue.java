@@ -1,7 +1,9 @@
 package com.example.springmvcrest.product.domain;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.*;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 import javax.persistence.*;
 
@@ -18,16 +20,11 @@ public class ProductVariantAttributeValue {
 
     @ManyToOne
     @JoinColumn(name = "attributeValue_id")
-    @JsonBackReference
     AttributeValue attributeValue;
 
     @ManyToOne
     @JoinColumn(name = "productVariant_id")
-    @JsonBackReference
     ProductVariant productVariant;
 
-    public ProductVariantAttributeValue(AttributeValue attributeValue, ProductVariant productVariant) {
-        this.attributeValue = attributeValue;
-        this.productVariant = productVariant;
-    }
+
 }

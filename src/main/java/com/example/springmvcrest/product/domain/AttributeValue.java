@@ -24,16 +24,11 @@ public class AttributeValue {
 
 
     @OneToMany(mappedBy = "attributeValue")
-    @IndexedEmbedded
-    Set<ProductVariantAttributeValue> productVariantAttributeValues=new HashSet<>();;
+    Set<ProductVariantAttributeValue> productVariantAttributeValuesAttributeValue=new HashSet<>();;
 
     @ManyToOne()
-    @IndexedEmbedded
     private Attribute attribute;
 
-    public AttributeValue(Attribute attribute){
-        this.attribute=attribute;
 
-    }
 
 }

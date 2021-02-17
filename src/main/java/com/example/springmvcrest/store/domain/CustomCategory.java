@@ -17,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @Builder
 @Entity
-public class CustomCategory {
+    public class CustomCategory {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;

@@ -1,13 +1,11 @@
 package com.example.springmvcrest.product.domain;
 
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 import javax.persistence.*;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 @EqualsAndHashCode(exclude = {"product"})
@@ -21,30 +19,16 @@ public class ProductVariant {
     private Long id;
 
     @ManyToOne
-    @JsonBackReference
     private Product product;
 
     @OneToMany(mappedBy = "productVariant")
-    @IndexedEmbedded
-    Set<ProductVariantAttributeValue> productVariantAttributeValues=new HashSet<>();
+    List<ProductVariantAttributeValue> productVariantAttributeValuesProductVariant=new ArrayList<>();
 
     private Double price;
     private Integer unit;
     private String image;
 
-    public ProductVariant(Product product,Double price,Integer unit){
-        this.product=product;
-        this.price=price;
-        this.unit=unit;
-    }
 
-
-
-  /*  public void addAttributeValue(AttributeValue attributeValue) {
-        ProductVariantAttributeValue productVariantAttributeValue = new ProductVariantAttributeValue( attributeValue,this);
-        productVariantAttributeValues.add(productVariantAttributeValue);
-        attributeValue.getProductVariantAttributeValues().add(productVariantAttributeValue);
-    }*/
 
 
 }

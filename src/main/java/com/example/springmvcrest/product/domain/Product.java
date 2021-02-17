@@ -9,8 +9,10 @@ import lombok.*;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.HashSet;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -34,17 +36,21 @@ public class Product {
 
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
-    @IndexedEmbedded
+
     private Set<Tags> tags = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.MERGE, mappedBy = "product")
-    @IndexedEmbedded
-    private Set<ProductVariant> productVariants = new HashSet<>();
+
+    private List<ProductVariant> productVariants = new ArrayList<>();
 
 
     @ManyToOne
-    @JsonBackReference
+
     private CustomCategory customCategory;
+
+    @OneToMany
+    @JoinColumn(name="product")
+    private Set<Attribute> attributes = new HashSet<>();
 
     @Lob
     @FullTextField

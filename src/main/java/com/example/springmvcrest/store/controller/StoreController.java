@@ -29,7 +29,7 @@ public class StoreController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public StoreDto createStore( StoreDto storeDto,
                                 @RequestPart("image") MultipartFile multipartFile) throws IOException{
-        storeDto.setImageStore(FileUploadUtil.saveFile(multipartFile));
+       // storeDto.setImageStore(FileUploadUtil.saveFile(multipartFile));
         return storeService.create(storeDto);
     }
 

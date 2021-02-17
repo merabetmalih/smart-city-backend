@@ -8,5 +8,5 @@ import java.util.Set;
 @Data
 public class AttributeDto {
     private String name;
-    private Set<String> attributeValues = new HashSet<>();
+    private Set<AttributeValueDto> attributeValues = new HashSet<>();
 }

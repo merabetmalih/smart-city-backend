@@ -933,9 +933,14 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
                 .build());
 
 
-        ProductVariantAttributeValue savedProductVariantAttributeValue = productVariantAttributeValueRepository.save(
+        ProductVariantAttributeValue savedProductVariantAttributeValue_small = productVariantAttributeValueRepository.save(
                 ProductVariantAttributeValue.builder()
                         .attributeValue(small)
+                        .build());
+
+        ProductVariantAttributeValue savedProductVariantAttributeValue_red = productVariantAttributeValueRepository.save(
+                ProductVariantAttributeValue.builder()
+                        .attributeValue(red)
                         .build());
 
 
@@ -943,12 +948,15 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
                 ProductVariant.builder()
                         .image("imageVar1")
                         .price(20.0)
-                        .productVariantAttributeValues(new HashSet<ProductVariantAttributeValue>(Arrays.asList(savedProductVariantAttributeValue)))
+                        .productVariantAttributeValuesProductVariant(new ArrayList<>(Arrays.asList(savedProductVariantAttributeValue_small,savedProductVariantAttributeValue_red)))
                         .build()
         );
 
-        savedProductVariantAttributeValue.setProductVariant(productVariantSaved);
-        ProductVariantAttributeValue saved2ProductVariantAttributeValue = productVariantAttributeValueRepository.save(savedProductVariantAttributeValue);
+        savedProductVariantAttributeValue_small.setProductVariant(productVariantSaved);
+        ProductVariantAttributeValue saved2ProductVariantAttributeValue_small = productVariantAttributeValueRepository.save(savedProductVariantAttributeValue_small);
+
+        savedProductVariantAttributeValue_red.setProductVariant(productVariantSaved);
+        ProductVariantAttributeValue saved2ProductVariantAttributeValue_red = productVariantAttributeValueRepository.save(savedProductVariantAttributeValue_red);
 
 
         Product savedProduct = productRepository.save(Product.builder()
@@ -956,7 +964,8 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
                 .description("description")
                 .images(new HashSet<Images>(Arrays.asList(Images.builder().image("image1").build())))
                 .tags(new HashSet<Tags>(Arrays.asList(tag1)))
-                .productVariants(new HashSet<ProductVariant>(Arrays.asList(productVariantSaved)))
+                .productVariants(new ArrayList<>(Arrays.asList(productVariantSaved)))
+                .attributes(new HashSet<Attribute>(Arrays.asList(savedColor,savedSize)))
                 .build());
 
         productVariantSaved.setProduct(savedProduct);

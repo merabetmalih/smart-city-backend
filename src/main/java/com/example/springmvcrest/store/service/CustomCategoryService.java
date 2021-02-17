@@ -2,6 +2,7 @@ package com.example.springmvcrest.store.service;
 
 import com.example.springmvcrest.store.api.dto.CustomCategoryDto;
 import com.example.springmvcrest.store.api.mapper.CustomCategoryMapper;
+import com.example.springmvcrest.store.domain.CustomCategory;
 import com.example.springmvcrest.store.repository.CustomCategoryRepository;
 import com.example.springmvcrest.store.service.exception.CustomCategoryNotFoundExeption;
 import com.example.springmvcrest.utils.Response;
@@ -27,6 +28,10 @@ public class CustomCategoryService {
                 .orElse(null);
     }
 
+    public CustomCategory findById(Long id){
+        return customCategoryRepository.findById(id)
+                .orElse(null);
+    }
 
     public Response<String> delete(Long id){
         customCategoryRepository.findById(id)

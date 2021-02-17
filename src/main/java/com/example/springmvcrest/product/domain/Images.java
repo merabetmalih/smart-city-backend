@@ -18,12 +18,8 @@ public class Images {
     private String image;
 
     @ManyToOne
-    @JsonBackReference
     private Product product;
 
-    public Images(String image,Product product){
-        this.image=image;
-        this.product=product;
-    }
+
 
 }

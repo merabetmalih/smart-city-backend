@@ -22,16 +22,13 @@ public class Tags {
     private String name;
 
     @ManyToOne
-    @JsonBackReference
     private Product product;
 
     public Tags(String name,Product product) {
         this.name = name;
         this.product=product;
     }
-    public Tags(String name) {
-        this.name = name;
-    }
+
 
 
 }
