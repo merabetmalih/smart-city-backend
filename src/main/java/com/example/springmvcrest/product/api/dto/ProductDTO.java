@@ -15,11 +15,12 @@ import java.util.Set;
 
 @Data
 public class ProductDTO {
+    private Long id;
     private Set<TagsDto>tags = new HashSet<>();
     private List<ProductVariantDto> productVariants = new ArrayList<>();
     private String description;
     private String name;
-    private Set<ImagesDTO>images = new HashSet<>();
+    private List<ImagesDTO>images = new ArrayList<>();
     private Long customCategory;
     private Set<AttributeDto> attributes = new HashSet<>();
 }

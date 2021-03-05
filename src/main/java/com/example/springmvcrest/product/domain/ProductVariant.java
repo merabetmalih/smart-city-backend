@@ -21,7 +21,7 @@ public class ProductVariant {
     @ManyToOne
     private Product product;
 
-    @OneToMany(mappedBy = "productVariant")
+    @OneToMany(mappedBy = "productVariant",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     List<ProductVariantAttributeValue> productVariantAttributeValuesProductVariant=new ArrayList<>();
 
     private Double price;

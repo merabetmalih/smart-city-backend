@@ -32,7 +32,7 @@ public class ProductSearchService {
 
 
     @Transactional(readOnly = true)
-    public Set<ProductDTO> search(String query) {
+    public List<ProductDTO> search(String query) {
         SearchSession session = Search.session(entityManager);
 
         SearchScope<Product> scope = session.scope( Product.class );
@@ -99,13 +99,13 @@ public class ProductSearchService {
 
 
 
-        return result.hits().stream().map(productMapper::ToDto).collect(Collectors.toSet());
+        return result.hits().stream().map(productMapper::ToDto).collect(Collectors.toList());
     }
 
-    public Set<ProductDTO> findAllProduct() {
+    public List<ProductDTO> findAllProduct() {
         return productRepository.findAll()
                 .stream()
                 .map(productMapper::ToDto)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 }

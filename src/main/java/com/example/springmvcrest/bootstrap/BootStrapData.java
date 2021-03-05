@@ -962,7 +962,7 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
         Product savedProduct = productRepository.save(Product.builder()
                 .name("p1")
                 .description("description")
-                .images(new HashSet<Images>(Arrays.asList(Images.builder().image("image1").build())))
+                .images(new ArrayList<>(Arrays.asList(Images.builder().image("image1").build())))
                 .tags(new HashSet<Tags>(Arrays.asList(tag1)))
                 .productVariants(new ArrayList<>(Arrays.asList(productVariantSaved)))
                 .attributes(new HashSet<Attribute>(Arrays.asList(savedColor,savedSize)))

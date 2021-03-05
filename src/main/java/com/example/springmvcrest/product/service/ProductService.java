@@ -7,10 +7,13 @@ import com.example.springmvcrest.product.repository.*;
 import com.example.springmvcrest.storage.FileStorage;
 import com.example.springmvcrest.storage.FileStorageException;
 import com.example.springmvcrest.store.service.CustomCategoryService;
+import com.example.springmvcrest.store.service.exception.CustomCategoryNotFoundExeption;
+import com.example.springmvcrest.utils.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.Transactional;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -29,15 +32,210 @@ public class ProductService {
 
     private final FileStorage fileStorage;
 
+
+    public List<ProductDTO> getProductByCustomCategoryId(Long id){
+        return productRepository.findAllByCustomCategory_Id(id)
+                .stream()
+                .map(productMapper::ToDto)
+                .collect(Collectors.toList());
+    }
+
+    public  List<ProductDTO> getProductByCustomCategoryStoreProviderId(Long id){
+        return productRepository.findAllByCustomCategory_Store_Provider_Id(id)
+                .stream()
+                .map(productMapper::ToDto)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public Response<String> deleteProduct(Long id)
+    {
+        productRepository.findById(id)
+                .orElseThrow(CustomCategoryNotFoundExeption::new);
+        productRepository.deleteById(id);
+        return new Response<>("deleted.");
+    }
+
+    public ProductDTO updateProduct(ProductDTO productDTO,List<MultipartFile>  productImages,List<MultipartFile>  variancesImages){
+
+
+
+      if(productRepository.findById(productDTO.getId()).isPresent()){
+
+          productRepository.deleteById(productDTO.getId());
+          if(productImages!=null){
+              saveProductImages(productImages);
+          }
+          Map<String,MultipartFile> variancesImagesMap = new HashMap<String,MultipartFile>();
+          if (variancesImages!=null){
+              for (MultipartFile image:variancesImages
+              ) {
+                  variancesImagesMap.put(image.getOriginalFilename(),image);
+              }
+          }
+
+          return Optional.of(productDTO)
+                  .map(productMapper::ToModel)
+                  .map(product -> {
+
+
+                      Set<Attribute> savedAttribute = product.getAttributes()
+                              .stream()
+                              .map(attribute -> attributeRepository.save( Attribute.builder()
+                                      .name(attribute.getName())
+                                      .build()))
+                              .collect(Collectors.toSet());
+
+
+                      Set<AttributeValue> savedAttributeValue = new HashSet<AttributeValue>();
+                      for (Attribute attribute:product.getAttributes()
+                      ) {
+                          for (AttributeValue attributeValue:attribute.getAttributeValues()
+                          ) {
+                              savedAttributeValue.add(attributeValueRepository.save(
+                                      AttributeValue.builder()
+                                              .value(attributeValue.getValue())
+                                              .attribute(
+                                                      savedAttribute.stream()
+                                                              .filter(saved -> saved.getName().equals(attribute.getName()))
+                                                              .findFirst()
+                                                              .get()
+                                              )
+                                              .build()));
+                          }
+                      }
+
+
+                      List<ProductVariant> savedProductVariant = new ArrayList<>();
+                      for (ProductVariant productVariant:product.getProductVariants()
+                      ) {
+
+                          List<ProductVariantAttributeValue> productVariantAttributeValue = new ArrayList<>();
+
+                          for (ProductVariantAttributeValue productVariantAttributeValue1:productVariant.getProductVariantAttributeValuesProductVariant()
+                          ) {
+
+
+                              List<ProductVariantAttributeValue> savedProductVariantAttributeValue = new ArrayList<>();
+                              savedProductVariantAttributeValue.add(
+                                      productVariantAttributeValueRepository.save(
+                                              ProductVariantAttributeValue.builder()
+                                                      .attributeValue(
+                                                              savedAttributeValue
+                                                                      .stream()
+                                                                      .filter(attributeValue -> attributeValue.getValue().equals(productVariantAttributeValue1.getAttributeValue().getValue()))
+                                                                      .findFirst()
+                                                                      .get())
+                                                      .build())
+                              );
+
+
+
+                              for (ProductVariantAttributeValue productVariantAttributeValue2:savedProductVariantAttributeValue
+                              ) {
+
+                                  if (productVariantAttributeValue1.getAttributeValue().getValue().equals(productVariantAttributeValue2.getAttributeValue().getValue())){
+                                      productVariantAttributeValue.add(productVariantAttributeValue2);
+                                  }
+                              }
+                          }
+
+
+                          if (!variancesImagesMap.isEmpty()){
+                              saveVarianceImage(variancesImagesMap.get(productVariant.getImage()));
+                          }
+
+                          ProductVariant productVariantItemSaved=productVariantRepository.save(
+                                  ProductVariant.builder()
+                                          .image(productVariant.getImage())
+                                          .price(productVariant.getPrice())
+                                          .unit(productVariant.getUnit())
+                                          .productVariantAttributeValuesProductVariant(productVariantAttributeValue)
+                                          .build()
+                          );
+
+                          System.out.println("**********"+productVariantItemSaved.toString());
+                          for (ProductVariantAttributeValue productVariantAttributeValue1:productVariantAttributeValue
+                          ) {
+                              productVariantAttributeValue1.setProductVariant(productVariantItemSaved);
+                              productVariantAttributeValueRepository.save(productVariantAttributeValue1);
+                          }
+
+                          savedProductVariant.add(
+                                  productVariantItemSaved
+                          );
+
+
+                      }
+
+
+
+
+
+
+                      Product savedProduct = productRepository.save(Product.builder()
+                              .id(product.getId())
+                              .name(product.getName())
+                              .description(product.getDescription())
+                              .tags(product.getTags())
+                              .productVariants(savedProductVariant)
+                              .attributes(savedAttribute)
+                              .images(product.getImages())
+                              .customCategory(customCategoryService.findById(product.getCustomCategory().getId()))
+                              .build());
+
+
+
+
+                          List<Images> images = product.getImages().stream()
+                                  .map(Images::getImage)
+                                  .map(image -> Images.builder()
+                                          .image(image)
+                                          .build()).collect(Collectors.toList());
+                          for (Images image:images
+                          ) {
+
+                              image.setProduct(savedProduct);
+                              imagesRepository.save(image);
+                          }
+
+
+
+
+                      for (ProductVariant productVariant :savedProductVariant
+                      ) {
+                          productVariant.setProduct(savedProduct);
+                          productVariantRepository.save(productVariant);
+                      }
+
+
+                      return savedProduct;
+
+                  })
+                  .map(productMapper::ToDto)
+                  .orElse(null);
+      }
+      else return null;
+    }
+
+    public byte[] downloadImage(String filename) {
+        return fileStorage.download(filename, "smartCity-files");
+    }
+
     public ProductDTO create(ProductDTO productDTO,List<MultipartFile>  productImages,List<MultipartFile>  variancesImages) {
         System.out.println(productDTO.toString());
 
-        saveProductImages(productImages);
-        Map<String,MultipartFile> variancesImagesMap = new HashMap<String,MultipartFile>();
-        for (MultipartFile image:variancesImages
-             ) {
-            variancesImagesMap.put(image.getOriginalFilename(),image);
+        if(productImages!=null){
+            saveProductImages(productImages);
         }
+        Map<String,MultipartFile> variancesImagesMap = new HashMap<String,MultipartFile>();
+        if (variancesImages!=null){
+            for (MultipartFile image:variancesImages
+            ) {
+                variancesImagesMap.put(image.getOriginalFilename(),image);
+            }
+        }
+
 
         return Optional.of(productDTO)
                 .map(productMapper::ToModel)
@@ -106,7 +304,10 @@ public class ProductService {
                         }
 
 
-                        saveVarianceImage(variancesImagesMap.get(productVariant.getImage()));
+                        if (!variancesImagesMap.isEmpty()){
+                            saveVarianceImage(variancesImagesMap.get(productVariant.getImage()));
+                        }
+
                         ProductVariant productVariantItemSaved=productVariantRepository.save(
                                 ProductVariant.builder()
                                         .image(productVariant.getImage())
@@ -116,6 +317,7 @@ public class ProductService {
                                         .build()
                         );
 
+                        System.out.println("**********"+productVariantItemSaved.toString());
                         for (ProductVariantAttributeValue productVariantAttributeValue1:productVariantAttributeValue
                              ) {
                             productVariantAttributeValue1.setProductVariant(productVariantItemSaved);
@@ -130,11 +332,9 @@ public class ProductService {
                     }
 
 
-                    Set<Images> images = productImages.stream()
-                            .map(MultipartFile::getOriginalFilename)
-                            .map(image -> Images.builder()
-                                    .image(image)
-                                    .build()).collect(Collectors.toSet());
+
+
+
 
                     Product savedProduct = productRepository.save(Product.builder()
                             .name(product.getName())
@@ -142,15 +342,24 @@ public class ProductService {
                             .tags(product.getTags())
                             .productVariants(savedProductVariant)
                             .attributes(savedAttribute)
+                            .images(product.getImages())
                             .customCategory(customCategoryService.findById(product.getCustomCategory().getId()))
                             .build());
 
 
+
+                    List<Images> images = product.getImages().stream()
+                            .map(Images::getImage)
+                            .map(image -> Images.builder()
+                                    .image(image)
+                                    .build()).collect(Collectors.toList());
                     for (Images image:images
-                         ) {
+                    ) {
+
                         image.setProduct(savedProduct);
                         imagesRepository.save(image);
                     }
+
 
 
                     for (ProductVariant productVariant :savedProductVariant
@@ -172,7 +381,7 @@ public class ProductService {
         try {
                 if (image != null) {
                      fileStorage.upload(image.getOriginalFilename(),
-                            "upload", image.getInputStream());
+                            "smartCity-files", image.getInputStream());
                 }
 
         } catch (IOException e) {
@@ -186,7 +395,7 @@ public class ProductService {
             ) {
                 if (image != null) {
                     fileStorage.upload(image.getOriginalFilename(),
-                            "upload", image.getInputStream());
+                            "smartCity-files", image.getInputStream());
                 }
             }
 

@@ -7,6 +7,7 @@ import com.example.springmvcrest.store.service.exception.DefaultCategoryNotFound
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,10 +22,10 @@ public class DefaultCategoryService {
                 .orElseThrow(DefaultCategoryNotFoundException::new);
     }
 
-    public Set<String> findAll(){
+    public List<String> findAll(){
         return defaultCategoryRepository.findAll()
                 .stream()
                 .map(DefaultCategory::getName)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 }

@@ -1,17 +1,14 @@
 package com.example.springmvcrest.product.domain;
 
 
-
-
 import com.example.springmvcrest.store.domain.CustomCategory;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
-import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.HashSet;
-
 import java.util.List;
 import java.util.Set;
 
@@ -39,7 +36,7 @@ public class Product {
 
     private Set<Tags> tags = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "product")
+    @OneToMany(cascade = {CascadeType.MERGE,CascadeType.REMOVE}, mappedBy = "product")
 
     private List<ProductVariant> productVariants = new ArrayList<>();
 
@@ -62,7 +59,7 @@ public class Product {
 
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
-    private Set<Images> images = new HashSet<>();
+    private List<Images> images = new ArrayList<>();
 
 
 }

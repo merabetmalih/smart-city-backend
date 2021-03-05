@@ -9,6 +9,7 @@ import com.example.springmvcrest.utils.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -48,10 +49,10 @@ public class CustomCategoryService {
                 .orElse(null);
     }
 
-    public Set<CustomCategoryDto> getAllByProvider(Long id){
+    public List<CustomCategoryDto> getAllByProvider(Long id){
         return customCategoryRepository.findByStore_Provider_Id(id)
                 .stream()
                 .map(customCategoryMapper::ToDto)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 }

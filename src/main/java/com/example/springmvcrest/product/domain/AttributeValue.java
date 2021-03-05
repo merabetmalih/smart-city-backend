@@ -23,7 +23,7 @@ public class AttributeValue {
 
 
 
-    @OneToMany(mappedBy = "attributeValue")
+    @OneToMany(mappedBy = "attributeValue",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     Set<ProductVariantAttributeValue> productVariantAttributeValuesAttributeValue=new HashSet<>();;
 
     @ManyToOne()

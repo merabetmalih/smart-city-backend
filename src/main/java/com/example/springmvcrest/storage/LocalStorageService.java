@@ -73,7 +73,6 @@ public class LocalStorageService implements FileStorage {
     }
 
     private String getHomeDirectory() {
-        return "C:\\Users\\ibrahim\\Desktop\\spring-mvc-rest";
-        //return System.getProperty("user.home");
+        return System.getProperty("user.home");
     }
 }
