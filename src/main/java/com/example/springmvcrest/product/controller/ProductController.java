@@ -19,21 +19,16 @@ import java.util.List;
 @AllArgsConstructor
 @Slf4j
 public class ProductController {
-
     private final ProductSearchService  productSearchService;
     private final ProductService productService;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Results<ProductDTO> searchProduct(@RequestParam(name = "search", required = false) String query) {
-
-        if (query != null) {
-            List<ProductDTO> result = productSearchService.search(query);
-            //Predicate<Product> byParentProductNull = product -> product.getParentProduct() == null;
-            //result = result.stream().filter(byParentProductNull).collect(Collectors.toList());
-            return new Results<>(result);
-        }
-        return  new Results<>(productSearchService.findAllProduct());
+    public Results<ProductDTO> searchProduct(@RequestParam(name = "search", required = false) String query,
+                                             @RequestParam(name = "page",defaultValue = "1",required = false) int page) {
+        if (query != null && !query.equals(""))
+            return new Results<>(productSearchService.search(query,page));
+        return  new Results<>(productSearchService.findAllProduct(page));
     }
 
     @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

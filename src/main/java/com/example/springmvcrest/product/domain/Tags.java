@@ -24,10 +24,6 @@ public class Tags {
     @ManyToOne
     private Product product;
 
-    public Tags(String name,Product product) {
-        this.name = name;
-        this.product=product;
-    }
 
 
 

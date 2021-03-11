@@ -43,18 +43,6 @@ public class UserController {
         return simpleUserService.saveUser(userDto);
     }
 
-    @GetMapping(value = "/image/{id}.jpg", produces = MediaType.IMAGE_JPEG_VALUE)
-    public @ResponseBody
-    byte[] getImageWithMediaType(@PathVariable String id) throws IOException {
-        final InputStream in = getClass().getResourceAsStream("/static/" + id + ".jpg");
-        return IOUtils.toByteArray(in);
-    }
 
-    @RequestMapping("/product/new")
-    public ModelAndView newProduct() {
-        ModelAndView modelAndView = new ModelAndView("product/productform");
-        modelAndView.addObject("product", new ProductDTO());
-        return modelAndView;
-    }
 
 }

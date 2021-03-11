@@ -5,6 +5,7 @@ import com.example.springmvcrest.store.domain.CustomCategory;
 import lombok.*;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.FullTextField;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.Indexed;
+import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class Product {
 
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
-
+    @IndexedEmbedded
     private Set<Tags> tags = new HashSet<>();
 
     @OneToMany(cascade = {CascadeType.MERGE,CascadeType.REMOVE}, mappedBy = "product")

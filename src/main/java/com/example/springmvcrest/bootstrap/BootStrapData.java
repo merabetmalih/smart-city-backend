@@ -66,7 +66,7 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
 
        // productRepository.saveAll(getProducts());
 
-        insertProduct();
+        //insertProduct();
         getProducts();
     }
 
