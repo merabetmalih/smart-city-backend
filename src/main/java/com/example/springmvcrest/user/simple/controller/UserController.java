@@ -1,12 +1,16 @@
 package com.example.springmvcrest.user.simple.controller;
 
 
+import com.example.springmvcrest.product.api.dto.CategoryDto;
 import com.example.springmvcrest.product.api.dto.ProductDTO;
 import com.example.springmvcrest.product.service.ProductSearchService;
 import com.example.springmvcrest.user.api.dto.UserDto;
 import com.example.springmvcrest.user.api.dto.UserRegestrationDto;
+import com.example.springmvcrest.user.simple.api.SimpleUserDto;
 import com.example.springmvcrest.user.simple.domain.SimpleUser;
 import com.example.springmvcrest.user.simple.service.SimpleUserService;
+import com.example.springmvcrest.utils.Response;
+import com.example.springmvcrest.utils.Results;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -44,5 +48,16 @@ public class UserController {
     }
 
 
+    @PostMapping("/interestCenter")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public Response<String>  setUserInterestCenter(@ModelAttribute SimpleUserDto simpleUserDto){
+       return simpleUserService.setUserInterestCenter(simpleUserDto);
+    }
+
+    @GetMapping("/interestCenter/{id}")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public Results<CategoryDto> getUserInterestCenter(@PathVariable Long id){
+        return new Results<>(simpleUserService.getUserInterestCenter(id));
+    }
 
 }

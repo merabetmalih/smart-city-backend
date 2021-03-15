@@ -22,7 +22,7 @@ public class SimpleUser extends User {
     @JoinTable(name = "simple_users_category",
             joinColumns = @JoinColumn(name = "category_id"),
             inverseJoinColumns = @JoinColumn(name = "users_id"))
-    private Set<Category> categories= new HashSet<>();
+    private Set<Category> interestCenter = new HashSet<>();
 
     @Singular
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)
