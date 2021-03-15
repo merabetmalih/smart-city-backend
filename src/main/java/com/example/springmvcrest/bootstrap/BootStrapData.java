@@ -89,52 +89,63 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
         Category Electronics=new Category("Electronics");
         categoryRepository.save(Electronics);
 
-        Category AccessoriesSupplies=new Category("AccessoriesSupplies");
-        AccessoriesSupplies.setParenetId(Electronics.getId());
+        Category AccessoriesSupplies=Category.builder()
+                .name("AccessoriesSupplies")
+                .parentCategory(Electronics).build();
         categoryRepository.save(AccessoriesSupplies);
 
-        Category CameraPhoto=new Category("CameraPhoto");
-        CameraPhoto.setParenetId(Electronics.getId());
+        Category CameraPhoto=Category.builder()
+                .name("CameraPhoto")
+                .parentCategory(Electronics).build();
         categoryRepository.save(CameraPhoto);
 
-        Category CarVehicleElectronics=new Category("CarVehicleElectronics");
-        CarVehicleElectronics.setParenetId(Electronics.getId());
+        Category CarVehicleElectronics=Category.builder()
+                .name("CarVehicleElectronics")
+                .parentCategory(Electronics).build();
         categoryRepository.save(CarVehicleElectronics);
 
-        Category CellPhonesAccessories=new Category("CellPhonesAccessories");
-        CellPhonesAccessories.setParenetId(Electronics.getId());
+        Category CellPhonesAccessories=Category.builder()
+                .name("CellPhonesAccessories")
+                .parentCategory(Electronics).build();
         categoryRepository.save(CellPhonesAccessories);
 
-        Category ComputersAccessories=new Category("ComputersAccessories");
-        ComputersAccessories.setParenetId(Electronics.getId());
+        Category ComputersAccessories=Category.builder()
+                .name("ComputersAccessories")
+                .parentCategory(Electronics).build();
         categoryRepository.save(ComputersAccessories);
 
-        Category Headphones=new Category("Headphones");
-        Headphones.setParenetId(Electronics.getId());
+        Category Headphones=Category.builder()
+                .name("Headphones")
+                .parentCategory(Electronics).build();
         categoryRepository.save(Headphones);
 
         /* *********Computers************/
         Category Computers=new Category("Computers");
         categoryRepository.save(Computers);
 
-        Category ComputerAccessoriesPeripherals=new Category("ComputerAccessoriesPeripherals");
-        ComputerAccessoriesPeripherals.setParenetId(Computers.getId());
+        Category ComputerAccessoriesPeripherals=Category.builder()
+                .name("ComputerAccessoriesPeripherals")
+                .parentCategory(Computers).build();
         categoryRepository.save(ComputerAccessoriesPeripherals);
 
-        Category ComputerComponents=new Category("ComputerComponents");
-        ComputerComponents.setParenetId(Computers.getId());
+        Category ComputerComponents=Category.builder()
+                .name("ComputerComponents")
+                .parentCategory(Computers).build();
         categoryRepository.save(ComputerComponents);
 
-        Category DataStorage=new Category("DataStorage");
-        DataStorage.setParenetId(Computers.getId());
+        Category DataStorage=Category.builder()
+                .name("DataStorage")
+                .parentCategory(Computers).build();
         categoryRepository.save(DataStorage);
 
-        Category ExternalComponents=new Category("ExternalComponents");
-        ExternalComponents.setParenetId(Computers.getId());
+        Category ExternalComponents=Category.builder()
+                .name("ExternalComponents")
+                .parentCategory(Computers).build();
         categoryRepository.save(ExternalComponents);
 
-        Category Laptop=new Category("Laptop");
-        Laptop.setParenetId(Computers.getId());
+        Category Laptop=Category.builder()
+                .name("Laptop")
+                .parentCategory(Computers).build();
         categoryRepository.save(Laptop);
 
         /* *********WomensFashion************/
@@ -142,20 +153,24 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
         Category WomensFashion=new Category("WomensFashion");
         categoryRepository.save(WomensFashion);
 
-        Category Clothing=new Category("ClothingW");
-        Clothing.setParenetId(WomensFashion.getId());
+        Category Clothing=Category.builder()
+                .name("ClothingW")
+                .parentCategory(WomensFashion).build();
         categoryRepository.save(Clothing);
 
-        Category Shoes=new Category("ShoesW");
-        Shoes.setParenetId(WomensFashion.getId());
+        Category Shoes=Category.builder()
+                .name("ShoesW")
+                .parentCategory(WomensFashion).build();
         categoryRepository.save(Shoes);
 
-        Category Jewelry=new Category("JewelryW");
-        Jewelry.setParenetId(WomensFashion.getId());
+        Category Jewelry=Category.builder()
+                .name("JewelryW")
+                .parentCategory(WomensFashion).build();
         categoryRepository.save(Jewelry);
 
-        Category Watches=new Category("WatchesW");
-        Watches.setParenetId(WomensFashion.getId());
+        Category Watches=Category.builder()
+                .name("WatchesW")
+                .parentCategory(WomensFashion).build();
         categoryRepository.save(Watches);
 
         /* *********MensFashion************/
@@ -163,71 +178,85 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
         Category MensFashion=new Category("MensFashion");
         categoryRepository.save(MensFashion);
 
-        Category ClothingM=new Category("ClothingM");
-        ClothingM.setParenetId(MensFashion.getId());
+        Category ClothingM=Category.builder()
+                .name("ClothingM")
+                .parentCategory(MensFashion).build();
         categoryRepository.save(ClothingM);
 
-        Category ShoesM=new Category("ShoesM");
-        ShoesM.setParenetId(MensFashion.getId());
+        Category ShoesM=Category.builder()
+                .name("ShoesM")
+                .parentCategory(MensFashion).build();
         categoryRepository.save(ShoesM);
 
-        Category AccessoriesM=new Category("AccessoriesM");
-        AccessoriesM.setParenetId(MensFashion.getId());
+        Category AccessoriesM=Category.builder()
+                .name("AccessoriesM")
+                .parentCategory(MensFashion).build();
         categoryRepository.save(AccessoriesM);
 
-        Category WatchesM=new Category("WatchesM");
-        WatchesM.setParenetId(MensFashion.getId());
+        Category WatchesM=Category.builder()
+                .name("WatchesM")
+                .parentCategory(MensFashion).build();
         categoryRepository.save(WatchesM);
 
         /* *********GirlsFashion************/
         Category GirlsFashion=new Category("GirlsFashion");
         categoryRepository.save(GirlsFashion);
 
-        Category ClothingG=new Category("ClothingG");
-        ClothingG.setParenetId(GirlsFashion.getId());
+        Category ClothingG=Category.builder()
+                .name("ClothingG")
+                .parentCategory(GirlsFashion).build();
         categoryRepository.save(ClothingG);
 
-        Category ShoesG=new Category("ShoesG");
-        ShoesG.setParenetId(GirlsFashion.getId());
+        Category ShoesG=Category.builder()
+                .name("ShoesG")
+                .parentCategory(GirlsFashion).build();
         categoryRepository.save(ShoesG);
 
-        Category JewelryG=new Category("JewelryG");
-        JewelryG.setParenetId(GirlsFashion.getId());
+        Category JewelryG=Category.builder()
+                .name("JewelryG")
+                .parentCategory(GirlsFashion).build();
         categoryRepository.save(JewelryG);
 
-        Category WatchesG=new Category("WatchesG");
-        WatchesG.setParenetId(GirlsFashion.getId());
+        Category WatchesG=Category.builder()
+                .name("WatchesG")
+                .parentCategory(GirlsFashion).build();
         categoryRepository.save(WatchesG);
 
         /* *********BoysFashion************/
         Category BoysFashion=new Category("BoysFashion");
         categoryRepository.save(BoysFashion);
 
-        Category ClothingB=new Category("ClothingB");
-        ClothingB.setParenetId(BoysFashion.getId());
+        Category ClothingB=Category.builder()
+                .name("ClothingB")
+                .parentCategory(BoysFashion).build();
         categoryRepository.save(ClothingB);
 
-        Category ShoesB=new Category("ShoesB");
-        ShoesB.setParenetId(BoysFashion.getId());
+        Category ShoesB=Category.builder()
+                .name("ShoesB")
+                .parentCategory(BoysFashion).build();
         categoryRepository.save(ShoesB);
 
-        Category AccessoriesB=new Category("AccessoriesB");
-        AccessoriesB.setParenetId(BoysFashion.getId());
+        Category AccessoriesB=Category.builder()
+                .name("AccessoriesB")
+                .parentCategory(BoysFashion).build();
         categoryRepository.save(AccessoriesB);
 
-        Category WatchesB=new Category("WatchesB");
-        WatchesB.setParenetId(BoysFashion.getId());
+        Category WatchesB=Category.builder()
+                .name("WatchesB")
+                .parentCategory(BoysFashion).build();
         categoryRepository.save(WatchesB);
         /* *********SportsandOutdoors************/
         Category SportsandOutdoors=new Category("SportsandOutdoors");
         categoryRepository.save(SportsandOutdoors);
 
-        Category SportsAndOutdoors=new Category("SportsAndOutdoors");
-        SportsAndOutdoors.setParenetId(SportsandOutdoors.getId());
+        Category SportsAndOutdoors=Category.builder()
+                .name("SportsAndOutdoors")
+                .parentCategory(SportsandOutdoors).build();
         categoryRepository.save(SportsAndOutdoors);
 
-        Category SportsFitness=new Category("SportsFitness");
-        SportsFitness.setParenetId(SportsandOutdoors.getId());
+        Category SportsFitness=Category.builder()
+                .name("SportsFitness")
+                .parentCategory(SportsandOutdoors).build();
         categoryRepository.save(SportsFitness);
 
 

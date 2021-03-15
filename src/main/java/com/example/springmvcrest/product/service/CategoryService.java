@@ -19,6 +19,7 @@ public class CategoryService {
     public List<CategoryDto> getAllCategory(){
         return categoryRepository.findAll()
                 .stream()
+                .filter(category -> category.getParentCategory()==null)
                 .map(categoryMapper::toDto)
                 .collect(Collectors.toList());
     }
