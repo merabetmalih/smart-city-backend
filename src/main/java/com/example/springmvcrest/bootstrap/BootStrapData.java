@@ -85,184 +85,182 @@ public class BootStrapData implements ApplicationListener<ContextRefreshedEvent>
         defaultCategoryRepository.save(CameraPhotoc);
 
         /* *********Electronics************/
+        if(categoryRepository.findAll().isEmpty()){
+            Category Electronics=new Category("Electronics");
+            categoryRepository.save(Electronics);
 
-        Category Electronics=new Category("Electronics");
-        categoryRepository.save(Electronics);
+            Category AccessoriesSupplies=Category.builder()
+                    .name("AccessoriesSupplies")
+                    .parentCategory(Electronics).build();
+            categoryRepository.save(AccessoriesSupplies);
 
-        Category AccessoriesSupplies=Category.builder()
-                .name("AccessoriesSupplies")
-                .parentCategory(Electronics).build();
-        categoryRepository.save(AccessoriesSupplies);
+            Category CameraPhoto=Category.builder()
+                    .name("CameraPhoto")
+                    .parentCategory(Electronics).build();
+            categoryRepository.save(CameraPhoto);
 
-        Category CameraPhoto=Category.builder()
-                .name("CameraPhoto")
-                .parentCategory(Electronics).build();
-        categoryRepository.save(CameraPhoto);
+            Category CarVehicleElectronics=Category.builder()
+                    .name("CarVehicleElectronics")
+                    .parentCategory(Electronics).build();
+            categoryRepository.save(CarVehicleElectronics);
 
-        Category CarVehicleElectronics=Category.builder()
-                .name("CarVehicleElectronics")
-                .parentCategory(Electronics).build();
-        categoryRepository.save(CarVehicleElectronics);
+            Category CellPhonesAccessories=Category.builder()
+                    .name("CellPhonesAccessories")
+                    .parentCategory(Electronics).build();
+            categoryRepository.save(CellPhonesAccessories);
 
-        Category CellPhonesAccessories=Category.builder()
-                .name("CellPhonesAccessories")
-                .parentCategory(Electronics).build();
-        categoryRepository.save(CellPhonesAccessories);
+            Category ComputersAccessories=Category.builder()
+                    .name("ComputersAccessories")
+                    .parentCategory(Electronics).build();
+            categoryRepository.save(ComputersAccessories);
 
-        Category ComputersAccessories=Category.builder()
-                .name("ComputersAccessories")
-                .parentCategory(Electronics).build();
-        categoryRepository.save(ComputersAccessories);
+            Category Headphones=Category.builder()
+                    .name("Headphones")
+                    .parentCategory(Electronics).build();
+            categoryRepository.save(Headphones);
 
-        Category Headphones=Category.builder()
-                .name("Headphones")
-                .parentCategory(Electronics).build();
-        categoryRepository.save(Headphones);
+            /* *********Computers************/
+            Category Computers=new Category("Computers");
+            categoryRepository.save(Computers);
 
-        /* *********Computers************/
-        Category Computers=new Category("Computers");
-        categoryRepository.save(Computers);
+            Category ComputerAccessoriesPeripherals=Category.builder()
+                    .name("ComputerAccessoriesPeripherals")
+                    .parentCategory(Computers).build();
+            categoryRepository.save(ComputerAccessoriesPeripherals);
 
-        Category ComputerAccessoriesPeripherals=Category.builder()
-                .name("ComputerAccessoriesPeripherals")
-                .parentCategory(Computers).build();
-        categoryRepository.save(ComputerAccessoriesPeripherals);
+            Category ComputerComponents=Category.builder()
+                    .name("ComputerComponents")
+                    .parentCategory(Computers).build();
+            categoryRepository.save(ComputerComponents);
 
-        Category ComputerComponents=Category.builder()
-                .name("ComputerComponents")
-                .parentCategory(Computers).build();
-        categoryRepository.save(ComputerComponents);
+            Category DataStorage=Category.builder()
+                    .name("DataStorage")
+                    .parentCategory(Computers).build();
+            categoryRepository.save(DataStorage);
 
-        Category DataStorage=Category.builder()
-                .name("DataStorage")
-                .parentCategory(Computers).build();
-        categoryRepository.save(DataStorage);
+            Category ExternalComponents=Category.builder()
+                    .name("ExternalComponents")
+                    .parentCategory(Computers).build();
+            categoryRepository.save(ExternalComponents);
 
-        Category ExternalComponents=Category.builder()
-                .name("ExternalComponents")
-                .parentCategory(Computers).build();
-        categoryRepository.save(ExternalComponents);
+            Category Laptop=Category.builder()
+                    .name("Laptop")
+                    .parentCategory(Computers).build();
+            categoryRepository.save(Laptop);
 
-        Category Laptop=Category.builder()
-                .name("Laptop")
-                .parentCategory(Computers).build();
-        categoryRepository.save(Laptop);
+            /* *********WomensFashion************/
 
-        /* *********WomensFashion************/
+            Category WomensFashion=new Category("WomensFashion");
+            categoryRepository.save(WomensFashion);
 
-        Category WomensFashion=new Category("WomensFashion");
-        categoryRepository.save(WomensFashion);
+            Category Clothing=Category.builder()
+                    .name("ClothingW")
+                    .parentCategory(WomensFashion).build();
+            categoryRepository.save(Clothing);
 
-        Category Clothing=Category.builder()
-                .name("ClothingW")
-                .parentCategory(WomensFashion).build();
-        categoryRepository.save(Clothing);
+            Category Shoes=Category.builder()
+                    .name("ShoesW")
+                    .parentCategory(WomensFashion).build();
+            categoryRepository.save(Shoes);
 
-        Category Shoes=Category.builder()
-                .name("ShoesW")
-                .parentCategory(WomensFashion).build();
-        categoryRepository.save(Shoes);
+            Category Jewelry=Category.builder()
+                    .name("JewelryW")
+                    .parentCategory(WomensFashion).build();
+            categoryRepository.save(Jewelry);
 
-        Category Jewelry=Category.builder()
-                .name("JewelryW")
-                .parentCategory(WomensFashion).build();
-        categoryRepository.save(Jewelry);
+            Category Watches=Category.builder()
+                    .name("WatchesW")
+                    .parentCategory(WomensFashion).build();
+            categoryRepository.save(Watches);
 
-        Category Watches=Category.builder()
-                .name("WatchesW")
-                .parentCategory(WomensFashion).build();
-        categoryRepository.save(Watches);
+            /* *********MensFashion************/
 
-        /* *********MensFashion************/
+            Category MensFashion=new Category("MensFashion");
+            categoryRepository.save(MensFashion);
 
-        Category MensFashion=new Category("MensFashion");
-        categoryRepository.save(MensFashion);
+            Category ClothingM=Category.builder()
+                    .name("ClothingM")
+                    .parentCategory(MensFashion).build();
+            categoryRepository.save(ClothingM);
 
-        Category ClothingM=Category.builder()
-                .name("ClothingM")
-                .parentCategory(MensFashion).build();
-        categoryRepository.save(ClothingM);
+            Category ShoesM=Category.builder()
+                    .name("ShoesM")
+                    .parentCategory(MensFashion).build();
+            categoryRepository.save(ShoesM);
 
-        Category ShoesM=Category.builder()
-                .name("ShoesM")
-                .parentCategory(MensFashion).build();
-        categoryRepository.save(ShoesM);
+            Category AccessoriesM=Category.builder()
+                    .name("AccessoriesM")
+                    .parentCategory(MensFashion).build();
+            categoryRepository.save(AccessoriesM);
 
-        Category AccessoriesM=Category.builder()
-                .name("AccessoriesM")
-                .parentCategory(MensFashion).build();
-        categoryRepository.save(AccessoriesM);
+            Category WatchesM=Category.builder()
+                    .name("WatchesM")
+                    .parentCategory(MensFashion).build();
+            categoryRepository.save(WatchesM);
 
-        Category WatchesM=Category.builder()
-                .name("WatchesM")
-                .parentCategory(MensFashion).build();
-        categoryRepository.save(WatchesM);
+            /* *********GirlsFashion************/
+            Category GirlsFashion=new Category("GirlsFashion");
+            categoryRepository.save(GirlsFashion);
 
-        /* *********GirlsFashion************/
-        Category GirlsFashion=new Category("GirlsFashion");
-        categoryRepository.save(GirlsFashion);
+            Category ClothingG=Category.builder()
+                    .name("ClothingG")
+                    .parentCategory(GirlsFashion).build();
+            categoryRepository.save(ClothingG);
 
-        Category ClothingG=Category.builder()
-                .name("ClothingG")
-                .parentCategory(GirlsFashion).build();
-        categoryRepository.save(ClothingG);
+            Category ShoesG=Category.builder()
+                    .name("ShoesG")
+                    .parentCategory(GirlsFashion).build();
+            categoryRepository.save(ShoesG);
 
-        Category ShoesG=Category.builder()
-                .name("ShoesG")
-                .parentCategory(GirlsFashion).build();
-        categoryRepository.save(ShoesG);
+            Category JewelryG=Category.builder()
+                    .name("JewelryG")
+                    .parentCategory(GirlsFashion).build();
+            categoryRepository.save(JewelryG);
 
-        Category JewelryG=Category.builder()
-                .name("JewelryG")
-                .parentCategory(GirlsFashion).build();
-        categoryRepository.save(JewelryG);
+            Category WatchesG=Category.builder()
+                    .name("WatchesG")
+                    .parentCategory(GirlsFashion).build();
+            categoryRepository.save(WatchesG);
 
-        Category WatchesG=Category.builder()
-                .name("WatchesG")
-                .parentCategory(GirlsFashion).build();
-        categoryRepository.save(WatchesG);
+            /* *********BoysFashion************/
+            Category BoysFashion=new Category("BoysFashion");
+            categoryRepository.save(BoysFashion);
 
-        /* *********BoysFashion************/
-        Category BoysFashion=new Category("BoysFashion");
-        categoryRepository.save(BoysFashion);
+            Category ClothingB=Category.builder()
+                    .name("ClothingB")
+                    .parentCategory(BoysFashion).build();
+            categoryRepository.save(ClothingB);
 
-        Category ClothingB=Category.builder()
-                .name("ClothingB")
-                .parentCategory(BoysFashion).build();
-        categoryRepository.save(ClothingB);
+            Category ShoesB=Category.builder()
+                    .name("ShoesB")
+                    .parentCategory(BoysFashion).build();
+            categoryRepository.save(ShoesB);
 
-        Category ShoesB=Category.builder()
-                .name("ShoesB")
-                .parentCategory(BoysFashion).build();
-        categoryRepository.save(ShoesB);
+            Category AccessoriesB=Category.builder()
+                    .name("AccessoriesB")
+                    .parentCategory(BoysFashion).build();
+            categoryRepository.save(AccessoriesB);
 
-        Category AccessoriesB=Category.builder()
-                .name("AccessoriesB")
-                .parentCategory(BoysFashion).build();
-        categoryRepository.save(AccessoriesB);
+            Category WatchesB=Category.builder()
+                    .name("WatchesB")
+                    .parentCategory(BoysFashion).build();
+            categoryRepository.save(WatchesB);
+            /* *********SportsandOutdoors************/
+            Category SportsandOutdoors=new Category("SportsandOutdoors");
+            categoryRepository.save(SportsandOutdoors);
 
-        Category WatchesB=Category.builder()
-                .name("WatchesB")
-                .parentCategory(BoysFashion).build();
-        categoryRepository.save(WatchesB);
-        /* *********SportsandOutdoors************/
-        Category SportsandOutdoors=new Category("SportsandOutdoors");
-        categoryRepository.save(SportsandOutdoors);
+            Category SportsAndOutdoors=Category.builder()
+                    .name("SportsAndOutdoors")
+                    .parentCategory(SportsandOutdoors).build();
+            categoryRepository.save(SportsAndOutdoors);
 
-        Category SportsAndOutdoors=Category.builder()
-                .name("SportsAndOutdoors")
-                .parentCategory(SportsandOutdoors).build();
-        categoryRepository.save(SportsAndOutdoors);
-
-        Category SportsFitness=Category.builder()
-                .name("SportsFitness")
-                .parentCategory(SportsandOutdoors).build();
-        categoryRepository.save(SportsFitness);
+            Category SportsFitness=Category.builder()
+                    .name("SportsFitness")
+                    .parentCategory(SportsandOutdoors).build();
+            categoryRepository.save(SportsFitness);
+        }
 
 
-        CustomCategory customCategory=new CustomCategory();
-        customCategory.setName("customCategory");
-        customCategoryRepository.save(customCategory);
 
 
      /*   Product dell=new Product();

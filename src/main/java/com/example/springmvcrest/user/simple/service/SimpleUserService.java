@@ -61,7 +61,7 @@ public class SimpleUserService {
         SimpleUser user=simpleUserRepository.findById(simpleUserDto.getId())
                 .orElseThrow(MultipleStoreException::new);
         Set<Category> collect = simpleUserDto.getInterest().stream()
-                .map(categoryService::findCategoryById)
+                .map(categoryService::findCategoryByName)
                 .collect(Collectors.toSet());
         user.setInterestCenter(collect);
         simpleUserRepository.save(user);

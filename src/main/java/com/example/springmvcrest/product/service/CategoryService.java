@@ -24,8 +24,8 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
-    public Category findCategoryById(Long id){
-        return categoryRepository.findById(id)
+    public Category findCategoryByName(String name){
+        return categoryRepository.findByName(name)
                 .orElse(null);
     }
 }
