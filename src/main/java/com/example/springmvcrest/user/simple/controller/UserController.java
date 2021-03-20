@@ -2,25 +2,19 @@ package com.example.springmvcrest.user.simple.controller;
 
 
 import com.example.springmvcrest.product.api.dto.CategoryDto;
-import com.example.springmvcrest.product.api.dto.ProductDTO;
 import com.example.springmvcrest.product.service.ProductSearchService;
 import com.example.springmvcrest.user.api.dto.UserDto;
 import com.example.springmvcrest.user.api.dto.UserRegestrationDto;
-import com.example.springmvcrest.user.simple.api.SimpleUserDto;
+import com.example.springmvcrest.user.simple.api.dto.SimpleUserDto;
 import com.example.springmvcrest.user.simple.domain.SimpleUser;
 import com.example.springmvcrest.user.simple.service.SimpleUserService;
 import com.example.springmvcrest.utils.Response;
 import com.example.springmvcrest.utils.Results;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.IOUtils;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
 
 @RestController

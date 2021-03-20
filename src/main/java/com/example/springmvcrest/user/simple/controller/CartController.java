@@ -1,5 +1,6 @@
 package com.example.springmvcrest.user.simple.controller;
 
+import com.example.springmvcrest.user.simple.api.dto.CartDto;
 import com.example.springmvcrest.user.simple.service.CartService;
 import com.example.springmvcrest.utils.Response;
 import lombok.AllArgsConstructor;
@@ -27,5 +28,11 @@ public class CartController {
     public Response<String> deleteProductFromCart(@RequestParam(name = "userId") Long userId,
                                                   @RequestParam(name = "variantId") Long variantId) {
         return  cartService.deleteProductCart(userId,variantId);
+    }
+
+    @GetMapping("/{userId}")
+    @ResponseStatus(HttpStatus.OK)
+    public CartDto deleteProductFromCart(@PathVariable Long userId) {
+        return  cartService.getUserCart(userId);
     }
 }

@@ -9,7 +9,7 @@ import com.example.springmvcrest.user.api.dto.UserDto;
 import com.example.springmvcrest.user.api.dto.UserRegestrationDto;
 import com.example.springmvcrest.user.api.mapper.UserMapper;
 import com.example.springmvcrest.user.api.mapper.UserRegestrationMapper;
-import com.example.springmvcrest.user.simple.api.SimpleUserDto;
+import com.example.springmvcrest.user.simple.api.dto.SimpleUserDto;
 import com.example.springmvcrest.user.simple.domain.SimpleUser;
 import com.example.springmvcrest.user.simple.repository.SimpleUserRepository;
 import com.example.springmvcrest.utils.Response;
