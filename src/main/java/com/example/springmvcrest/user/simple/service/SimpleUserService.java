@@ -12,6 +12,7 @@ import com.example.springmvcrest.user.api.mapper.UserRegestrationMapper;
 import com.example.springmvcrest.user.simple.api.dto.SimpleUserDto;
 import com.example.springmvcrest.user.simple.domain.SimpleUser;
 import com.example.springmvcrest.user.simple.repository.SimpleUserRepository;
+import com.example.springmvcrest.utils.Errorhandler.SimpleUserException;
 import com.example.springmvcrest.utils.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -45,10 +46,9 @@ public class SimpleUserService {
 
 
 
-    SimpleUser findById(Long id)
-    {
+    SimpleUser findById(Long id) {
         return simpleUserRepository.findById(id)
-                .orElseThrow(MultipleStoreException::new);
+                .orElseThrow(() -> new SimpleUserException("error.user.notfound"));
     }
 
     public UserRegestrationDto saveUser(UserDto userDto) {
@@ -66,8 +66,7 @@ public class SimpleUserService {
 
 
     public Response<String> setUserInterestCenter(SimpleUserDto simpleUserDto){
-        SimpleUser user=simpleUserRepository.findById(simpleUserDto.getId())
-                .orElseThrow(MultipleStoreException::new);
+        SimpleUser user=findById(simpleUserDto.getId());
         Set<Category> collect = simpleUserDto.getInterest().stream()
                 .map(categoryService::findCategoryByName)
                 .collect(Collectors.toSet());
@@ -77,8 +76,7 @@ public class SimpleUserService {
     }
 
     public List<CategoryDto> getUserInterestCenter(Long id){
-        SimpleUser user=simpleUserRepository.findById(id)
-                .orElseThrow(MultipleStoreException::new);
+        SimpleUser user=findById(id);
         return user.getInterestCenter()
                 .stream()
                 .map(categoryMapper::toDto)

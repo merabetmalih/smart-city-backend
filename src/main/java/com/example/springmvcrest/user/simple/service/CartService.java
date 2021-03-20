@@ -1,9 +1,6 @@
 package com.example.springmvcrest.user.simple.service;
 
-import com.example.springmvcrest.product.domain.ProductVariant;
-import com.example.springmvcrest.product.repository.ProductVariantRepository;
 import com.example.springmvcrest.product.service.ProductVariantService;
-import com.example.springmvcrest.store.service.exception.CustomCategoryNotFoundExeption;
 import com.example.springmvcrest.user.simple.api.dto.CartDto;
 import com.example.springmvcrest.user.simple.api.mapper.CartMapper;
 import com.example.springmvcrest.user.simple.domain.Cart;
@@ -12,13 +9,14 @@ import com.example.springmvcrest.user.simple.domain.CartProductVariantId;
 import com.example.springmvcrest.user.simple.domain.SimpleUser;
 import com.example.springmvcrest.user.simple.repository.CartProductVariantRepository;
 import com.example.springmvcrest.user.simple.repository.CartRepository;
+import com.example.springmvcrest.utils.Errorhandler.CartException;
 import com.example.springmvcrest.utils.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.HashSet;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @AllArgsConstructor
@@ -29,6 +27,7 @@ public class CartService {
     private final CartProductVariantRepository cartProductVariantRepository;
     private final CartMapper cartMapper;
 
+    @Transactional
     public Response<String> addProductCart(Long userId, Long variantId, Integer quantity){
         Optional.of(userId)
                 .map(simpleUserService::findById)
@@ -38,13 +37,13 @@ public class CartService {
         return new Response<>("created.");
     }
 
+    @Transactional
     public Response<String> deleteProductCart(Long userId, Long variantId){
         CartProductVariant cartProductVariant = Optional.of(userId)
                 .map(simpleUserService::findById)
                 .map(this::getCartId)
                 .map(cartId -> getCartProductVariant(cartId, variantId))
-                .orElseThrow(CustomCategoryNotFoundExeption::new);
-
+                .get();
         cartProductVariantRepository.delete(cartProductVariant);
         return new Response<>("deleted.");
     }
@@ -54,7 +53,7 @@ public class CartService {
                 .map(simpleUserService::findById)
                 .map(SimpleUser::getCart)
                 .map(cartMapper::toDto)
-                .orElseThrow(CustomCategoryNotFoundExeption::new);
+                .orElseThrow(() -> new CartException("error.cart.userCart"));
     }
 
     private CartProductVariant getCartProductVariant(Long cartId,Long variantId){
@@ -63,14 +62,14 @@ public class CartService {
                         .cartId(cartId)
                         .cartProductVariantId(variantId)
                         .build()
-        ).orElse(null);
+        ).orElseThrow(() -> new CartException("error.cartProductVariant.notfound"));
     }
 
     private Long getCartId(SimpleUser user){
         return Optional.of(user)
                 .filter(user1 ->user1.getCart()!=null)
                 .map(user1 -> user1.getCart().getId())
-                .orElse(null);
+                .get();
     }
 
     private Cart setUserCart(SimpleUser user){
