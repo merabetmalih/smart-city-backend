@@ -1,11 +1,15 @@
 package com.example.springmvcrest.product.domain;
 
 
+import com.example.springmvcrest.user.simple.domain.Cart;
+import com.example.springmvcrest.user.simple.domain.CartProductVariant;
 import lombok.*;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @EqualsAndHashCode(exclude = {"product"})
@@ -23,6 +27,11 @@ public class ProductVariant {
 
     @OneToMany(mappedBy = "productVariant",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     List<ProductVariantAttributeValue> productVariantAttributeValuesProductVariant=new ArrayList<>();
+
+
+    @OneToMany(mappedBy = "cartProductVariant",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
+    Set<CartProductVariant> cartProductVariants=new HashSet<>();
+
 
     private Double price;
     private Integer unit;

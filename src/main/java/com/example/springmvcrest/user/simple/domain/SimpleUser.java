@@ -18,6 +18,9 @@ import java.util.stream.Collectors;
 @Entity
 public class SimpleUser extends User {
 
+    @OneToOne(cascade = CascadeType.ALL , mappedBy = "simpleUser")
+    private Cart cart;
+
     @ManyToMany
     @JoinTable(name = "simple_users_category",
             joinColumns = @JoinColumn(name = "category_id"),

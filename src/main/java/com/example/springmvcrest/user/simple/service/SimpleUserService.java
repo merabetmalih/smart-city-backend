@@ -38,9 +38,17 @@ public class SimpleUserService {
         return simpleUserRepository.findAll();
     }
 
-    public Boolean isPresentSimpleUserByEmail(String email)
+    private Boolean isPresentSimpleUserByEmail(String email)
     {
         return simpleUserRepository.findByEmail(email).isPresent();
+    }
+
+
+
+    SimpleUser findById(Long id)
+    {
+        return simpleUserRepository.findById(id)
+                .orElseThrow(MultipleStoreException::new);
     }
 
     public UserRegestrationDto saveUser(UserDto userDto) {
