@@ -9,6 +9,7 @@ import java.util.Set;
 
 @Data
 public class ProductVariantDto {
+    private Long id;
     List<ProductVariantAttributeValueDto> productVariantAttributeValuesProductVariant=new ArrayList<>();
     private Double price;
     private Integer unit;

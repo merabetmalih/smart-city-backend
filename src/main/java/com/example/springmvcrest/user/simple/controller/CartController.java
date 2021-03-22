@@ -32,7 +32,7 @@ public class CartController {
 
     @GetMapping("/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    public CartDto deleteProductFromCart(@PathVariable Long userId) {
+    public CartDto getUserCart(@PathVariable Long userId) {
         return  cartService.getUserCart(userId);
     }
 }
