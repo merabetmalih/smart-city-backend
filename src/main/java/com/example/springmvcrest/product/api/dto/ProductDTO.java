@@ -1,12 +1,7 @@
 package com.example.springmvcrest.product.api.dto;
 
 
-import com.example.springmvcrest.product.domain.Attribute;
-import com.example.springmvcrest.product.domain.ProductVariant;
-import com.example.springmvcrest.product.domain.Tags;
-import com.example.springmvcrest.store.api.dto.CustomCategoryDto;
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.HashSet;

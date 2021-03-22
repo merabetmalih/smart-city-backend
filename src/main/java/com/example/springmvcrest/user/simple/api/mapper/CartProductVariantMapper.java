@@ -15,11 +15,16 @@ public interface CartProductVariantMapper {
 
     @Mapping(source = "cartProductVariant.cartProductVariant", target = "productVariant")
     @Mapping(source = "cartProductVariant.cartProductVariant.product", target = "productImage", qualifiedByName = "getMainProductImage")
+    @Mapping(source = "cartProductVariant.cartProductVariant.product", target = "productName", qualifiedByName = "getMainProductName")
     CartProductVariantDto toDto(CartProductVariant cartProductVariant);
     @Named("getMainProductImage")
     default ImagesDTO getMainProductImage(Product product) {
         return  new ImagesDTO(
                 product.getImages().get(0).getImage());
+    }
+    @Named("getMainProductName")
+    default String getMainProductName(Product product) {
+        return  product.getName();
     }
 
     @Mapping(source = "cartProductVariantDto.productVariant", target = "cartProductVariant")

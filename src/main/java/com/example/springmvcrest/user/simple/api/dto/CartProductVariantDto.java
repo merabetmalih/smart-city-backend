@@ -11,4 +11,5 @@ public class CartProductVariantDto {
     private ProductVariantDto productVariant;
     private Integer unit;
     private ImagesDTO productImage;
+    private String productName;
 }

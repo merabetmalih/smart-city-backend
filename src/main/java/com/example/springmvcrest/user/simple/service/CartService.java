@@ -1,5 +1,6 @@
 package com.example.springmvcrest.user.simple.service;
 
+import com.example.springmvcrest.product.domain.ProductVariant;
 import com.example.springmvcrest.product.service.ProductVariantService;
 import com.example.springmvcrest.user.simple.api.dto.CartDto;
 import com.example.springmvcrest.user.simple.api.mapper.CartMapper;
@@ -26,6 +27,7 @@ public class CartService {
     private final CartRepository cartRepository;
     private final CartProductVariantRepository cartProductVariantRepository;
     private final CartMapper cartMapper;
+
 
     @Transactional
     public Response<String> addProductCart(Long userId, Long variantId, Integer quantity){
@@ -88,6 +90,7 @@ public class CartService {
     }
 
     private Cart createCart(Cart cart,Long variantId,Integer quantity){
+
         CartProductVariant cartProductVariant=CartProductVariant.builder()
                 .id(
                         CartProductVariantId.builder()
@@ -96,10 +99,20 @@ public class CartService {
                                 .build()
                 )
                 .cart(cart)
-                .cartProductVariant(productVariantService.findById(variantId))
+                .cartProductVariant(
+                        checkQuantity(
+                                productVariantService.findById(variantId),
+                                quantity)
+                        )
                 .unit(quantity)
                 .build();
         cart.getCartProductVariants().add(cartProductVariantRepository.save(cartProductVariant));
         return cart;
+    }
+
+    private ProductVariant checkQuantity(ProductVariant productVariant,Integer quantity){
+        return Optional.of(productVariant)
+                .filter(variant -> quantity <= variant.getUnit())
+                .orElseThrow(() -> new CartException("error.cart.quantity not available"));
     }
 }
