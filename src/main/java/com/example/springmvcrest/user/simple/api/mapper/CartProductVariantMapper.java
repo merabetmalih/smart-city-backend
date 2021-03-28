@@ -16,16 +16,21 @@ public interface CartProductVariantMapper {
     @Mapping(source = "cartProductVariant.cartProductVariant", target = "productVariant")
     @Mapping(source = "cartProductVariant.cartProductVariant.product", target = "productImage", qualifiedByName = "getMainProductImage")
     @Mapping(source = "cartProductVariant.cartProductVariant.product", target = "productName", qualifiedByName = "getMainProductName")
+    @Mapping(source = "cartProductVariant.cartProductVariant.product", target = "storeName", qualifiedByName = "getStoreName")
     CartProductVariantDto toDto(CartProductVariant cartProductVariant);
+
     @Named("getMainProductImage")
-    default ImagesDTO getMainProductImage(Product product) {
-        return  new ImagesDTO(
-                product.getImages().get(0).getImage());
-    }
+    default ImagesDTO getMainProductImage(Product product) { return  new ImagesDTO(product.getImages().get(0).getImage()); }
     @Named("getMainProductName")
     default String getMainProductName(Product product) {
         return  product.getName();
     }
+    @Named("getStoreName")
+    default String getStoreName(Product product) {
+        return product.getCustomCategory().getStore().getName();
+    }
+
+
 
     @Mapping(source = "cartProductVariantDto.productVariant", target = "cartProductVariant")
     CartProductVariant toModel(CartProductVariantDto cartProductVariantDto);

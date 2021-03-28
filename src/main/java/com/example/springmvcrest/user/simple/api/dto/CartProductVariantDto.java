@@ -12,4 +12,5 @@ public class CartProductVariantDto {
     private Integer unit;
     private ImagesDTO productImage;
     private String productName;
+    private String storeName;
 }
