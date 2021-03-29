@@ -1,6 +1,7 @@
 package com.example.springmvcrest.product.domain;
 
 
+import com.example.springmvcrest.order.domain.OrderProductVariant;
 import com.example.springmvcrest.user.simple.domain.Cart;
 import com.example.springmvcrest.user.simple.domain.CartProductVariant;
 import lombok.*;
@@ -32,6 +33,8 @@ public class ProductVariant {
     @OneToMany(mappedBy = "cartProductVariant",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     Set<CartProductVariant> cartProductVariants=new HashSet<>();
 
+    @OneToMany(mappedBy = "orderProductVariant",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
+    Set<OrderProductVariant> orderProductVariants=new HashSet<>();
 
     private Double price;
     private Integer unit;

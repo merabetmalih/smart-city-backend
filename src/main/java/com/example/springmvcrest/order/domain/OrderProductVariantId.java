@@ -1,4 +1,4 @@
-package com.example.springmvcrest.user.simple.domain;
+package com.example.springmvcrest.order.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -13,7 +13,7 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 @Embeddable
-public class CartProductVariantId implements Serializable {
-    private Long cartId;
-    private Long cartProductVariantId;
+public class OrderProductVariantId implements Serializable {
+    private Long orderId;
+    private Long orderProductVariantId;
 }

@@ -43,7 +43,6 @@ public class Product {
 
 
     @ManyToOne
-
     private CustomCategory customCategory;
 
     @OneToMany
