@@ -90,7 +90,6 @@ public class CartService {
     }
 
     private Cart createCart(Cart cart,Long variantId,Integer quantity){
-
         CartProductVariant cartProductVariant=CartProductVariant.builder()
                 .id(
                         CartProductVariantId.builder()
@@ -114,5 +113,10 @@ public class CartService {
         return Optional.of(productVariant)
                 .filter(variant -> quantity <= variant.getUnit())
                 .orElseThrow(() -> new CartException("error.cart.quantity not available"));
+    }
+
+    public Cart findCartByUserId(Long id){
+        return cartRepository.findCartBySimpleUser_Id(id)
+                .orElseThrow(() -> new CartException("error.cart.notfound"));
     }
 }

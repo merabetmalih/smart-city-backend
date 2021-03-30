@@ -1,11 +1,9 @@
 package com.example.springmvcrest.store.domain;
 
+import com.example.springmvcrest.order.domain.Order;
 import com.example.springmvcrest.user.provider.domain.Provider;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 import javax.persistence.*;
@@ -15,6 +13,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = {"provider"})
 @Builder
 @Entity
 public class Store {
@@ -47,4 +46,7 @@ public class Store {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
     @IndexedEmbedded
     private Set<CustomCategory> customCategories = new HashSet<>();
+
+    @OneToMany(mappedBy = "store",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
+    private Set<Order> orders = new HashSet<>();
 }

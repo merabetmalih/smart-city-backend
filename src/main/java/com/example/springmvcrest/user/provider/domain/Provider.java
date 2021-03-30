@@ -15,12 +15,10 @@ import java.util.stream.Collectors;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = {"store"}, callSuper = false)
 @Builder
 @Entity
 public class Provider extends User {
-
-    @OneToMany(mappedBy = "provider",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
-    private Set<Order> orders = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.ALL , mappedBy = "provider")
     private Store store;

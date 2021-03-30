@@ -46,7 +46,7 @@ public class SimpleUserService {
 
 
 
-    SimpleUser findById(Long id) {
+    public SimpleUser findById(Long id) {
         return simpleUserRepository.findById(id)
                 .orElseThrow(() -> new SimpleUserException("error.user.notfound"));
     }
