@@ -1,5 +1,7 @@
 package com.example.springmvcrest.order.service;
 
+import com.example.springmvcrest.order.api.dto.OrderDto;
+import com.example.springmvcrest.order.api.mapper.OrderMapper;
 import com.example.springmvcrest.order.domain.Order;
 import com.example.springmvcrest.order.domain.OrderProductVariant;
 import com.example.springmvcrest.order.domain.OrderProductVariantId;
@@ -22,10 +24,18 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class OrderService {
-    OrderRepository orderRepository;
+   OrderRepository orderRepository;
     OrderProductVariantRepository orderProductVariantRepository;
     CartService cartService;
     SimpleUserService simpleUserService;
+    OrderMapper orderMapper;
+
+
+    public List<OrderDto> getOrderByProviderId(Long id){
+        return orderRepository.findByStore_Provider_Id(id).stream()
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList());
+    }
 
     @Transactional
     public Response<String> createOrder(Long userId){
@@ -47,7 +57,7 @@ public class OrderService {
                 .map(variant -> initOrderProductVariant(order, variant))
                 .map(orderProductVariantRepository::save)
                 .collect(Collectors.toSet());
-        order.setCartProductVariants(orderProductVariants);
+        order.setOrderProductVariants(orderProductVariants);
         return order;
     }
 
@@ -66,11 +76,13 @@ public class OrderService {
         order.setCreateAt(LocalDateTime.now());
         return order;
     }
+
     private Order setStoreOrder(Store store){
         return Order.builder()
                 .store(store)
                 .build();
     }
+
     private Order setOrderUser(Order order, Long userId){
          order.setUser(simpleUserService.findById(userId));
          return order;
