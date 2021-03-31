@@ -31,6 +31,12 @@ public class OrderService {
     OrderMapper orderMapper;
 
 
+    public List<OrderDto> getOrderByUserId(Long id){
+        return orderRepository.findByUser_Id(id).stream()
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public List<OrderDto> getOrderByProviderId(Long id){
         return orderRepository.findByStore_Provider_Id(id).stream()
                 .map(orderMapper::toDto)
