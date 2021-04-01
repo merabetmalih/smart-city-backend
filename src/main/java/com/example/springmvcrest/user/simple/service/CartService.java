@@ -119,4 +119,9 @@ public class CartService {
         return cartRepository.findCartBySimpleUser_Id(id)
                 .orElseThrow(() -> new CartException("error.cart.notfound"));
     }
+
+    @Transactional
+    public void deleteCart(Cart cart){
+        cartRepository.delete(cart);
+    }
 }

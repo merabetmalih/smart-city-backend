@@ -45,7 +45,8 @@ public class OrderService {
 
     @Transactional
     public Response<String> createOrder(Long userId){
-        Map<Store, List<CartProductVariant>> cartByProvider = getCartByProvider(cartService.findCartByUserId(userId));
+        Cart cart=cartService.findCartByUserId(userId);
+        Map<Store, List<CartProductVariant>> cartByProvider = getCartByProvider(cart);
         List<Order> orders = cartByProvider.keySet()
                 .stream()
                 .map(this::setStoreOrder)
@@ -55,6 +56,7 @@ public class OrderService {
                 .map(order -> setOrderProductVariantByStore(order, cartByProvider.get(order.getStore())))
                 .map(orderRepository::save)
                 .collect(Collectors.toList());
+        cartService.deleteCart(cart);
         return new Response<>("created.");
     }
 

@@ -25,7 +25,7 @@ public class OrderController {
          return orderService.createOrder(userId);
     }
 
-    @GetMapping("current-store/{id}")
+    @GetMapping("current-provider/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Results<OrderDto> getOrderByProviderId(@PathVariable("id") long id ) {
         return new Results<>(orderService.getOrderByProviderId(id));
