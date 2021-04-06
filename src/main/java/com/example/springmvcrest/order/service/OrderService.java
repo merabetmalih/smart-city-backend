@@ -1,5 +1,7 @@
 package com.example.springmvcrest.order.service;
 
+import com.example.springmvcrest.notification.domain.Notification;
+import com.example.springmvcrest.notification.service.NotificationService;
 import com.example.springmvcrest.order.api.dto.OrderDto;
 import com.example.springmvcrest.order.api.mapper.OrderMapper;
 import com.example.springmvcrest.order.domain.Order;
@@ -24,11 +26,12 @@ import java.util.stream.Collectors;
 @Service
 @AllArgsConstructor
 public class OrderService {
-   OrderRepository orderRepository;
-    OrderProductVariantRepository orderProductVariantRepository;
-    CartService cartService;
-    SimpleUserService simpleUserService;
-    OrderMapper orderMapper;
+    private final OrderRepository orderRepository;
+    private final OrderProductVariantRepository orderProductVariantRepository;
+    private final CartService cartService;
+    private final SimpleUserService simpleUserService;
+    private final OrderMapper orderMapper;
+    private final NotificationService notificationService;
 
 
     public List<OrderDto> getOrderByUserId(Long id){
@@ -55,9 +58,21 @@ public class OrderService {
                 .map(orderRepository::save)
                 .map(order -> setOrderProductVariantByStore(order, cartByProvider.get(order.getStore())))
                 .map(orderRepository::save)
+                .map(this::sendStoreNotification)
                 .collect(Collectors.toList());
         cartService.deleteCart(cart);
         return new Response<>("created.");
+    }
+
+    private Order sendStoreNotification(Order order){
+        notificationService.sendNotificationWithoutData(
+                Notification.builder()
+                        .title("New order")
+                        .message("New order arrived, check it!")
+                        .topic(order.getStore().getProvider().getEmail().replace("@",""))
+                        .build()
+        );
+        return order;
     }
 
     private Order setOrderProductVariantByStore(Order order, List<CartProductVariant> cartProductVariants){
