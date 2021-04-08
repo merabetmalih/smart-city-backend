@@ -65,7 +65,7 @@ public class OrderService {
     }
 
     private Order sendStoreNotification(Order order){
-        notificationService.sendNotificationWithoutData(
+        notificationService.sendNotification(
                 Notification.builder()
                         .title("New order")
                         .message("New order arrived, check it!")

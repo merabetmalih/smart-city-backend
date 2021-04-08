@@ -17,7 +17,7 @@ public class NotificationController {
     @PostMapping("/topic")
     @ResponseStatus(value = HttpStatus.OK)
     public Response<String> sendNotification(@RequestBody Notification notification) {
-        notificationService.sendNotificationWithoutData(notification);
+        notificationService.sendNotification(notification);
         return new Response<>("Notification has been sent.");
     }
 
