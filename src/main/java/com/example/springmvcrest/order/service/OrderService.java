@@ -14,12 +14,20 @@ import com.example.springmvcrest.user.simple.domain.Cart;
 import com.example.springmvcrest.user.simple.domain.CartProductVariant;
 import com.example.springmvcrest.user.simple.service.CartService;
 import com.example.springmvcrest.user.simple.service.SimpleUserService;
+import com.example.springmvcrest.utils.DateUtil;
+import com.example.springmvcrest.utils.Errorhandler.CartException;
+import com.example.springmvcrest.utils.Errorhandler.DateException;
 import com.example.springmvcrest.utils.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoField;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -45,6 +53,23 @@ public class OrderService {
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
+
+    public List<OrderDto> getTodayOrdersByProviderId(Long id){
+        LocalDateTime today = LocalDateTime.now();
+
+        LocalDateTime startOfDate = today
+                .toLocalDate().atTime(LocalTime.MIDNIGHT);
+
+        LocalDateTime endOfDate = today
+                .toLocalDate().atTime(LocalTime.MAX);
+
+        return orderRepository.findByStore_Provider_IdAndCreateAtBetween(id,startOfDate,endOfDate)
+                .stream()
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+
 
     @Transactional
     public Response<String> createOrder(Long userId){

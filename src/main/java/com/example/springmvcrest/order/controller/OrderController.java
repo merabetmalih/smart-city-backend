@@ -25,12 +25,19 @@ public class OrderController {
          return orderService.createOrder(userId);
     }
 
-    @GetMapping("current-provider/{id}")
+    @GetMapping("current-provider-orders/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Results<OrderDto> getOrderByProviderId(@PathVariable("id") long id ) {
         return new Results<>(orderService.getOrderByProviderId(id));
     }
 
+    @GetMapping("current-provider-today-orders/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public Results<OrderDto> getTodayOrdersByProviderId(@PathVariable("id") long id ) {
+        return new Results<>(orderService.getTodayOrdersByProviderId(id));
+    }
+
+   
     @GetMapping("current-user/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Results<OrderDto> getOrderByUserId(@PathVariable("id") long id ) {
