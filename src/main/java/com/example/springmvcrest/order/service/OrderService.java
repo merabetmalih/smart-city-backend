@@ -69,7 +69,17 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-
+    public List<OrderDto> filterOrdersByCreatAtByProviderId(Long id,String startDate, String endDate){
+        if(!DateUtil.isValidDate(startDate) || !DateUtil.isValidDate(endDate)){
+            throw new DateException("error.date.invalid");
+        }
+        LocalDateTime startOfDate = LocalDateTime.of(LocalDate.parse(startDate), LocalTime.MIDNIGHT);
+        LocalDateTime endOfDate = LocalDateTime.of(LocalDate.parse(endDate), LocalTime.MAX);
+        return orderRepository.findByStore_Provider_IdAndCreateAtBetween(id,startOfDate,endOfDate)
+                .stream()
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList());
+    }
 
     @Transactional
     public Response<String> createOrder(Long userId){

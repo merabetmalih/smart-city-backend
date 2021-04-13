@@ -37,7 +37,14 @@ public class OrderController {
         return new Results<>(orderService.getTodayOrdersByProviderId(id));
     }
 
-   
+    @GetMapping("current-provider-filter-orders")
+    @ResponseStatus(HttpStatus.OK)
+    public Results<OrderDto> filterOrdersByCreatAtByProviderId(@RequestParam(name = "id") Long id,
+                                                               @RequestParam(name = "startDate") String startDate,
+                                                               @RequestParam(name = "endDate")String endDate) {
+        return new Results<>(orderService.filterOrdersByCreatAtByProviderId(id,startDate,endDate));
+    }
+
     @GetMapping("current-user/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Results<OrderDto> getOrderByUserId(@PathVariable("id") long id ) {
