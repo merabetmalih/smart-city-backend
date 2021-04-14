@@ -34,4 +34,6 @@ public class Order {
     Set<OrderProductVariant> orderProductVariants=new HashSet<>();
 
     private LocalDateTime createAt;
+
+    private Double total;
 }

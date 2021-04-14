@@ -12,4 +12,5 @@ public class OrderDto {
     Set<OrderProductVariantDto> orderProductVariants=new HashSet<>();
     LocalDateTime createAt;
     Long userId;
+    Double total;
 }
