@@ -16,13 +16,13 @@ import com.example.springmvcrest.user.simple.service.CartService;
 import com.example.springmvcrest.user.simple.service.SimpleUserService;
 import com.example.springmvcrest.utils.DateUtil;
 import com.example.springmvcrest.utils.Errorhandler.DateException;
+import com.example.springmvcrest.utils.Errorhandler.OrderException;
 import com.example.springmvcrest.utils.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -46,35 +46,32 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public List<OrderDto> getOrderByProviderId(Long id,String createAtFilter,String totalFilter){
-        Sort sort=sortOrdersByPropertiesList(createAtFilter,totalFilter);
+    public List<OrderDto> getOrderByProviderId(Long id,String dateFilter,String amountFilter){
+        Sort sort= sortOrdersByProperties(dateFilter,amountFilter);
         return orderRepository.findByStore_Provider_Id(id,sort)
                 .stream()
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<OrderDto> getTodayOrdersByProviderId(Long id,String createAtFilter,String totalFilter){
-        Sort sort=sortOrdersByPropertiesList(createAtFilter,totalFilter);
+    public List<OrderDto> getTodayOrdersByProviderId(Long id,String dateFilter,String amountFilter){
+        Sort sort= sortOrdersByProperties(dateFilter,amountFilter);
         LocalDateTime today = LocalDateTime.now();
-
         LocalDateTime startOfDate = today
                 .toLocalDate().atTime(LocalTime.MIDNIGHT);
-
         LocalDateTime endOfDate = today
                 .toLocalDate().atTime(LocalTime.MAX);
-
         return orderRepository.findByStore_Provider_IdAndCreateAtBetween(id,startOfDate,endOfDate,sort)
                 .stream()
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<OrderDto> getBetweenOrdersByCreatAtByProviderId(Long id,String startDate, String endDate,String createAtFilter,String totalFilter){
+    public List<OrderDto> getBetweenOrdersByCreatAtByProviderId(Long id,String startDate, String endDate,String dateFilter,String amountFilter){
         if(!DateUtil.isValidDate(startDate) || !DateUtil.isValidDate(endDate)){
             throw new DateException("error.date.invalid");
         }
-        Sort sort=sortOrdersByPropertiesList(createAtFilter,totalFilter);
+        Sort sort= sortOrdersByProperties(dateFilter,amountFilter);
         LocalDateTime startOfDate = LocalDateTime.of(LocalDate.parse(startDate), LocalTime.MIDNIGHT);
         LocalDateTime endOfDate = LocalDateTime.of(LocalDate.parse(endDate), LocalTime.MAX);
         return orderRepository.findByStore_Provider_IdAndCreateAtBetween(id,startOfDate,endOfDate,sort)
@@ -83,23 +80,23 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    private Sort.Direction getSortDirection (String order){
-        if(order.equals("ASC")){
+    private Sort.Direction getSortDirection (String sortingOrder){
+        if(sortingOrder.equals("ASC")){
             return Sort.Direction.ASC;
         }
         else {
-            if (order.equals("DESC")){
+            if (sortingOrder.equals("DESC")){
                 return Sort.Direction.DESC;
             }else {
-                throw new DateException("error.sort.invalid");
+                throw new OrderException("error.sort.invalid");
             }
         }
     }
 
-    private Sort sortOrdersByPropertiesList(String createAtFilter,String totalFilter){
+    private Sort sortOrdersByProperties(String dateFilter, String amountFilter){
         return Sort.by(Arrays.asList(
-                new Sort.Order(getSortDirection(createAtFilter),"createAt"),
-                new Sort.Order(getSortDirection(totalFilter),"total"))
+                new Sort.Order(getSortDirection(dateFilter),"createAt"),
+                new Sort.Order(getSortDirection(amountFilter),"total"))
         );
     }
 

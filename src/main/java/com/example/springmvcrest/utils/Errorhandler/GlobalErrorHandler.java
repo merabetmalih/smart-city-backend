@@ -29,6 +29,16 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
         return returnErrorMessage(e.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({OrderException.class})
+    public ResponseEntity<Object> handleCartException(OrderException e) {
+        return returnErrorMessage(e.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler({PoliticsException.class})
+    public ResponseEntity<Object> handleCartException(PoliticsException e) {
+        return returnErrorMessage(e.getMessage(),HttpStatus.BAD_REQUEST);
+    }
+
     private ResponseEntity<Object> returnErrorMessage(String errorMessage,HttpStatus httpStatus){
         return new ResponseEntity<Object>(new GenericErrorResponse(errorMessage), new HttpHeaders(), httpStatus);
     }

@@ -29,18 +29,18 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     public Results<OrderDto> getOrderByProviderId(
             @RequestParam("id") long id,
-            @RequestParam(name = "createAt",defaultValue = "ASC",required = false) String createAtFilter,
-            @RequestParam(name = "total",defaultValue = "ASC",required = false) String totalFilter) {
-        return new Results<>(orderService.getOrderByProviderId(id,createAtFilter,totalFilter));
+            @RequestParam(name = "date",defaultValue = "DESC",required = false) String dateFilter,
+            @RequestParam(name = "amount",defaultValue = "ASC",required = false) String amountFilter) {
+        return new Results<>(orderService.getOrderByProviderId(id,dateFilter,amountFilter));
     }
 
     @GetMapping("current-provider-today-orders")
     @ResponseStatus(HttpStatus.OK)
     public Results<OrderDto> getTodayOrdersByProviderId(
             @RequestParam("id") long id,
-            @RequestParam(name = "createAt",defaultValue = "ASC",required = false) String createAtFilter,
-            @RequestParam(name = "total",defaultValue = "ASC",required = false) String totalFilter) {
-        return new Results<>(orderService.getTodayOrdersByProviderId(id,createAtFilter,totalFilter));
+            @RequestParam(name = "date",defaultValue = "DESC",required = false) String dateFilter,
+            @RequestParam(name = "amount",defaultValue = "ASC",required = false) String amountFilter) {
+        return new Results<>(orderService.getTodayOrdersByProviderId(id,dateFilter,amountFilter));
     }
 
     @GetMapping("current-provider-dates-orders")
@@ -49,9 +49,9 @@ public class OrderController {
             @RequestParam(name = "id") Long id,
             @RequestParam(name = "startDate") String startDate,
             @RequestParam(name = "endDate")String endDate,
-            @RequestParam(name = "createAt",defaultValue = "ASC",required = false) String createAtFilter,
-            @RequestParam(name = "total",defaultValue = "ASC",required = false) String totalFilter) {
-        return new Results<>(orderService.getBetweenOrdersByCreatAtByProviderId(id,startDate,endDate,createAtFilter,totalFilter));
+            @RequestParam(name = "date",defaultValue = "DESC",required = false) String dateFilter,
+            @RequestParam(name = "amount",defaultValue = "ASC",required = false) String amountFilter) {
+        return new Results<>(orderService.getBetweenOrdersByCreatAtByProviderId(id,startDate,endDate,dateFilter,amountFilter));
     }
 
     @GetMapping("current-user/{id}")
