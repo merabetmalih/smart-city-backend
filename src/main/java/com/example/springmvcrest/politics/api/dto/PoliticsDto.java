@@ -10,7 +10,7 @@ import java.util.Set;
 public class PoliticsDto {
     private Boolean delivery;
     private SelfPickUpOptions selfPickUpOption;
-    private Long duration;
+    private Long validDuration;
     private Integer tax;
     private Set<TaxRangeDto> taxRanges=new HashSet<>();
     private Long providerId;

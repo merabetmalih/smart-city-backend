@@ -1,5 +1,6 @@
 package com.example.springmvcrest.order.api.dto;
 
+import com.example.springmvcrest.order.domain.OrderType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -10,7 +11,10 @@ import java.util.Set;
 public class OrderDto {
     Long id;
     Set<OrderProductVariantDto> orderProductVariants=new HashSet<>();
-    LocalDateTime createAt;
     Long userId;
+    LocalDateTime createAt;
     Double total;
+    OrderType orderType;
+    Long validDuration;
+    AddressDto address;
 }

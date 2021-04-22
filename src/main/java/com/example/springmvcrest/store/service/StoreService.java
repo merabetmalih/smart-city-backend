@@ -7,6 +7,7 @@ import com.example.springmvcrest.store.repository.StoreRepository;
 import com.example.springmvcrest.store.service.exception.MultipleStoreException;
 import com.example.springmvcrest.store.service.exception.StoreNotFoundException;
 import lombok.AllArgsConstructor;
+import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -21,6 +22,12 @@ public class StoreService {
 
     public Store findStoreByProviderId(Long id){
         return storeRepository.findByProviderId(id)
+                .orElseThrow(StoreNotFoundException::new);
+    }
+
+    @Named("findStoreById")
+    public Store findStoreById(Long id){
+        return storeRepository.findById(id)
                 .orElseThrow(StoreNotFoundException::new);
     }
 

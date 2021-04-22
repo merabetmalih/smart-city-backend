@@ -2,6 +2,7 @@ package com.example.springmvcrest.order.service;
 
 import com.example.springmvcrest.notification.domain.Notification;
 import com.example.springmvcrest.notification.service.NotificationService;
+import com.example.springmvcrest.order.api.dto.OrderCreationDto;
 import com.example.springmvcrest.order.api.dto.OrderDto;
 import com.example.springmvcrest.order.api.mapper.OrderMapper;
 import com.example.springmvcrest.order.domain.Order;
@@ -28,6 +29,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.example.springmvcrest.order.domain.OrderType.DELIVERY;
 
 @Service
 @AllArgsConstructor
@@ -101,22 +104,49 @@ public class OrderService {
     }
 
     @Transactional
-    public Response<String> createOrder(Long userId){
-        Cart cart=cartService.findCartByUserId(userId);
-        Map<Store, List<CartProductVariant>> cartByProvider = getCartByProvider(cart);
-        List<Order> orders = cartByProvider.keySet()
-                .stream()
-                .map(this::setStoreOrder)
-                .map(order -> setOrderUser(order, userId))
-                .map(this::setCreatAt)
-                .map(orderRepository::save)
-                .map(order -> setOrderProductVariantByStore(order, cartByProvider.get(order.getStore())))
-                .map(orderRepository::save)
-                .map(this::sendStoreNotification)
+    public Response<String> createOrder(OrderCreationDto orderCreationDto){
+        List<CartProductVariant> cartProductVariants = orderCreationDto.getCartProductVariantIds().stream()
+                .map(cartService::findCartProductVariantById)
                 .collect(Collectors.toList());
-        cartService.deleteCart(cart);
+        Optional.of(orderCreationDto)
+                .map(orderMapper::toModel)
+                .map(this::setCreatAt)
+                .map(order->checkValidOrder(order,cartProductVariants))
+                .map(orderRepository::save)
+                .map(order -> setOrderProductVariantByStore(order, cartProductVariants))
+                .map(orderRepository::save)
+                .map(this::sendStoreNotification);
+
+        deleteCartProductVariant(cartProductVariants);
         return new Response<>("created.");
     }
+
+    private Order checkValidOrder(Order order,List<CartProductVariant> cartProductVariants){
+        if (cartProductVariants.isEmpty() || order.getOrderType()==null ){
+            throw new OrderException("error.order.invalid");
+        }
+        
+        if(order.getOrderType().equals(DELIVERY)){
+            if(!order.getStore().getPolitics().getDelivery()){
+                throw new OrderException("error.order.invalid");
+            }
+        }
+        return order;
+    }
+
+    private void deleteCartProductVariant(List<CartProductVariant> cartProductVariants){
+        cartProductVariants.stream()
+                .map(cartService::deleteCartProductVariant)
+                .collect(Collectors.toList());
+    }
+
+    private List<CartProductVariant>  getProductByStore(Order order){
+        return order.getUser().getCart().getCartProductVariants().stream()
+                .filter(cartProductVariant -> cartProductVariant.getCartProductVariant().getProduct().getCustomCategory().getStore().getId() == order.getStore().getId())
+                .collect(Collectors.toList());
+    }
+
+
 
     private Order sendStoreNotification(Order order){
         notificationService.sendNotification(
@@ -161,16 +191,6 @@ public class OrderService {
         return order;
     }
 
-    private Order setStoreOrder(Store store){
-        return Order.builder()
-                .store(store)
-                .build();
-    }
-
-    private Order setOrderUser(Order order, Long userId){
-         order.setUser(simpleUserService.findById(userId));
-         return order;
-    }
 
     private Map<Store,List<CartProductVariant>>getCartByProvider(Cart cart){
         Map<Store,List<CartProductVariant>> map=new HashMap<>();

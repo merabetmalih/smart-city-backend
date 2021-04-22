@@ -1,5 +1,6 @@
 package com.example.springmvcrest.order.controller;
 
+import com.example.springmvcrest.order.api.dto.OrderCreationDto;
 import com.example.springmvcrest.order.api.dto.OrderDto;
 import com.example.springmvcrest.order.service.OrderService;
 import com.example.springmvcrest.utils.Response;
@@ -19,13 +20,13 @@ public class OrderController {
     private final OrderService orderService;
 
 
-    @PostMapping("create/{id}")
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK)
-    public Response<String> addProductToCart(@PathVariable("id") long userId ) {
-         return orderService.createOrder(userId);
+    public Response<String> addProductToCart(@ModelAttribute OrderCreationDto orderCreationDto ) {
+         return orderService.createOrder(orderCreationDto);
     }
 
-    @GetMapping("current-provider-orders")
+    @GetMapping("/current-provider-orders")
     @ResponseStatus(HttpStatus.OK)
     public Results<OrderDto> getOrderByProviderId(
             @RequestParam("id") long id,
@@ -34,7 +35,7 @@ public class OrderController {
         return new Results<>(orderService.getOrderByProviderId(id,dateFilter,amountFilter));
     }
 
-    @GetMapping("current-provider-today-orders")
+    @GetMapping("/current-provider-today-orders")
     @ResponseStatus(HttpStatus.OK)
     public Results<OrderDto> getTodayOrdersByProviderId(
             @RequestParam("id") long id,
@@ -43,7 +44,7 @@ public class OrderController {
         return new Results<>(orderService.getTodayOrdersByProviderId(id,dateFilter,amountFilter));
     }
 
-    @GetMapping("current-provider-dates-orders")
+    @GetMapping("/current-provider-dates-orders")
     @ResponseStatus(HttpStatus.OK)
     public Results<OrderDto> filterOrdersByCreatAtByProviderId(
             @RequestParam(name = "id") Long id,
@@ -54,7 +55,7 @@ public class OrderController {
         return new Results<>(orderService.getBetweenOrdersByCreatAtByProviderId(id,startDate,endDate,dateFilter,amountFilter));
     }
 
-    @GetMapping("current-user/{id}")
+    @GetMapping("/current-user/{id}")
     @ResponseStatus(HttpStatus.OK)
     public Results<OrderDto> getOrderByUserId(@PathVariable("id") long id ) {
         return new Results<>(orderService.getOrderByUserId(id));

@@ -124,4 +124,15 @@ public class CartService {
     public void deleteCart(Cart cart){
         cartRepository.delete(cart);
     }
+
+    @Transactional
+    public Boolean deleteCartProductVariant(CartProductVariant cartProductVariant){
+        cartProductVariantRepository.delete(cartProductVariant);
+        return true;
+    }
+
+    public CartProductVariant findCartProductVariantById(CartProductVariantId cartProductVariantId){
+        return cartProductVariantRepository.findById(cartProductVariantId)
+                .orElseThrow(() -> new CartException("error.cart.product not available"));
+    }
 }

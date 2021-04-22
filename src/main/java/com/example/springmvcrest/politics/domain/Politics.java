@@ -24,7 +24,7 @@ public class Politics {
     @Enumerated(EnumType.STRING)
     private SelfPickUpOptions selfPickUpOption;
 
-    private Long duration;
+    private Long validDuration;
 
     private Integer tax;
 

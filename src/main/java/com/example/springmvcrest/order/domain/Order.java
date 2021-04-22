@@ -36,4 +36,14 @@ public class Order {
     private LocalDateTime createAt;
 
     private Double total;
+
+    @Enumerated(EnumType.STRING)
+    private OrderType orderType;
+
+    private Long validDuration;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "address_id")
+    private Address address;
+
 }

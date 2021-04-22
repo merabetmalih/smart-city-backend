@@ -13,4 +13,5 @@ public class CartProductVariantDto {
     private ImagesDTO productImage;
     private String productName;
     private String storeName;
+    private Long storeId;
 }
