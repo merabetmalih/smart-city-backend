@@ -125,7 +125,8 @@ public class OrderService {
         if (cartProductVariants.isEmpty() || order.getOrderType()==null ){
             throw new OrderException("error.order.invalid");
         }
-        
+
+        //todo check if delivry addrese is set
         if(order.getOrderType().equals(DELIVERY)){
             if(!order.getStore().getPolitics().getDelivery()){
                 throw new OrderException("error.order.invalid");

@@ -20,4 +20,10 @@ public class PoliticsController {
     public Response<String> createPolitics(@ModelAttribute PoliticsDto politicsDto) {
         return  politicsService.createPolitics(politicsDto);
     }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public PoliticsDto getPolitics(@PathVariable Long id) {
+        return  politicsService.getPolitics(id);
+    }
 }

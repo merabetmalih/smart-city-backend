@@ -24,6 +24,13 @@ public class PoliticsService {
     private final PoliticsRepository politicsRepository;
     private final TaxRangeRepository taxRangeRepository;
 
+
+    public PoliticsDto getPolitics(Long providerId){
+        return politicsRepository.findByStore_Provider_Id(providerId)
+                .map(politicsMapper::toDto)
+                .orElseThrow(() -> new PoliticsException("error.politics.notFound"));
+    }
+
     @Transactional
     public Response<String> createPolitics(PoliticsDto politicsDto){
         Optional.of(politicsDto)
