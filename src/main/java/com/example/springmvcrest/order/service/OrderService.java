@@ -128,7 +128,7 @@ public class OrderService {
 
         //todo check if delivry addrese is set
         if(order.getOrderType().equals(DELIVERY)){
-            if(!order.getStore().getPolitics().getDelivery()){
+            if(!order.getStore().getPolicies().getDelivery()){
                 throw new OrderException("error.order.invalid");
             }
         }

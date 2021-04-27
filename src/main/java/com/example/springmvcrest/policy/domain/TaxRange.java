@@ -1,4 +1,4 @@
-package com.example.springmvcrest.politics.domain;
+package com.example.springmvcrest.policy.domain;
 
 
 import lombok.*;
@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"politics"})
+@EqualsAndHashCode(exclude = {"policies"})
 @Builder
 @Entity
 public class TaxRange {
@@ -21,6 +21,6 @@ public class TaxRange {
     private Integer fixAmount;
 
     @ManyToOne
-    @JoinColumn(name = "politics_id")
-    private Politics politics;
+    @JoinColumn(name = "policies_id")
+    private Policies policies;
 }

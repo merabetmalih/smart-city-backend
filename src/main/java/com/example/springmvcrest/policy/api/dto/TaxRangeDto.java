@@ -1,4 +1,4 @@
-package com.example.springmvcrest.politics.api.dto;
+package com.example.springmvcrest.policy.api.dto;
 
 import lombok.Data;
 

@@ -1,4 +1,4 @@
-package com.example.springmvcrest.politics.domain;
+package com.example.springmvcrest.policy.domain;
 
 import com.example.springmvcrest.store.domain.Store;
 import lombok.*;
@@ -13,7 +13,7 @@ import java.util.Set;
 @EqualsAndHashCode(exclude = {"store"})
 @Builder
 @Entity
-public class Politics {
+public class Policies {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,7 +28,7 @@ public class Politics {
 
     private Integer tax;
 
-    @OneToMany(mappedBy = "politics",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
+    @OneToMany(mappedBy = "policies",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     Set<TaxRange> taxRanges=new HashSet<>();
 
     @OneToOne

@@ -1,7 +1,7 @@
 package com.example.springmvcrest.store.domain;
 
 import com.example.springmvcrest.order.domain.Order;
-import com.example.springmvcrest.politics.domain.Politics;
+import com.example.springmvcrest.policy.domain.Policies;
 import com.example.springmvcrest.user.provider.domain.Provider;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
@@ -52,5 +52,5 @@ public class Store {
     private Set<Order> orders = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.ALL , mappedBy = "store")
-    private Politics politics;
+    private Policies policies;
 }

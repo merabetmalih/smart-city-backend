@@ -1,13 +1,13 @@
-package com.example.springmvcrest.politics.api.dto;
+package com.example.springmvcrest.policy.api.dto;
 
-import com.example.springmvcrest.politics.domain.SelfPickUpOptions;
+import com.example.springmvcrest.policy.domain.SelfPickUpOptions;
 import lombok.Data;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @Data
-public class PoliticsDto {
+public class PoliciesDto {
     private Boolean delivery;
     private SelfPickUpOptions selfPickUpOption;
     private Long validDuration;
