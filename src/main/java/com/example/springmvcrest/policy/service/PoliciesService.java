@@ -25,8 +25,19 @@ public class PoliciesService {
     private final TaxRangeRepository taxRangeRepository;
 
 
+    public Policies findPoliciesById(Long policyId){
+        return policiesRepository.findById(policyId)
+                .orElseThrow(() -> new PoliticsException("error.politics.notFound"));
+    }
+
     public PoliciesDto getPolitics(Long providerId){
         return policiesRepository.findByStore_Provider_Id(providerId)
+                .map(policiesMapper::toDto)
+                .orElseThrow(() -> new PoliticsException("error.politics.notFound"));
+    }
+
+    public PoliciesDto getStorePolitics(Long storeId){
+        return policiesRepository.findByStore_Id(storeId)
                 .map(policiesMapper::toDto)
                 .orElseThrow(() -> new PoliticsException("error.politics.notFound"));
     }

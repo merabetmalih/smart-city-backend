@@ -11,4 +11,6 @@ public interface PoliciesRepository extends JpaRepository<Policies,Long> {
 
 
     Optional<Policies> findByStore_Provider_Id(Long id);
+
+    Optional<Policies> findByStore_Id(Long id);
 }

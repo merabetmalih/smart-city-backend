@@ -8,6 +8,7 @@ import java.util.Set;
 
 @Data
 public class PoliciesDto {
+    private Long id;
     private Boolean delivery;
     private SelfPickUpOptions selfPickUpOption;
     private Long validDuration;

@@ -26,4 +26,10 @@ public class PoliciesController {
     public PoliciesDto getPolitics(@PathVariable Long id) {
         return  policiesService.getPolitics(id);
     }
+
+    @GetMapping("/store/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public PoliciesDto getStorePolitics(@PathVariable Long id) {
+        return  policiesService.getStorePolitics(id);
+    }
 }

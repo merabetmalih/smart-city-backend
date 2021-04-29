@@ -10,6 +10,9 @@ import com.example.springmvcrest.order.domain.OrderProductVariant;
 import com.example.springmvcrest.order.domain.OrderProductVariantId;
 import com.example.springmvcrest.order.repository.OrderProductVariantRepository;
 import com.example.springmvcrest.order.repository.OrderRepository;
+import com.example.springmvcrest.policy.domain.Policies;
+import com.example.springmvcrest.policy.domain.TaxRange;
+import com.example.springmvcrest.policy.service.PoliciesService;
 import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.user.simple.domain.Cart;
 import com.example.springmvcrest.user.simple.domain.CartProductVariant;
@@ -38,10 +41,8 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderProductVariantRepository orderProductVariantRepository;
     private final CartService cartService;
-    private final SimpleUserService simpleUserService;
     private final OrderMapper orderMapper;
     private final NotificationService notificationService;
-
 
     public List<OrderDto> getOrderByUserId(Long id){
         return orderRepository.findByUser_Id(id).stream()
