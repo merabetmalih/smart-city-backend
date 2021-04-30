@@ -1,8 +1,8 @@
 package com.example.springmvcrest.order.domain;
 
+import com.example.springmvcrest.address.domain.Address;
 import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.user.simple.domain.SimpleUser;
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;

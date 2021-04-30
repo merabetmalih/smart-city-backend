@@ -1,5 +1,6 @@
 package com.example.springmvcrest.order.api.dto;
 
+import com.example.springmvcrest.address.api.AddressDto;
 import com.example.springmvcrest.order.domain.OrderType;
 import lombok.Data;
 

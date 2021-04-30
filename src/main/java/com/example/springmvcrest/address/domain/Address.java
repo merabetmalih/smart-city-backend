@@ -1,5 +1,6 @@
-package com.example.springmvcrest.order.domain;
+package com.example.springmvcrest.address.domain;
 
+import com.example.springmvcrest.user.simple.domain.SimpleUser;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,6 +31,16 @@ public class Address {
     @Column(name = "zip_code")
     private Long zipCode;
 
+    @Column(name = "label")
+    private String label;
+
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "coordinate_id")
+    private Coordinate coordinate;
+
+    @ManyToOne
+    @JoinColumn(name = "simpleUser_id")
+    private SimpleUser user;
 
     @Override
     public boolean equals(Object o) {

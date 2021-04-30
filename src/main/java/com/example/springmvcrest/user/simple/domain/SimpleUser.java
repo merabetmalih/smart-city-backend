@@ -1,5 +1,6 @@
 package com.example.springmvcrest.user.simple.domain;
 
+import com.example.springmvcrest.address.domain.Address;
 import com.example.springmvcrest.order.domain.Order;
 import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.user.user.domain.Authority;
@@ -18,6 +19,9 @@ import java.util.stream.Collectors;
 @Builder
 @Entity
 public class SimpleUser extends User {
+
+    @OneToMany(mappedBy = "user",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
+    private Set<Address> addressSet=new HashSet<>();
 
     @OneToMany(mappedBy = "user",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     private Set<Order> orders = new HashSet<>();
