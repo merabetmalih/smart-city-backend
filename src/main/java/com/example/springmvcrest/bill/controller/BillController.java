@@ -15,11 +15,9 @@ public class BillController {
     private final BillService billService;
 
 
-    @GetMapping("/total")
+    @PostMapping("/total")
     @ResponseStatus(HttpStatus.OK)
-    public BillDto getTotalToPay(
-            @RequestParam(name = "id") Long policyId,
-            @RequestParam(name = "total") Double total) {
-        return billService.getTotalToPay(policyId,total);
+    public BillDto getTotalToPay(@RequestBody BillDto billDto) {
+        return billService.getTotalToPay(billDto);
     }
 }

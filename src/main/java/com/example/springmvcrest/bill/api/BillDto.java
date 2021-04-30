@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class BillDto {
+    private Long policyId;
     private Double total;
     private OrderType orderType;
 }
