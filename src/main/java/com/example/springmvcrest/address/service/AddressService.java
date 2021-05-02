@@ -11,7 +11,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -34,5 +37,11 @@ public class AddressService {
                 .orElseThrow(() -> new AddressException("error.address.notFound"));
         addressRepository.delete(address);
         return new Response<>("deleted.");
+    }
+
+    public List<AddressDto> getUserAddress(Long userId){
+        return addressRepository.findByUser_Id(userId).stream()
+                .map(addressMapper::toDto)
+                .collect(Collectors.toList());
     }
 }

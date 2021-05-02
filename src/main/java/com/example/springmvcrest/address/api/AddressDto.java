@@ -9,6 +9,5 @@ public class AddressDto {
     private String street;
     private String city;
     private Long zipCode;
-    private String label;
     private Long userId;
 }

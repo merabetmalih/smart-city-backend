@@ -31,9 +31,6 @@ public class Address {
     @Column(name = "zip_code")
     private Long zipCode;
 
-    @Column(name = "label")
-    private String label;
-
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "coordinate_id")
     private Coordinate coordinate;
