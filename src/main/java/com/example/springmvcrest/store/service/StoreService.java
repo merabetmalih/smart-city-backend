@@ -1,11 +1,13 @@
 package com.example.springmvcrest.store.service;
 
 import com.example.springmvcrest.store.api.dto.StoreDto;
+import com.example.springmvcrest.store.api.dto.StoreInformationDto;
 import com.example.springmvcrest.store.api.mapper.StoreMapper;
 import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.store.repository.StoreRepository;
 import com.example.springmvcrest.store.service.exception.MultipleStoreException;
 import com.example.springmvcrest.store.service.exception.StoreNotFoundException;
+import com.example.springmvcrest.utils.Response;
 import lombok.AllArgsConstructor;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
@@ -15,9 +17,7 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class StoreService {
-
     private final StoreRepository storeRepository;
-
     private final StoreMapper storeMapper;
 
     public Store findStoreByProviderId(Long id){
@@ -45,5 +45,13 @@ public class StoreService {
                 .orElseThrow(MultipleStoreException::new);
     }
 
+    public Response<String> setStoreInformation(StoreInformationDto storeInformationDto){
+        Store store = findStoreByProviderId(storeInformationDto.getProviderId());
+        store.setAddress(storeInformationDto.getAddress());
+        store.setTelephoneNumber(storeInformationDto.getTelephoneNumber());
+        store.setDefaultTelephoneNumber(storeInformationDto.getDefaultTelephoneNumber());
+        storeRepository.save(store);
+        return new Response<>("created.");
+    }
 
 }

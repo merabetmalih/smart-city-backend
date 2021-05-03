@@ -30,6 +30,10 @@ public class Store {
     @Lob
     private String address;
 
+    private String telephoneNumber;
+
+    private String defaultTelephoneNumber;
+
     private String imageStore;
 
 

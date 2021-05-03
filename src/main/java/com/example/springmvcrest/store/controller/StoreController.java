@@ -2,6 +2,7 @@ package com.example.springmvcrest.store.controller;
 
 import com.example.springmvcrest.store.api.dto.CustomCategoryDto;
 import com.example.springmvcrest.store.api.dto.StoreDto;
+import com.example.springmvcrest.store.api.dto.StoreInformationDto;
 import com.example.springmvcrest.store.service.CustomCategoryService;
 import com.example.springmvcrest.store.service.DefaultCategoryService;
 import com.example.springmvcrest.store.service.StoreService;
@@ -19,7 +20,7 @@ import java.io.IOException;
 @RestController
 @Slf4j
 @AllArgsConstructor
-@RequestMapping("/api/store")
+    @RequestMapping("/api/store")
 public class StoreController {
     private final StoreService storeService;
     private final DefaultCategoryService defaultCategoryService;
@@ -31,6 +32,12 @@ public class StoreController {
                                 @RequestPart("image") MultipartFile multipartFile) throws IOException{
        // storeDto.setImageStore(FileUploadUtil.saveFile(multipartFile));
         return storeService.create(storeDto);
+    }
+
+    @PostMapping("/Information")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public Response<String> setStoreInformation(@RequestBody StoreInformationDto storeInformationDto){
+        return storeService.setStoreInformation(storeInformationDto);
     }
 
     @GetMapping("/category/all")
