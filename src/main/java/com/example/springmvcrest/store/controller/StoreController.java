@@ -40,6 +40,12 @@ public class StoreController {
         return storeService.setStoreInformation(storeInformationDto);
     }
 
+    @GetMapping("/Information/{id}")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public StoreInformationDto getStoreInformation(@PathVariable(value = "id") Long id){
+        return storeService.getStoreInformation(id);
+    }
+
     @GetMapping("/category/all")
     @ResponseStatus(value = HttpStatus.OK)
     public Results<String> getAllCategoryStore(){

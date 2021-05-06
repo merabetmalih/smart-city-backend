@@ -2,6 +2,7 @@ package com.example.springmvcrest.store.service;
 
 import com.example.springmvcrest.store.api.dto.StoreDto;
 import com.example.springmvcrest.store.api.dto.StoreInformationDto;
+import com.example.springmvcrest.store.api.mapper.StoreInformationMapper;
 import com.example.springmvcrest.store.api.mapper.StoreMapper;
 import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.store.repository.StoreRepository;
@@ -19,6 +20,7 @@ import java.util.Optional;
 public class StoreService {
     private final StoreRepository storeRepository;
     private final StoreMapper storeMapper;
+    private final StoreInformationMapper storeInformationMapper;
 
     public Store findStoreByProviderId(Long id){
         return storeRepository.findByProviderId(id)
@@ -54,4 +56,10 @@ public class StoreService {
         return new Response<>("created.");
     }
 
+    public StoreInformationDto getStoreInformation(Long providerId){
+        return Optional.of(findStoreByProviderId(providerId))
+                .map(storeInformationMapper::ToDto)
+                .orElseThrow(StoreNotFoundException::new);
+
+    }
 }
