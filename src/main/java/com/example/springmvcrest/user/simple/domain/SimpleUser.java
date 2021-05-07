@@ -9,6 +9,7 @@ import com.example.springmvcrest.user.user.domain.User;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -19,6 +20,10 @@ import java.util.stream.Collectors;
 @Builder
 @Entity
 public class SimpleUser extends User {
+
+    private String firstName;
+    private String lastName;
+    private Date birthDay;
 
     @OneToMany(mappedBy = "user",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     private Set<Address> addressSet=new HashSet<>();
