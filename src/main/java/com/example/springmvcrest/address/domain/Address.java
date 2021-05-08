@@ -39,6 +39,8 @@ public class Address {
     @JoinColumn(name = "simpleUser_id")
     private SimpleUser user;
 
+    private Boolean deleted=false;
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

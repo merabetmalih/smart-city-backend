@@ -1,6 +1,6 @@
 package com.example.springmvcrest.bill.controller;
 
-import com.example.springmvcrest.bill.api.BillDto;
+import com.example.springmvcrest.bill.api.BillTotalDto;
 import com.example.springmvcrest.bill.service.BillService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +17,7 @@ public class BillController {
 
     @PostMapping("/total")
     @ResponseStatus(HttpStatus.OK)
-    public BillDto getTotalToPay(@RequestBody BillDto billDto) {
-        return billService.getTotalToPay(billDto);
+    public BillTotalDto getTotalToPay(@RequestBody BillTotalDto billTotalDto) {
+        return billService.getTotalToPay(billTotalDto);
     }
 }

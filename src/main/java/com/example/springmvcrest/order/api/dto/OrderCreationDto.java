@@ -14,4 +14,7 @@ public class OrderCreationDto {
     OrderType orderType;
     AddressDto address;
     List<CartProductVariantId> cartProductVariantIds;
+    String receiverFirstName;
+    String receiverLastName;
+    String receiverBirthDay;
 }

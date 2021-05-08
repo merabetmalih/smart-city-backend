@@ -42,7 +42,7 @@ public class UserController {
 
     @PostMapping("/Information")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public Response<String> setUserInformation(@ModelAttribute SimpleUserInformationDto simpleUserInformationDto){
+    public Response<String> setUserInformation(@RequestBody SimpleUserInformationDto simpleUserInformationDto){
         return simpleUserService.setUserInformation(simpleUserInformationDto);
     }
 

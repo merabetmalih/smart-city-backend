@@ -1,6 +1,7 @@
 package com.example.springmvcrest.order.domain;
 
 import com.example.springmvcrest.address.domain.Address;
+import com.example.springmvcrest.bill.doamin.Bill;
 import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.user.simple.domain.SimpleUser;
 import lombok.*;
@@ -33,17 +34,24 @@ public class Order {
     @OneToMany(mappedBy = "order",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     Set<OrderProductVariant> orderProductVariants=new HashSet<>();
 
-    private LocalDateTime createAt;
-
-    private Double total;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "bill_id")
+    private Bill bill;
 
     @Enumerated(EnumType.STRING)
     private OrderType orderType;
 
-    private Long validDuration;
-
-    @OneToOne(cascade = CascadeType.PERSIST)
+    @OneToOne(cascade ={CascadeType.MERGE,CascadeType.REMOVE})
     @JoinColumn(name = "address_id")
     private Address address;
 
+    private String receiverFirstName;
+
+    private String receiverLastName;
+
+    private String receiverBirthDay;
+
+    private LocalDateTime createAt;
+
+    private Long validDuration;
 }

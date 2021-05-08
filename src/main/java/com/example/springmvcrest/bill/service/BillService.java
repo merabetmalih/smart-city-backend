@@ -1,6 +1,8 @@
 package com.example.springmvcrest.bill.service;
 
-import com.example.springmvcrest.bill.api.BillDto;
+import com.example.springmvcrest.bill.api.BillTotalDto;
+import com.example.springmvcrest.bill.doamin.Bill;
+import com.example.springmvcrest.bill.repository.BillRepository;
 import com.example.springmvcrest.policy.domain.Policies;
 import com.example.springmvcrest.policy.domain.TaxRange;
 import com.example.springmvcrest.policy.service.PoliciesService;
@@ -10,48 +12,52 @@ import org.springframework.stereotype.Service;
 import java.util.Set;
 
 import static com.example.springmvcrest.order.domain.OrderType.DELIVERY;
-import static com.example.springmvcrest.policy.domain.SelfPickUpOptions.SELF_PICK_UP_TOTAL;
 
 @Service
 @AllArgsConstructor
 public class BillService {
     private final PoliciesService policiesService;
+    private final BillRepository billRepository;
 
-    public BillDto getTotalToPay(BillDto billDto){
+    public Bill saveBill(Bill bill){
+        return billRepository.save(bill);
+    }
 
-        if(billDto.getOrderType().equals(DELIVERY)){
-            return BillDto.builder()
-                    .total(billDto.getTotal())
+    public BillTotalDto getTotalToPay(BillTotalDto billTotalDto){
+
+        if(billTotalDto.getOrderType().equals(DELIVERY)){
+            return BillTotalDto.builder()
+                    .total(billTotalDto.getTotal())
                     .build();
         }else {
-            Policies policies=policiesService.findPoliciesById(billDto.getPolicyId());
+            Policies policies=policiesService.findPoliciesById(billTotalDto.getPolicyId());
             switch (policies.getSelfPickUpOption()){
                 case SELF_PICK_UP_TOTAL:
 
                 case SELF_PICK_UP_EXTEND_PERCENTAGE:
-                    return BillDto.builder()
-                            .total(billDto.getTotal())
+                    return BillTotalDto.builder()
+                            .total(billTotalDto.getTotal())
                             .build();
 
                 case SELF_PICK_UP_PART_PERCENTAGE:
-                    return BillDto.builder()
-                            .total(percentageCalculate(billDto.getTotal(),policies.getTax()))
+                    return BillTotalDto.builder()
+                            .total(percentageCalculate(billTotalDto.getTotal(),policies.getTax()))
                             .build();
 
                 case SELF_PICK_UP_PART_RANGE:
-                    return BillDto.builder()
-                            .total(rangeCalculate(billDto.getTotal(),policies.getTaxRanges()))
+                    return BillTotalDto.builder()
+                            .total(rangeCalculate(billTotalDto.getTotal(),policies.getTaxRanges()))
                             .build();
 
                 case SELF_PICK_UP:
-                    return BillDto.builder()
+                    return BillTotalDto.builder()
                             .total(0.0)
                             .build();
             }
         }
 
-        return BillDto.builder()
-                .total(billDto.getTotal())
+        return BillTotalDto.builder()
+                .total(billTotalDto.getTotal())
                 .build();
     }
 

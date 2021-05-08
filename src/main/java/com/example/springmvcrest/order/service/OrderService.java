@@ -1,5 +1,8 @@
 package com.example.springmvcrest.order.service;
 
+import com.example.springmvcrest.bill.api.BillTotalDto;
+import com.example.springmvcrest.bill.doamin.Bill;
+import com.example.springmvcrest.bill.service.BillService;
 import com.example.springmvcrest.notification.domain.Notification;
 import com.example.springmvcrest.notification.service.NotificationService;
 import com.example.springmvcrest.order.api.dto.OrderCreationDto;
@@ -10,14 +13,10 @@ import com.example.springmvcrest.order.domain.OrderProductVariant;
 import com.example.springmvcrest.order.domain.OrderProductVariantId;
 import com.example.springmvcrest.order.repository.OrderProductVariantRepository;
 import com.example.springmvcrest.order.repository.OrderRepository;
-import com.example.springmvcrest.policy.domain.Policies;
-import com.example.springmvcrest.policy.domain.TaxRange;
-import com.example.springmvcrest.policy.service.PoliciesService;
 import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.user.simple.domain.Cart;
 import com.example.springmvcrest.user.simple.domain.CartProductVariant;
 import com.example.springmvcrest.user.simple.service.CartService;
-import com.example.springmvcrest.user.simple.service.SimpleUserService;
 import com.example.springmvcrest.utils.DateUtil;
 import com.example.springmvcrest.utils.Errorhandler.DateException;
 import com.example.springmvcrest.utils.Errorhandler.OrderException;
@@ -43,6 +42,7 @@ public class OrderService {
     private final CartService cartService;
     private final OrderMapper orderMapper;
     private final NotificationService notificationService;
+    private final BillService billService;
 
     public List<OrderDto> getOrderByUserId(Long id){
         return orderRepository.findByUser_Id(id).stream()
@@ -100,7 +100,7 @@ public class OrderService {
     private Sort sortOrdersByProperties(String dateFilter, String amountFilter){
         return Sort.by(Arrays.asList(
                 new Sort.Order(getSortDirection(dateFilter),"createAt"),
-                new Sort.Order(getSortDirection(amountFilter),"total"))
+                new Sort.Order(getSortDirection(amountFilter),"bill.total"))
         );
     }
 
@@ -109,6 +109,7 @@ public class OrderService {
         List<CartProductVariant> cartProductVariants = orderCreationDto.getCartProductVariantIds().stream()
                 .map(cartService::findCartProductVariantById)
                 .collect(Collectors.toList());
+        System.out.println(orderMapper.toModel(orderCreationDto).getAddress().getId());
         Optional.of(orderCreationDto)
                 .map(orderMapper::toModel)
                 .map(this::setCreatAt)
@@ -167,8 +168,27 @@ public class OrderService {
                 .map(orderProductVariantRepository::save)
                 .collect(Collectors.toSet());
         order.setOrderProductVariants(orderProductVariants);
-        order.setTotal(orderTotal(cartProductVariants));
+        order.setBill(setOrderBill(order,cartProductVariants));
         return order;
+    }
+
+    private Bill setOrderBill(Order order, List<CartProductVariant> cartProductVariants){
+        Bill bill=Bill.builder()
+                .total(orderTotal(cartProductVariants))
+                .order(order)
+                .store(order.getStore())
+                .createdAt(LocalDateTime.now())
+                .alreadyPaid(
+                        billService.getTotalToPay(
+                                BillTotalDto.builder()
+                                        .total(orderTotal(cartProductVariants))
+                                        .orderType(order.getOrderType())
+                                        .policyId(order.getStore().getPolicies().getId())
+                                        .build()
+                        ).getTotal()
+                )
+                .build();
+        return billService.saveBill(bill);
     }
 
     private Double orderTotal(List<CartProductVariant> cartProductVariants){

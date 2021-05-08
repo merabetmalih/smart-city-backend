@@ -22,7 +22,7 @@ public class OrderController {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK)
-    public Response<String> addProductToCart(@ModelAttribute OrderCreationDto orderCreationDto ) {
+    public Response<String> addProductToCart(@RequestBody OrderCreationDto orderCreationDto ) {
          return orderService.createOrder(orderCreationDto);
     }
 
