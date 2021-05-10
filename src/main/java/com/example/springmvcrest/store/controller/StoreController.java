@@ -46,6 +46,12 @@ public class StoreController {
         return storeService.getStoreInformation(id);
     }
 
+    @GetMapping("/Information-store/{id}")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public StoreInformationDto getStoreInformationById(@PathVariable(value = "id") Long id){
+        return storeService.getStoreInformationByStoreId(id);
+    }
+
     @GetMapping("/category/all")
     @ResponseStatus(value = HttpStatus.OK)
     public Results<String> getAllCategoryStore(){

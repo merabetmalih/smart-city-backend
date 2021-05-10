@@ -109,7 +109,6 @@ public class OrderService {
         List<CartProductVariant> cartProductVariants = orderCreationDto.getCartProductVariantIds().stream()
                 .map(cartService::findCartProductVariantById)
                 .collect(Collectors.toList());
-        System.out.println(orderMapper.toModel(orderCreationDto).getAddress().getId());
         Optional.of(orderCreationDto)
                 .map(orderMapper::toModel)
                 .map(this::setCreatAt)

@@ -60,6 +60,11 @@ public class StoreService {
         return Optional.of(findStoreByProviderId(providerId))
                 .map(storeInformationMapper::ToDto)
                 .orElseThrow(StoreNotFoundException::new);
+    }
 
+    public StoreInformationDto getStoreInformationByStoreId (Long storeId){
+        return Optional.of(findStoreById(storeId))
+                .map(storeInformationMapper::ToDto)
+                .orElseThrow(StoreNotFoundException::new);
     }
 }

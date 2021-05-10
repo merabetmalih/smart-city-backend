@@ -21,4 +21,6 @@ public class OrderDto {
     String receiverBirthDay;
     LocalDateTime createAt;
     Long validDuration;
+    String storeName;
+    String storeAddress;
 }
