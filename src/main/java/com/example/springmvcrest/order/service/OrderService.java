@@ -8,9 +8,7 @@ import com.example.springmvcrest.notification.service.NotificationService;
 import com.example.springmvcrest.order.api.dto.OrderCreationDto;
 import com.example.springmvcrest.order.api.dto.OrderDto;
 import com.example.springmvcrest.order.api.mapper.OrderMapper;
-import com.example.springmvcrest.order.domain.Order;
-import com.example.springmvcrest.order.domain.OrderProductVariant;
-import com.example.springmvcrest.order.domain.OrderProductVariantId;
+import com.example.springmvcrest.order.domain.*;
 import com.example.springmvcrest.order.repository.OrderProductVariantRepository;
 import com.example.springmvcrest.order.repository.OrderRepository;
 import com.example.springmvcrest.store.domain.Store;
@@ -21,6 +19,8 @@ import com.example.springmvcrest.utils.DateUtil;
 import com.example.springmvcrest.utils.Errorhandler.DateException;
 import com.example.springmvcrest.utils.Errorhandler.OrderException;
 import com.example.springmvcrest.utils.Response;
+import com.google.firebase.database.annotations.NotNull;
+import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -30,8 +30,14 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
+import java.util.stream.Stream;
 
+import static com.example.springmvcrest.order.domain.OrderStep.*;
 import static com.example.springmvcrest.order.domain.OrderType.DELIVERY;
 
 @Service
@@ -50,15 +56,83 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public List<OrderDto> getOrderByProviderId(Long id,String dateFilter,String amountFilter){
+    private static Function<Order, Boolean> NewOrderQualifier= order -> {
+        return order.getOrderState().isNewOrder();
+    };
+
+    private static Function<Order, Boolean> AcceptOrderQualifier= order -> {
+        return order.getOrderState().isAccepted() &&
+                !order.getOrderState().isInProgress() &&
+                !order.getOrderState().isReady()&&
+                !order.getOrderState().isDelivered()&&
+                !order.getOrderState().isPickedUp() &&
+                !order.getOrderState().isConfirmedDelivered() &&
+                !order.getOrderState().isConfirmedPickedUp();
+    };
+
+    private static Function<Order, Boolean> ProgressOrderQualifier= order -> {
+        return order.getOrderState().isAccepted() &&
+                order.getOrderState().isInProgress() &&
+                !order.getOrderState().isReady()&&
+                !order.getOrderState().isDelivered()&&
+                !order.getOrderState().isPickedUp() &&
+                !order.getOrderState().isConfirmedDelivered() &&
+                !order.getOrderState().isConfirmedPickedUp();
+    };
+
+    private static Function<Order, Boolean> ReadyOrderQualifier= order -> {
+        return order.getOrderState().isAccepted() &&
+                order.getOrderState().isInProgress() &&
+                order.getOrderState().isReady() &&
+                !order.getOrderState().isDelivered()&&
+                !order.getOrderState().isPickedUp() &&
+                !order.getOrderState().isConfirmedDelivered() &&
+                !order.getOrderState().isConfirmedPickedUp();
+    };
+
+    private static Function<Order, Boolean> ConfirmationOrderQualifier= order -> {
+        return (order.getOrderState().isPickedUp() || order.getOrderState().isDelivered())&&
+                order.getOrderState().isAccepted() &&
+                order.getOrderState().isInProgress() &&
+                order.getOrderState().isReady()&&
+                !order.getOrderState().isConfirmedDelivered() &&
+                !order.getOrderState().isConfirmedPickedUp();
+    };
+
+    private static Supplier<List<Pair<OrderStep,Function<Order, Boolean>>>> GetSteps= ()->{
+        List<Pair<OrderStep,Function<Order, Boolean>>> rules=new ArrayList<>();
+        rules.add(new Pair<>(NEW_ORDER,NewOrderQualifier));
+        rules.add(new Pair<>(ACCEPT_ORDER,AcceptOrderQualifier));
+        rules.add(new Pair<>(PROGRESS_ORDER,ProgressOrderQualifier));
+        rules.add(new Pair<>(READY_ORDER,ReadyOrderQualifier));
+        rules.add(new Pair<>(CONFIRMATION_ORDER,ConfirmationOrderQualifier));
+        return rules;
+    };
+
+    private static Function<OrderStep,Function<List<Pair<OrderStep,Function<Order, Boolean>>>,//two inputs
+            //output
+             Pair<OrderStep, Function<Order, Boolean>>>> GetStepQualifier = orderStep ->(steps ->{
+        return steps.stream()
+                        .filter(step -> step.getKey().equals(orderStep))
+                        .findFirst()
+                        .orElseThrow(()-> new OrderException("error.order.step.notFound"));
+    });
+
+    public List<OrderDto> getOrderByProviderId(Long id,String dateFilter,String amountFilter,OrderStep step){
+        Pair<OrderStep, Function<Order, Boolean>> stepQualifier = GetStepQualifier.apply(step).apply(GetSteps.get());
+
         Sort sort= sortOrdersByProperties(dateFilter,amountFilter);
+
         return orderRepository.findByStore_Provider_Id(id,sort)
                 .stream()
+                .filter(order -> stepQualifier.getValue().apply(order))
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<OrderDto> getTodayOrdersByProviderId(Long id,String dateFilter,String amountFilter){
+    public List<OrderDto> getTodayOrdersByProviderId(Long id,String dateFilter,String amountFilter,OrderStep step){
+        Pair<OrderStep, Function<Order, Boolean>> stepQualifier = GetStepQualifier.apply(step).apply(GetSteps.get());
+
         Sort sort= sortOrdersByProperties(dateFilter,amountFilter);
         LocalDateTime today = LocalDateTime.now();
         LocalDateTime startOfDate = today
@@ -67,19 +141,23 @@ public class OrderService {
                 .toLocalDate().atTime(LocalTime.MAX);
         return orderRepository.findByStore_Provider_IdAndCreateAtBetween(id,startOfDate,endOfDate,sort)
                 .stream()
+                .filter(order -> stepQualifier.getValue().apply(order))
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<OrderDto> getBetweenOrdersByCreatAtByProviderId(Long id,String startDate, String endDate,String dateFilter,String amountFilter){
+    public List<OrderDto> getBetweenOrdersByCreatAtByProviderId(Long id,String startDate, String endDate,String dateFilter,String amountFilter,OrderStep step){
         if(!DateUtil.isValidDate(startDate) || !DateUtil.isValidDate(endDate)){
             throw new DateException("error.date.invalid");
         }
+        Pair<OrderStep, Function<Order, Boolean>> stepQualifier = GetStepQualifier.apply(step).apply(GetSteps.get());
+
         Sort sort= sortOrdersByProperties(dateFilter,amountFilter);
         LocalDateTime startOfDate = LocalDateTime.of(LocalDate.parse(startDate), LocalTime.MIDNIGHT);
         LocalDateTime endOfDate = LocalDateTime.of(LocalDate.parse(endDate), LocalTime.MAX);
         return orderRepository.findByStore_Provider_IdAndCreateAtBetween(id,startOfDate,endOfDate,sort)
                 .stream()
+                .filter(order -> stepQualifier.getValue().apply(order))
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -100,7 +178,8 @@ public class OrderService {
     private Sort sortOrdersByProperties(String dateFilter, String amountFilter){
         return Sort.by(Arrays.asList(
                 new Sort.Order(getSortDirection(dateFilter),"createAt"),
-                new Sort.Order(getSortDirection(amountFilter),"bill.total"))
+                new Sort.Order(getSortDirection(amountFilter),"bill.total")
+                )
         );
     }
 
@@ -113,6 +192,7 @@ public class OrderService {
                 .map(orderMapper::toModel)
                 .map(this::setCreatAt)
                 .map(order->checkValidOrder(order,cartProductVariants))
+                .map(this::setOrderState)
                 .map(orderRepository::save)
                 .map(order -> setOrderProductVariantByStore(order, cartProductVariants))
                 .map(orderRepository::save)
@@ -120,6 +200,12 @@ public class OrderService {
 
         deleteCartProductVariant(cartProductVariants);
         return new Response<>("created.");
+    }
+
+    @NotNull
+    private Order setOrderState(Order order) {
+        order.setOrderState(OrderState.builder().newOrder(true).build());
+        return order;
     }
 
     private Order checkValidOrder(Order order,List<CartProductVariant> cartProductVariants){
@@ -225,4 +311,147 @@ public class OrderService {
         }
         return map;
     }
+
+
+    public Order findOrderById(Long id){
+        return orderRepository.findById(id)
+                .orElseThrow(()-> new OrderException("error.order.notFound"));
+    }
+
+    public Response<String> acceptOrderByStore(Long id){
+        Optional.of(findOrderById(id))
+                .map(this::setAccepted)
+                .map(this::setNewOrder)
+                .map(orderRepository::save);
+        return new Response<>("created.");
+    }
+
+    public Response<String> rejectOrderByStore(Long id){
+        Optional.of(findOrderById(id))
+                .map(this::setRejected)
+                .map(this::setNewOrder)
+                .map(orderRepository::save);
+        return new Response<>("created.");
+    }
+
+    public Response<String> inProgressOrderByStore(Long id){
+        Optional.of(findOrderById(id))
+                .map(this::setInProgress)
+                .map(orderRepository::save);
+        return new Response<>("created.");
+    }
+
+    public Response<String> readyOrderByStore(Long id){
+        Optional.of(findOrderById(id))
+                .map(this::setReady)
+                .map(orderRepository::save);
+        return new Response<>("created.");
+    }
+
+    public Response<String> deliveredOrderByStore(Long id){
+        Optional.of(findOrderById(id))
+                .map(this::setDelivered)
+                .map(orderRepository::save);
+        return new Response<>("created.");
+    }
+
+    public Response<String> pickedUpOrderByStore(Long id){
+        Optional.of(findOrderById(id))
+                .map(this::setPickedUp)
+                .map(orderRepository::save);
+        return new Response<>("created.");
+    }
+
+    public Response<String> deliveredOrderByStoreConfirmed(Long id){
+        Optional.of(findOrderById(id))
+                .map(this::setConfirmedDelivered)
+                .map(orderRepository::save);
+        return new Response<>("created.");
+    }
+
+    public Response<String> pickedUpOrderByStoreConfirmed(Long id){
+        Optional.of(findOrderById(id))
+                .map(this::setConfirmedPickedUp)
+                .map(orderRepository::save);
+        return new Response<>("created.");
+    }
+
+    /*public Response<String> cancelOrderByUser(Long id){
+        Optional.of(findOrderById(id))
+                .map(this::setCanceled)
+                .map(orderRepository::save);
+        return new Response<>("created.");
+    }*/
+
+    @NotNull
+    private Order setAccepted(Order order) {
+        order.getOrderState().setAccepted(true);
+        return order;
+    }
+
+    @NotNull
+    private Order setRejected(Order order) {
+        order.getOrderState().setRejected(true);
+        return order;
+    }
+
+    @NotNull
+    private Order setInProgress(Order order) {
+        order.getOrderState().setInProgress(true);
+        return order;
+    }
+
+    @NotNull
+    private Order setReady(Order order) {
+        order.getOrderState().setReady(true);
+        return order;
+    }
+
+    @NotNull
+    private Order setDelivered(Order order) {
+        order.getOrderState().setDelivered(true);
+        return order;
+    }
+
+    @NotNull
+    private Order setPickedUp(Order order) {
+        order.getOrderState().setPickedUp(true);
+        return order;
+    }
+
+    @NotNull
+    private Order setConfirmedDelivered(Order order) {
+        order.getOrderState().setConfirmedDelivered(true);
+        return order;
+    }
+
+    @NotNull
+    private Order setConfirmedPickedUp(Order order) {
+        order.getOrderState().setConfirmedPickedUp(true);
+        return order;
+    }
+
+    @NotNull
+    private Order setNewOrder(Order order) {
+        order.getOrderState().setNewOrder(false);
+        return order;
+    }
+
+   /* @NotNull
+    private Order setCanceled(Order order) {
+        order.getOrderState().setCanceled(true);
+        return order;
+    }
+
+    @NotNull
+    private Order setArchived(Order order) {
+        order.getOrderState().setArchived(true);
+        return order;
+    }
+
+    @NotNull
+    private Order setArchivedProblem(Order order) {
+        order.getOrderState().setArchivedProblem(true);
+        return order;
+    }*/
 }

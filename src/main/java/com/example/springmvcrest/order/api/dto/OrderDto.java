@@ -16,6 +16,7 @@ public class OrderDto {
     BillDto bill;
     OrderType orderType;
     AddressDto address;
+    OrderStateDto orderState;
     String receiverFirstName;
     String receiverLastName;
     String receiverBirthDay;

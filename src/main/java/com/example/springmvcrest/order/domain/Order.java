@@ -45,6 +45,10 @@ public class Order {
     @JoinColumn(name = "address_id")
     private Address address;
 
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "order_state")
+    private OrderState orderState;
+
     private String receiverFirstName;
 
     private String receiverLastName;
