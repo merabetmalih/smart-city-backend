@@ -4,14 +4,11 @@ import lombok.Data;
 
 @Data
 public class OrderStateDto {
-     boolean newOrder;
-     boolean accepted;
-     boolean rejected;
-     boolean delivered;
-     boolean pickedUp;
-     boolean confirmedDelivered;
-     boolean confirmedPickedUp;
-     boolean canceled;
-     boolean archived;
-     boolean archivedProblem;
+     boolean newOrder = false;
+     boolean accepted = false;
+     boolean rejected = false;
+     boolean ready = false;
+     boolean delivered = false;
+     boolean pickedUp = false;
+     boolean received = false;
 }

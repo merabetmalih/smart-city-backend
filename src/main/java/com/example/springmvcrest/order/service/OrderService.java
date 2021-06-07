@@ -65,8 +65,7 @@ public class OrderService {
                 !order.getOrderState().isReady()&&
                 !order.getOrderState().isDelivered()&&
                 !order.getOrderState().isPickedUp() &&
-                !order.getOrderState().isConfirmedDelivered() &&
-                !order.getOrderState().isConfirmedPickedUp();
+                !order.getOrderState().isReceived();
     };
 
     private static Function<Order, Boolean> ReadyOrderQualifier= order -> {
@@ -74,16 +73,14 @@ public class OrderService {
                 order.getOrderState().isReady() &&
                 !order.getOrderState().isDelivered()&&
                 !order.getOrderState().isPickedUp() &&
-                !order.getOrderState().isConfirmedDelivered() &&
-                !order.getOrderState().isConfirmedPickedUp();
+                !order.getOrderState().isReceived();
     };
 
     private static Function<Order, Boolean> ConfirmationOrderQualifier= order -> {
         return (order.getOrderState().isPickedUp() || order.getOrderState().isDelivered())&&
                 order.getOrderState().isAccepted() &&
                 order.getOrderState().isReady()&&
-                !order.getOrderState().isConfirmedDelivered() &&
-                !order.getOrderState().isConfirmedPickedUp();
+                !order.getOrderState().isReceived();
     };
 
     private static Supplier<List<Pair<OrderStep,Function<Order, Boolean>>>> GetSteps= ()->{
@@ -343,16 +340,9 @@ public class OrderService {
         return new Response<>("created.");
     }
 
-    public Response<String> deliveredOrderByStoreConfirmed(Long id){
+    public Response<String> receivedOrderByUser(Long id){
         Optional.of(findOrderById(id))
-                .map(this::setConfirmedDelivered)
-                .map(orderRepository::save);
-        return new Response<>("created.");
-    }
-
-    public Response<String> pickedUpOrderByStoreConfirmed(Long id){
-        Optional.of(findOrderById(id))
-                .map(this::setConfirmedPickedUp)
+                .map(this::setReceived)
                 .map(orderRepository::save);
         return new Response<>("created.");
     }
@@ -405,14 +395,8 @@ public class OrderService {
     }
 
     @NotNull
-    private Order setConfirmedDelivered(Order order) {
-        order.getOrderState().setConfirmedDelivered(true);
-        return order;
-    }
-
-    @NotNull
-    private Order setConfirmedPickedUp(Order order) {
-        order.getOrderState().setConfirmedPickedUp(true);
+    private Order setReceived(Order order) {
+        order.getOrderState().setReceived(true);
         return order;
     }
 

@@ -99,16 +99,10 @@ public class OrderController {
         return orderService.pickedUpOrderByStore(id,comment,date);
     }
 
-    @PutMapping("/current-user/{id}/delivered")
+    @PutMapping("/current-user/{id}/received")
     @ResponseStatus(HttpStatus.OK)
     public Response<String> deliveredOrderByStoreConfirmed(@PathVariable("id") Long id) {
-        return orderService.deliveredOrderByStoreConfirmed(id);
-    }
-
-    @PutMapping("/current-user/{id}/pickedUp")
-    @ResponseStatus(HttpStatus.OK)
-    public Response<String> pickedUpOrderByStoreConfirmed(@PathVariable("id") Long id) {
-        return orderService.pickedUpOrderByStoreConfirmed(id);
+        return orderService.receivedOrderByUser(id);
     }
 
   /*  @PutMapping("/current-user/{id}/cancel")

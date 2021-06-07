@@ -24,8 +24,7 @@ public class OrderState {
     private boolean ready = false;
     private boolean delivered = false;
     private boolean pickedUp = false;
-    private boolean confirmedDelivered = false;
-    private boolean confirmedPickedUp = false;
+    private boolean received = false;
    /* private boolean canceled = false;
     private boolean archived = false;
     private boolean archivedProblem = false;*/
