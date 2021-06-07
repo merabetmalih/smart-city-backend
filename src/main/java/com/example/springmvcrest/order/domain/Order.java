@@ -8,6 +8,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -58,4 +59,8 @@ public class Order {
     private LocalDateTime createAt;
 
     private Long validDuration;
+
+    @Lob
+    private String providerComment;
+    private Date providerDate;
 }

@@ -327,16 +327,18 @@ public class OrderService {
         return new Response<>("created.");
     }
 
-    public Response<String> deliveredOrderByStore(Long id){
+    public Response<String> deliveredOrderByStore(Long id,String comment,String date){
         Optional.of(findOrderById(id))
                 .map(this::setDelivered)
+                .map(order -> setComment(order,comment,date))
                 .map(orderRepository::save);
         return new Response<>("created.");
     }
 
-    public Response<String> pickedUpOrderByStore(Long id){
+    public Response<String> pickedUpOrderByStore(Long id,String comment,String date){
         Optional.of(findOrderById(id))
                 .map(this::setPickedUp)
+                .map(order -> setComment(order,comment,date))
                 .map(orderRepository::save);
         return new Response<>("created.");
     }
@@ -361,6 +363,16 @@ public class OrderService {
                 .map(orderRepository::save);
         return new Response<>("created.");
     }*/
+
+    @NotNull
+    private Order setComment(Order order,String comment,String date){
+        if(!DateUtil.isValidDateTime(date)){
+            throw new DateException("error.date.invalid");
+        }
+        order.setProviderDate(DateUtil.parseDateTime(date));
+        order.setProviderComment(comment);
+        return order;
+    }
 
     @NotNull
     private Order setAccepted(Order order) {

@@ -17,8 +17,28 @@ public class DateUtil {
         return true;
     }
 
+    public static boolean isValidDateTime(String inDate) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        dateFormat.setLenient(false);
+        try {
+            dateFormat.parse(inDate.trim());
+        } catch (ParseException pe) {
+            return false;
+        }
+        return true;
+    }
+
     public static Date parseDate(String inDate){
         try {SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            dateFormat.setLenient(false);
+            return dateFormat.parse(inDate.trim());
+        } catch (ParseException pe) {
+            return null;
+        }
+    }
+
+    public static Date parseDateTime(String inDate){
+        try {SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             dateFormat.setLenient(false);
             return dateFormat.parse(inDate.trim());
         } catch (ParseException pe) {

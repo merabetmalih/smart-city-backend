@@ -85,14 +85,18 @@ public class OrderController {
 
     @PutMapping("/current-store/{id}/delivered")
     @ResponseStatus(HttpStatus.OK)
-    public Response<String> deliveredOrderByStore(@PathVariable("id") Long id) {
-        return orderService.deliveredOrderByStore(id);
+    public Response<String> deliveredOrderByStore(@PathVariable("id") Long id,
+                                                  @RequestParam(name = "comment") String comment,
+                                                  @RequestParam(name = "date") String date) {
+        return orderService.deliveredOrderByStore(id,comment,date);
     }
 
     @PutMapping("/current-store/{id}/pickedUp")
     @ResponseStatus(HttpStatus.OK)
-    public Response<String> pickedUpOrderByStore(@PathVariable("id") Long id) {
-        return orderService.pickedUpOrderByStore(id);
+    public Response<String> pickedUpOrderByStore(@PathVariable("id") Long id,
+                                                 @RequestParam(name = "comment") String comment,
+                                                 @RequestParam(name = "date") String date) {
+        return orderService.pickedUpOrderByStore(id,comment,date);
     }
 
     @PutMapping("/current-user/{id}/delivered")
