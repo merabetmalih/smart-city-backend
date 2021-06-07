@@ -21,7 +21,6 @@ public class OrderState {
     private boolean newOrder = false;
     private boolean accepted = false;
     private boolean rejected = false;
-    private boolean inProgress = false;
     private boolean ready = false;
     private boolean delivered = false;
     private boolean pickedUp = false;

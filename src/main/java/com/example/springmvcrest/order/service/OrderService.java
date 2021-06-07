@@ -62,17 +62,6 @@ public class OrderService {
 
     private static Function<Order, Boolean> AcceptOrderQualifier= order -> {
         return order.getOrderState().isAccepted() &&
-                !order.getOrderState().isInProgress() &&
-                !order.getOrderState().isReady()&&
-                !order.getOrderState().isDelivered()&&
-                !order.getOrderState().isPickedUp() &&
-                !order.getOrderState().isConfirmedDelivered() &&
-                !order.getOrderState().isConfirmedPickedUp();
-    };
-
-    private static Function<Order, Boolean> ProgressOrderQualifier= order -> {
-        return order.getOrderState().isAccepted() &&
-                order.getOrderState().isInProgress() &&
                 !order.getOrderState().isReady()&&
                 !order.getOrderState().isDelivered()&&
                 !order.getOrderState().isPickedUp() &&
@@ -82,7 +71,6 @@ public class OrderService {
 
     private static Function<Order, Boolean> ReadyOrderQualifier= order -> {
         return order.getOrderState().isAccepted() &&
-                order.getOrderState().isInProgress() &&
                 order.getOrderState().isReady() &&
                 !order.getOrderState().isDelivered()&&
                 !order.getOrderState().isPickedUp() &&
@@ -93,7 +81,6 @@ public class OrderService {
     private static Function<Order, Boolean> ConfirmationOrderQualifier= order -> {
         return (order.getOrderState().isPickedUp() || order.getOrderState().isDelivered())&&
                 order.getOrderState().isAccepted() &&
-                order.getOrderState().isInProgress() &&
                 order.getOrderState().isReady()&&
                 !order.getOrderState().isConfirmedDelivered() &&
                 !order.getOrderState().isConfirmedPickedUp();
@@ -103,7 +90,6 @@ public class OrderService {
         List<Pair<OrderStep,Function<Order, Boolean>>> rules=new ArrayList<>();
         rules.add(new Pair<>(NEW_ORDER,NewOrderQualifier));
         rules.add(new Pair<>(ACCEPT_ORDER,AcceptOrderQualifier));
-        rules.add(new Pair<>(PROGRESS_ORDER,ProgressOrderQualifier));
         rules.add(new Pair<>(READY_ORDER,ReadyOrderQualifier));
         rules.add(new Pair<>(CONFIRMATION_ORDER,ConfirmationOrderQualifier));
         return rules;
@@ -334,13 +320,6 @@ public class OrderService {
         return new Response<>("created.");
     }
 
-    public Response<String> inProgressOrderByStore(Long id){
-        Optional.of(findOrderById(id))
-                .map(this::setInProgress)
-                .map(orderRepository::save);
-        return new Response<>("created.");
-    }
-
     public Response<String> readyOrderByStore(Long id){
         Optional.of(findOrderById(id))
                 .map(this::setReady)
@@ -392,12 +371,6 @@ public class OrderService {
     @NotNull
     private Order setRejected(Order order) {
         order.getOrderState().setRejected(true);
-        return order;
-    }
-
-    @NotNull
-    private Order setInProgress(Order order) {
-        order.getOrderState().setInProgress(true);
         return order;
     }
 

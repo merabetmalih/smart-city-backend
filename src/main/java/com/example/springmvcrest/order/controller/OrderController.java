@@ -77,12 +77,6 @@ public class OrderController {
         return orderService.rejectOrderByStore(id);
     }
 
-    @PutMapping("/current-store/{id}/progress")
-    @ResponseStatus(HttpStatus.OK)
-    public Response<String> inProgressOrderByStore(@PathVariable("id") Long id) {
-        return orderService.inProgressOrderByStore(id);
-    }
-
     @PutMapping("/current-store/{id}/ready")
     @ResponseStatus(HttpStatus.OK)
     public Response<String> readyOrderByStore(@PathVariable("id") Long id) {
