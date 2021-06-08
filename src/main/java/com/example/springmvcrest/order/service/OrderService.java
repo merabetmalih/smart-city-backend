@@ -31,11 +31,8 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
-import java.util.stream.Stream;
 
 import static com.example.springmvcrest.order.domain.OrderStep.*;
 import static com.example.springmvcrest.order.domain.OrderType.DELIVERY;
@@ -224,7 +221,7 @@ public class OrderService {
                 Notification.builder()
                         .title("New order")
                         .message("New order arrived, check it!")
-                        .topic(order.getStore().getProvider().getEmail().replace("@",""))
+                        .topic("provider-"+order.getStore().getProvider().getEmail().replace("@",""))
                         .build()
         );
         return order;
@@ -301,11 +298,23 @@ public class OrderService {
                 .orElseThrow(()-> new OrderException("error.order.notFound"));
     }
 
+    private Order sendUserNotificationAcceptedOrder(Order order){
+        notificationService.sendNotification(
+                Notification.builder()
+                        .title("Accepted order")
+                        .message("Your order is accepted by the store.")
+                        .topic("user-"+order.getUser().getEmail().replace("@",""))
+                        .build()
+        );
+        return order;
+    }
+
     public Response<String> acceptOrderByStore(Long id){
         Optional.of(findOrderById(id))
                 .map(this::setAccepted)
                 .map(this::setNewOrder)
-                .map(orderRepository::save);
+                .map(orderRepository::save)
+                .map(this::sendUserNotificationAcceptedOrder);
         return new Response<>("created.");
     }
 
@@ -317,10 +326,23 @@ public class OrderService {
         return new Response<>("created.");
     }
 
+    private Order sendUserNotificationReadyOrder(Order order){
+        notificationService.sendNotification(
+                Notification.builder()
+                        .title("Ready order")
+                        .message("Your order is ready to picked up.")
+                        .topic("user-"+order.getUser().getEmail().replace("@",""))
+                        .build()
+        );
+        return order;
+    }
+
     public Response<String> readyOrderByStore(Long id){
         Optional.of(findOrderById(id))
                 .map(this::setReady)
-                .map(orderRepository::save);
+                .map(orderRepository::save)
+                .filter(order -> order.getOrderType().equals(OrderType.SELFPICKUP))
+                .map(this::sendUserNotificationReadyOrder);
         return new Response<>("created.");
     }
 
