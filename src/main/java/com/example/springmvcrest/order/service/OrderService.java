@@ -47,8 +47,16 @@ public class OrderService {
     private final NotificationService notificationService;
     private final BillService billService;
 
-    public List<OrderDto> getOrderByUserId(Long id){
+    public List<OrderDto> getInProgressOrdersByUserId(Long id){
         return orderRepository.findByUser_Id(id).stream()
+                .filter(order -> !order.getOrderState().isRejected() && !order.getOrderState().isReceived())
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<OrderDto> getFinalizedOrdersByUserId(Long id){
+        return orderRepository.findByUser_Id(id).stream()
+                .filter(order -> order.getOrderState().isRejected() || order.getOrderState().isReceived())
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -77,7 +85,7 @@ public class OrderService {
         return (order.getOrderState().isPickedUp() || order.getOrderState().isDelivered())&&
                 order.getOrderState().isAccepted() &&
                 order.getOrderState().isReady()&&
-                !order.getOrderState().isReceived();
+                order.getOrderState().isReceived();
     };
 
     private static Supplier<List<Pair<OrderStep,Function<Order, Boolean>>>> GetSteps= ()->{

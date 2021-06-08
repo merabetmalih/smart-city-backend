@@ -59,10 +59,16 @@ public class OrderController {
         return new Results<>(orderService.getBetweenOrdersByCreatAtByProviderId(id,startDate,endDate,dateFilter,amountFilter,step));
     }
 
-    @GetMapping("/current-user/{id}")
+    @GetMapping("/current-user/{id}/inProgress")
     @ResponseStatus(HttpStatus.OK)
-    public Results<OrderDto> getOrderByUserId(@PathVariable("id") long id ) {
-        return new Results<>(orderService.getOrderByUserId(id));
+    public Results<OrderDto> getInProgressOrdersByUserId(@PathVariable("id") long id ) {
+        return new Results<>(orderService.getInProgressOrdersByUserId(id));
+    }
+
+    @GetMapping("/current-user/{id}/finalized")
+    @ResponseStatus(HttpStatus.OK)
+    public Results<OrderDto> getFinalizedOrdersByUserId(@PathVariable("id") long id ) {
+        return new Results<>(orderService.getFinalizedOrdersByUserId(id));
     }
 
     @PutMapping("/current-store/{id}/accept")
