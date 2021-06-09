@@ -1,8 +1,8 @@
 package com.example.springmvcrest.product.domain;
 
 
+import com.example.springmvcrest.offer.domain.Offer;
 import com.example.springmvcrest.order.domain.OrderProductVariant;
-import com.example.springmvcrest.user.simple.domain.Cart;
 import com.example.springmvcrest.user.simple.domain.CartProductVariant;
 import lombok.*;
 
@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Set;
 
 @Data
-@EqualsAndHashCode(exclude = {"product"})
+@EqualsAndHashCode(exclude = {"product","offers"})
 @Entity
 @Builder
 @NoArgsConstructor
@@ -35,6 +35,9 @@ public class ProductVariant {
 
     @OneToMany(mappedBy = "orderProductVariant",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     Set<OrderProductVariant> orderProductVariants=new HashSet<>();
+
+    @ManyToMany(mappedBy = "productVariants")
+    private Set<Offer> offers =new HashSet<Offer>();
 
     private Double price;
     private Integer unit;

@@ -1,5 +1,6 @@
 package com.example.springmvcrest.store.domain;
 
+import com.example.springmvcrest.offer.domain.Offer;
 import com.example.springmvcrest.order.domain.Order;
 import com.example.springmvcrest.policy.domain.Policies;
 import com.example.springmvcrest.user.provider.domain.Provider;
@@ -57,4 +58,7 @@ public class Store {
 
     @OneToOne(cascade = CascadeType.ALL , mappedBy = "store")
     private Policies policies;
+
+    @OneToMany(mappedBy = "store",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
+    private Set<Offer> offers = new HashSet<>();
 }

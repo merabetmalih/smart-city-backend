@@ -44,6 +44,11 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
         return returnErrorMessage(e.getMessage(),HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({OfferException.class})
+    public ResponseEntity<Object> handleCartException(OfferException e) {
+        return returnErrorMessage(e.getMessage(),HttpStatus.NOT_FOUND);
+    }
+
     private ResponseEntity<Object> returnErrorMessage(String errorMessage,HttpStatus httpStatus){
         return new ResponseEntity<Object>(new GenericErrorResponse(errorMessage), new HttpHeaders(), httpStatus);
     }
