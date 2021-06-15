@@ -20,7 +20,10 @@ public class Offer {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String discountCode;
+
+    @Enumerated(EnumType.STRING)
     private OfferType type;
+
     private Double newPrice;
     private Integer percentage;
     private Date startDate;

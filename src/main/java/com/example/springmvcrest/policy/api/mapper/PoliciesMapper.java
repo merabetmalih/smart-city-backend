@@ -12,7 +12,7 @@ public interface PoliciesMapper {
 
     PoliciesDto toDto(Policies policies);
 
-    @Mapping(source = "policiesDto.providerId", target = "store")
+    @Mapping(source = "policiesDto.providerId", target = "store", qualifiedByName = "findStoreByProviderId")
     Policies toModel(PoliciesDto policiesDto);
 
 }

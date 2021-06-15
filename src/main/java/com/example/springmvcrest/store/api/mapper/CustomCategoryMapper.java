@@ -11,6 +11,6 @@ public interface CustomCategoryMapper {
     @Mapping(source = "customCategory.store.provider.id", target = "provider")
     CustomCategoryDto ToDto(CustomCategory customCategory);
 
-    @Mapping(source = "customCategoryDto.provider", target = "store")
+    @Mapping(source = "customCategoryDto.provider", target = "store", qualifiedByName = "findStoreByProviderId")
     CustomCategory ToModel(CustomCategoryDto customCategoryDto);
 }

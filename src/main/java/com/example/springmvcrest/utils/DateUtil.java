@@ -1,5 +1,7 @@
 package com.example.springmvcrest.utils;
 
+import org.mapstruct.Named;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,6 +39,7 @@ public class DateUtil {
         }
     }
 
+    @Named("parseDateTime")
     public static Date parseDateTime(String inDate){
         try {SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
             dateFormat.setLenient(false);

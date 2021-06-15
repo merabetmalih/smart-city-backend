@@ -22,6 +22,7 @@ public class StoreService {
     private final StoreMapper storeMapper;
     private final StoreInformationMapper storeInformationMapper;
 
+    @Named("findStoreByProviderId")
     public Store findStoreByProviderId(Long id){
         return storeRepository.findByProviderId(id)
                 .orElseThrow(StoreNotFoundException::new);

@@ -17,7 +17,7 @@ public class OfferController {
 
     @PostMapping("/create")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public Response<String> createOffer(@ModelAttribute OfferCreationDto offerCreationDto){
+    public Response<String> createOffer(@RequestBody OfferCreationDto offerCreationDto){
         return offerService.createOffer(offerCreationDto);
     }
 
@@ -29,7 +29,7 @@ public class OfferController {
 
     @PutMapping("/update")
     @ResponseStatus(value = HttpStatus.OK)
-    public Response<String> updateOffer(@ModelAttribute OfferCreationDto offerCreationDto){
+    public Response<String> updateOffer(@RequestBody OfferCreationDto offerCreationDto){
         return offerService.updateOffer(offerCreationDto);
     }
 }
