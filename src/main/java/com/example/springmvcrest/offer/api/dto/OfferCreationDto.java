@@ -15,5 +15,5 @@ public class OfferCreationDto {
     private String startDate;
     private String endDate;
     private Long providerId;
-    private Set<Long> productVariants;
+    private Set<Long> productVariantsId;
 }

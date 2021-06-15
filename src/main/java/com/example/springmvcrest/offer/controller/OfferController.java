@@ -1,8 +1,10 @@
 package com.example.springmvcrest.offer.controller;
 
 import com.example.springmvcrest.offer.api.dto.OfferCreationDto;
+import com.example.springmvcrest.offer.api.dto.OfferDto;
 import com.example.springmvcrest.offer.service.OfferService;
 import com.example.springmvcrest.utils.Response;
+import com.example.springmvcrest.utils.Results;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -11,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @Slf4j
 @AllArgsConstructor
-@RequestMapping("/api/Offer")
+@RequestMapping("/api/offer")
 public class OfferController {
     private final OfferService offerService;
 
@@ -31,5 +33,11 @@ public class OfferController {
     @ResponseStatus(value = HttpStatus.OK)
     public Response<String> updateOffer(@RequestBody OfferCreationDto offerCreationDto){
         return offerService.updateOffer(offerCreationDto);
+    }
+
+    @GetMapping("/current-provider-offers")
+    @ResponseStatus(HttpStatus.OK)
+    public Results<OfferDto> getOrdersByProviderId(@RequestParam("id") Long id){
+        return new Results<>(offerService.getOffersByProviderId(id));
     }
 }

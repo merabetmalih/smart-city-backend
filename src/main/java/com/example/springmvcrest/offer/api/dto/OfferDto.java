@@ -1,11 +1,13 @@
 package com.example.springmvcrest.offer.api.dto;
 
+import com.example.springmvcrest.offer.domain.OfferState;
 import com.example.springmvcrest.offer.domain.OfferType;
-import com.example.springmvcrest.product.api.dto.ProductVariantDto;
+import com.example.springmvcrest.product.api.dto.ProductDTO;
+import com.example.springmvcrest.product.domain.Product;
 import lombok.Data;
 
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Data
 public class OfferDto {
@@ -16,5 +18,6 @@ public class OfferDto {
     private Integer percentage;
     private Date startDate;
     private Date endDate;
-    private Set<ProductVariantDto> productVariants;
+    private List<ProductDTO> products;
+    private OfferState offerState;
 }
