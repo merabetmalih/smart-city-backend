@@ -105,6 +105,7 @@ public class ProductSearchService {
         return new PageImpl<>(
                 result.hits()
                         .stream()
+                        .filter(product -> !product.getDeleted())
                         .map(productMapper::ToDto)
                         .collect(Collectors.toList()),
                 pageable,
@@ -120,6 +121,7 @@ public class ProductSearchService {
         return productRepository.findAll(pageable)
                 .getContent()
                 .stream()
+                .filter(product -> !product.getDeleted())
                 .map(productMapper::ToDto)
                 .collect(Collectors.toList());
     }

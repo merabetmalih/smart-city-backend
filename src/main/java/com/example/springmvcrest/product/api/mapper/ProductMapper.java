@@ -15,7 +15,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Mapper(componentModel = "spring", uses = { CustomCategoryService.class})
+@Mapper(componentModel = "spring", uses = { CustomCategoryService.class,ProductVariantMapper.class})
 public interface ProductMapper {
 
     @Mapping(source = "attributeValue.attribute.name", target = "attribute")

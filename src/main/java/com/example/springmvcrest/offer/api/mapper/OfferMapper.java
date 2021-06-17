@@ -2,6 +2,7 @@ package com.example.springmvcrest.offer.api.mapper;
 
 import com.example.springmvcrest.offer.api.dto.OfferCreationDto;
 import com.example.springmvcrest.offer.api.dto.OfferDto;
+import com.example.springmvcrest.offer.api.dto.OfferVariantDto;
 import com.example.springmvcrest.offer.domain.Offer;
 import com.example.springmvcrest.offer.service.OfferService;
 import com.example.springmvcrest.product.api.mapper.ProductMapper;
@@ -24,4 +25,5 @@ public interface OfferMapper {
     @Mapping(source = "offer", target = "offerState", qualifiedByName = "setOfferState")
     OfferDto toDto(Offer offer);
 
+    OfferVariantDto toDtoVariant(Offer offer);
 }

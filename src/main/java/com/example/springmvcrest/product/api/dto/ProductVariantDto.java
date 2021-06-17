@@ -1,11 +1,10 @@
 package com.example.springmvcrest.product.api.dto;
 
+import com.example.springmvcrest.offer.api.dto.OfferVariantDto;
 import lombok.Data;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Data
 public class ProductVariantDto {
@@ -14,4 +13,5 @@ public class ProductVariantDto {
     private Double price;
     private Integer unit;
     private String image;
+    private OfferVariantDto offer;
 }

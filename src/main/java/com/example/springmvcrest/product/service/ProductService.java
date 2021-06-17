@@ -36,6 +36,7 @@ public class ProductService {
     public List<ProductDTO> getProductByCustomCategoryId(Long id){
         return productRepository.findAllByCustomCategory_Id(id)
                 .stream()
+                .filter(product -> !product.getDeleted())
                 .map(productMapper::ToDto)
                 .collect(Collectors.toList());
     }
@@ -43,6 +44,7 @@ public class ProductService {
     public  List<ProductDTO> getProductByCustomCategoryStoreProviderId(Long id){
         return productRepository.findAllByCustomCategory_Store_Provider_Id(id)
                 .stream()
+                .filter(product -> !product.getDeleted())
                 .map(productMapper::ToDto)
                 .collect(Collectors.toList());
     }
@@ -50,9 +52,10 @@ public class ProductService {
     @Transactional
     public Response<String> deleteProduct(Long id)
     {
-        productRepository.findById(id)
+        Product product=productRepository.findById(id)
                 .orElseThrow(CustomCategoryNotFoundExeption::new);
-        productRepository.deleteById(id);
+        product.setDeleted(true);
+        productRepository.save(product);
         return new Response<>("deleted.");
     }
 
@@ -62,7 +65,7 @@ public class ProductService {
 
       if(productRepository.findById(productDTO.getId()).isPresent()){
 
-          productRepository.deleteById(productDTO.getId());
+          deleteProduct(productDTO.getId());
           if(productImages!=null){
               saveProductImages(productImages);
           }
@@ -174,13 +177,14 @@ public class ProductService {
 
 
                       Product savedProduct = productRepository.save(Product.builder()
-                              .id(product.getId())
+                              //.id(product.getId())
                               .name(product.getName())
                               .description(product.getDescription())
                               .tags(product.getTags())
                               .productVariants(savedProductVariant)
                               .attributes(savedAttribute)
                               .images(product.getImages())
+                              .deleted(false)
                               .customCategory(customCategoryService.findById(product.getCustomCategory().getId()))
                               .build());
 
@@ -343,6 +347,7 @@ public class ProductService {
                             .productVariants(savedProductVariant)
                             .attributes(savedAttribute)
                             .images(product.getImages())
+                            .deleted(false)
                             .customCategory(customCategoryService.findById(product.getCustomCategory().getId()))
                             .build());
 

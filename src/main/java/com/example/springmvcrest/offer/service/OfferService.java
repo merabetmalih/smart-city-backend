@@ -21,7 +21,6 @@ import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -36,6 +35,73 @@ public class OfferService {
     private final OfferRepository offerRepository;
     private final OfferMapper offerMapper;
     private final ProductMapper productMapper;
+
+    @Transactional
+    public Response<String> createOffer(OfferCreationDto offerCreationDto){
+        if(!DateUtil.isValidDate(offerCreationDto.getStartDate()) || !DateUtil.isValidDate(offerCreationDto.getEndDate())){
+            throw new DateException("error.date.invalid");
+        }
+        offerCreationDto.setId(null);
+        Optional.of(offerCreationDto)
+                .map(offerMapper::toModel)
+                .map(offer-> SetOffer.apply(offer).apply(GetOfferTypes.get()))
+                .map(offerRepository::save);
+        return new Response<>("created.");
+    }
+
+    @Transactional
+    public Response<String> deleteOffer(Long id){
+        Offer offer=offerRepository.findById(id)
+                .orElseThrow(() -> new OfferException("error.offer.notFound"));
+        offerRepository.delete(offer);
+        return new Response<>("deleted.");
+    }
+
+    public Response<String> updateOffer(OfferCreationDto offerCreationDto){
+        if(!DateUtil.isValidDate(offerCreationDto.getStartDate()) || !DateUtil.isValidDate(offerCreationDto.getEndDate())){
+            throw new DateException("error.date.invalid");
+        }
+        Optional.of(offerCreationDto)
+                .map(offerMapper::toModel)
+                .map(offer-> SetOffer.apply(offer).apply(GetOfferTypes.get()))
+                .map(offerRepository::save);
+        return new Response<>("updated.");
+    }
+
+    public List<OfferDto> getOffersByProviderId(Long id){
+        return offerRepository.findByStore_Provider_Id(id).stream()
+                .map(offerMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    private static Function<Offer, Offer> SetOfferFixed= offer -> {
+        offer.setPercentage(0);
+        return offer;
+    };
+
+    private static Function<Offer, Offer> SetOfferPercentage= offer -> {
+        offer.setNewPrice(0.0);
+        return offer;
+    };
+
+    private static Supplier<List<Pair<OfferType,Function<Offer, Offer>>>> GetOfferTypes= ()->{
+        List<Pair<OfferType,Function<Offer, Offer>>> types=new ArrayList<>();
+        types.add(new Pair<>(PERCENTAGE,SetOfferPercentage));
+        types.add(new Pair<>(FIXED,SetOfferFixed));
+        return types;
+    };
+
+    private static Function<Offer,Function<List<Pair<OfferType,Function<Offer, Offer>>>,//two inputs
+            //output
+            Offer>> SetOffer =
+            offer ->(allTypes ->{
+        return allTypes.stream()
+                .filter(type -> type.getKey().equals(offer.getType()))
+                .findFirst()
+                .map(Pair::getValue)
+                .map(func -> func.apply(offer))
+                .orElseThrow(()-> new OfferException("error.offer.type.notFound"));
+    });
 
     @Named("setOfferState")
     public OfferState setOfferState(Offer offer){
@@ -65,70 +131,5 @@ public class OfferService {
                 .peek(key -> key.setProductVariants(map.get(key)))
                 .map(productMapper::ToDto)
                 .collect(Collectors.toList());
-    }
-
-    public List<OfferDto> getOffersByProviderId(Long id){
-        return offerRepository.findByStore_Provider_Id(id).stream()
-                .map(offerMapper::toDto)
-                .collect(Collectors.toList());
-    }
-
-    @Transactional
-    public Response<String> createOffer(OfferCreationDto offerCreationDto){
-        if(!DateUtil.isValidDate(offerCreationDto.getStartDate()) || !DateUtil.isValidDate(offerCreationDto.getEndDate())){
-            throw new DateException("error.date.invalid");
-        }
-
-        offerCreationDto.setId(null);
-        Optional.of(offerCreationDto)
-                .map(offerMapper::toModel)
-                .map(offer-> SetOffer.apply(offer).apply(GetOfferTypes.get()))
-                .map(offerRepository::save);
-        return new Response<>("created.");
-    }
-
-    private static Function<Offer, Offer> SetOfferFixed= offer -> {
-        offer.setPercentage(0);
-        return offer;
-    };
-
-    private static Function<Offer, Offer> SetOfferPercentage= offer -> {
-        offer.setNewPrice(0.0);
-        return offer;
-    };
-
-    private static Supplier<List<Pair<OfferType,Function<Offer, Offer>>>> GetOfferTypes= ()->{
-        List<Pair<OfferType,Function<Offer, Offer>>> types=new ArrayList<>();
-        types.add(new Pair<>(PERCENTAGE,SetOfferPercentage));
-        types.add(new Pair<>(FIXED,SetOfferFixed));
-        return types;
-    };
-
-    private static Function<Offer,Function<List<Pair<OfferType,Function<Offer, Offer>>>,//two inputs
-            //output
-            Offer>> SetOffer = offer ->(allTypes ->{
-
-        return allTypes.stream()
-                .filter(type -> type.getKey().equals(offer.getType()))
-                .findFirst()
-                .map(Pair::getValue)
-                .map(func -> func.apply(offer))
-                .orElseThrow(()-> new OfferException("error.offer.type.notFound"));
-    });
-
-
-    @Transactional
-    public Response<String> deleteOffer(Long id){
-        Offer offer=offerRepository.findById(id)
-                .orElseThrow(() -> new OfferException("error.offer.notFound"));
-        offerRepository.delete(offer);
-        return new Response<>("deleted.");
-    }
-
-    public Response<String> updateOffer(OfferCreationDto offerCreationDto){
-        Optional.of(offerCreationDto)
-                .map(offerMapper::toModel)
-                .map(offerRepository::save);
-        return new Response<>("updated.");
     }
 }

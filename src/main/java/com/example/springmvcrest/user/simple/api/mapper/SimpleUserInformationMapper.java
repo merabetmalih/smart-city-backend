@@ -16,6 +16,9 @@ public interface SimpleUserInformationMapper {
     SimpleUserInformationDto ToDto(SimpleUser simpleUser);
     @Named("getStringDate")
     default String getStringDate(Date date) {
-        return DateUtil.parseString(date);
+        if(date!=null){
+            return DateUtil.parseString(date);
+        }
+        return null;
     }
 }

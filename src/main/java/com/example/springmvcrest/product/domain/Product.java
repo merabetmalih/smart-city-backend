@@ -61,5 +61,6 @@ public class Product {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private List<Images> images = new ArrayList<>();
 
+    private Boolean deleted=false;
 
 }
