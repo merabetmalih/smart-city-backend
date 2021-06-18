@@ -128,6 +128,7 @@ public class OfferService {
             }
         }
         return map.keySet().stream()
+                .filter(product -> !product.getDeleted())
                 .peek(key -> key.setProductVariants(map.get(key)))
                 .map(productMapper::ToDto)
                 .collect(Collectors.toList());

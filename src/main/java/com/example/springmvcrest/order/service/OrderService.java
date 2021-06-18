@@ -5,12 +5,15 @@ import com.example.springmvcrest.bill.doamin.Bill;
 import com.example.springmvcrest.bill.service.BillService;
 import com.example.springmvcrest.notification.domain.Notification;
 import com.example.springmvcrest.notification.service.NotificationService;
+import com.example.springmvcrest.offer.domain.Offer;
 import com.example.springmvcrest.order.api.dto.OrderCreationDto;
 import com.example.springmvcrest.order.api.dto.OrderDto;
 import com.example.springmvcrest.order.api.mapper.OrderMapper;
 import com.example.springmvcrest.order.domain.*;
 import com.example.springmvcrest.order.repository.OrderProductVariantRepository;
 import com.example.springmvcrest.order.repository.OrderRepository;
+import com.example.springmvcrest.product.domain.ProductVariant;
+import com.example.springmvcrest.product.service.ProductVariantService;
 import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.user.simple.domain.Cart;
 import com.example.springmvcrest.user.simple.domain.CartProductVariant;
@@ -46,6 +49,7 @@ public class OrderService {
     private final OrderMapper orderMapper;
     private final NotificationService notificationService;
     private final BillService billService;
+    private final ProductVariantService productVariantService;
 
     public List<OrderDto> getInProgressOrdersByUserId(Long id){
         return orderRepository.findByUser_Id(id).stream()
@@ -266,8 +270,28 @@ public class OrderService {
 
     private Double orderTotal(List<CartProductVariant> cartProductVariants){
         return cartProductVariants.stream()
-                .map(cartProductVariant-> cartProductVariant.getUnit()*cartProductVariant.getCartProductVariant().getPrice())
-        .mapToDouble(Double::doubleValue).sum();
+                .map(cartProductVariant -> getVariantPrice(cartProductVariant.getCartProductVariant()) * cartProductVariant.getUnit())
+                .mapToDouble(Double::doubleValue)
+                .sum();
+    }
+
+    private Double getVariantPrice(ProductVariant productVariant){
+        Double price=0.0;
+        Offer offer=productVariantService.getVariantOffer(productVariant.getOffers());
+        if(offer!=null){
+            switch (offer.getType()){
+                case FIXED:{
+                    price= productVariant.getPrice()-offer.getNewPrice();
+                }
+
+                case PERCENTAGE:{
+                    price= productVariant.getPrice()-(productVariant.getPrice()*offer.getPercentage()/100);
+                }
+            }
+        }else {
+            price= productVariant.getPrice();
+        }
+        return price;
     }
 
     private OrderProductVariant initOrderProductVariant(Order order,CartProductVariant cartProductVariant){

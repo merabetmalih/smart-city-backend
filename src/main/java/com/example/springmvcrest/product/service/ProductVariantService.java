@@ -24,8 +24,19 @@ public class ProductVariantService {
                 .orElseThrow(MultipleStoreException::new);
     }
 
+    public Offer getVariantOffer(Set<Offer> offers){
+        Date todayDate=new Date();
+        if (offers!=null){
+            return offers.stream()
+                    .filter(offer -> todayDate.after(offer.getStartDate()) && todayDate.before(offer.getEndDate()))
+                    .min(Comparator.comparing(Offer::getStartDate, Comparator.naturalOrder()))
+                    .orElse(null);
+        }
+        return null;
+    }
+
     @Named("getVariantOffer")
-    public OfferVariantDto getVariantOffer(Set<Offer> offers){
+    public OfferVariantDto getVariantOfferDto(Set<Offer> offers){
         Date todayDate=new Date();
         if (offers!=null){
             return offers.stream()
@@ -35,11 +46,5 @@ public class ProductVariantService {
                     .orElse(null);
         }
         return null;
-       /* Date todayDate=new Date();
-        return offers.stream()
-                .filter(offer -> todayDate.after(offer.getStartDate()) && todayDate.before(offer.getEndDate()))
-                .min(Comparator.comparing(Offer::getStartDate, Comparator.naturalOrder()))
-                .map(offerMapper::toDtoVariant)
-                .orElse(null);*/
     }
 }

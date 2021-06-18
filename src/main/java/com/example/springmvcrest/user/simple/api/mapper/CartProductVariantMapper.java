@@ -2,6 +2,7 @@ package com.example.springmvcrest.user.simple.api.mapper;
 
 import com.example.springmvcrest.product.api.dto.ImagesDTO;
 import com.example.springmvcrest.product.api.mapper.ProductMapper;
+import com.example.springmvcrest.product.api.mapper.ProductVariantMapper;
 import com.example.springmvcrest.product.domain.Images;
 import com.example.springmvcrest.product.domain.Product;
 import com.example.springmvcrest.user.simple.api.dto.CartProductVariantDto;
@@ -10,7 +11,7 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-@Mapper(componentModel = "spring",uses = {ProductMapper.class})
+@Mapper(componentModel = "spring",uses = {ProductMapper.class, ProductVariantMapper.class})
 public interface CartProductVariantMapper {
 
     @Mapping(source = "cartProductVariant.cartProductVariant", target = "productVariant")

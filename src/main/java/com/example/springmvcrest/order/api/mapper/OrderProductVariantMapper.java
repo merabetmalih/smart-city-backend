@@ -4,12 +4,13 @@ import com.example.springmvcrest.order.api.dto.OrderProductVariantDto;
 import com.example.springmvcrest.order.domain.OrderProductVariant;
 import com.example.springmvcrest.product.api.dto.ImagesDTO;
 import com.example.springmvcrest.product.api.mapper.ProductMapper;
+import com.example.springmvcrest.product.api.mapper.ProductVariantMapper;
 import com.example.springmvcrest.product.domain.Product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-@Mapper(componentModel = "spring",uses = {ProductMapper.class})
+@Mapper(componentModel = "spring",uses = {ProductMapper.class, ProductVariantMapper.class})
 public interface OrderProductVariantMapper {
 
     @Mapping(source = "orderProductVariant.orderProductVariant", target = "productVariant")
