@@ -53,7 +53,8 @@ public class OfferService {
     public Response<String> deleteOffer(Long id){
         Offer offer=offerRepository.findById(id)
                 .orElseThrow(() -> new OfferException("error.offer.notFound"));
-        offerRepository.delete(offer);
+        offer.setDeleted(true);
+        offerRepository.save(offer);
         return new Response<>("deleted.");
     }
 
@@ -70,6 +71,7 @@ public class OfferService {
 
     public List<OfferDto> getOffersByProviderId(Long id){
         return offerRepository.findByStore_Provider_Id(id).stream()
+                .filter(offer -> !offer.getDeleted())
                 .map(offerMapper::toDto)
                 .collect(Collectors.toList());
     }

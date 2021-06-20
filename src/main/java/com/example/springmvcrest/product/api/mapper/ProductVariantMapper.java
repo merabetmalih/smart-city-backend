@@ -6,6 +6,7 @@ import com.example.springmvcrest.product.domain.ProductVariant;
 import com.example.springmvcrest.product.service.ProductVariantService;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 
 @Mapper(componentModel = "spring" ,uses = {ProductVariantService.class, OfferMapper.class,ProductMapper.class})
 public interface ProductVariantMapper {
@@ -13,5 +14,8 @@ public interface ProductVariantMapper {
     ProductVariant toModel(ProductVariantDto productVariantDto);
 
     @Mapping(source = "productVariant.offers", target = "offer", qualifiedByName = "getVariantOffer")
-    ProductVariantDto toDto(ProductVariant productVariant);//
+    ProductVariantDto toDto(ProductVariant productVariant);
+
+    @Named("toDtoOrder")
+    ProductVariantDto toDtoOrder(ProductVariant productVariant);
 }

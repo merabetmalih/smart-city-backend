@@ -37,6 +37,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.example.springmvcrest.offer.domain.OfferType.FIXED;
+import static com.example.springmvcrest.offer.domain.OfferType.PERCENTAGE;
 import static com.example.springmvcrest.order.domain.OrderStep.*;
 import static com.example.springmvcrest.order.domain.OrderType.DELIVERY;
 
@@ -242,6 +244,7 @@ public class OrderService {
     private Order setOrderProductVariantByStore(Order order, List<CartProductVariant> cartProductVariants){
         Set<OrderProductVariant> orderProductVariants = cartProductVariants.stream()
                 .map(variant -> initOrderProductVariant(order, variant))
+                .map(this::setOffer)
                 .map(orderProductVariantRepository::save)
                 .collect(Collectors.toSet());
         order.setOrderProductVariants(orderProductVariants);
@@ -249,6 +252,14 @@ public class OrderService {
         return order;
     }
 
+    private OrderProductVariant setOffer(OrderProductVariant orderProductVariant){
+        orderProductVariant.setOffer(
+                productVariantService.getVariantOffer(
+                        orderProductVariant.getOrderProductVariant().getOffers()
+                )
+        );
+        return orderProductVariant;
+    }
     private Bill setOrderBill(Order order, List<CartProductVariant> cartProductVariants){
         Bill bill=Bill.builder()
                 .total(orderTotal(cartProductVariants))
@@ -279,17 +290,14 @@ public class OrderService {
         Double price=0.0;
         Offer offer=productVariantService.getVariantOffer(productVariant.getOffers());
         if(offer!=null){
-            switch (offer.getType()){
-                case FIXED:{
-                    price= productVariant.getPrice()-offer.getNewPrice();
-                }
-
-                case PERCENTAGE:{
-                    price= productVariant.getPrice()-(productVariant.getPrice()*offer.getPercentage()/100);
-                }
+            if(offer.getType()==FIXED){
+                price = productVariant.getPrice()-offer.getNewPrice();
+            }
+            if(offer.getType()==PERCENTAGE){
+                price = productVariant.getPrice()-(productVariant.getPrice()*offer.getPercentage()/100);
             }
         }else {
-            price= productVariant.getPrice();
+            price = productVariant.getPrice();
         }
         return price;
     }

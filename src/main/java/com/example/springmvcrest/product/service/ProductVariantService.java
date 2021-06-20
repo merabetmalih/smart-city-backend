@@ -40,6 +40,7 @@ public class ProductVariantService {
         Date todayDate=new Date();
         if (offers!=null){
             return offers.stream()
+                    .filter(offer -> !offer.getDeleted())
                     .filter(offer -> todayDate.after(offer.getStartDate()) && todayDate.before(offer.getEndDate()))
                     .min(Comparator.comparing(Offer::getStartDate, Comparator.naturalOrder()))
                     .map(offerMapper::toDtoVariant)

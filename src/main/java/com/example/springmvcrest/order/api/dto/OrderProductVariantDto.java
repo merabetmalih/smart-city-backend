@@ -1,5 +1,6 @@
 package com.example.springmvcrest.order.api.dto;
 
+import com.example.springmvcrest.offer.api.dto.OfferVariantDto;
 import com.example.springmvcrest.order.domain.OrderProductVariantId;
 import com.example.springmvcrest.product.api.dto.ImagesDTO;
 import com.example.springmvcrest.product.api.dto.ProductVariantDto;
@@ -12,4 +13,5 @@ public class OrderProductVariantDto {
     private Integer quantity;
     private ImagesDTO productImage;
     private String productName;
+    private OfferVariantDto offer;
 }

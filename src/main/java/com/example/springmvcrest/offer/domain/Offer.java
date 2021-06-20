@@ -38,4 +38,6 @@ public class Offer {
             joinColumns = @JoinColumn(name = "offer_id"),
             inverseJoinColumns = @JoinColumn(name = "productVariant_id"))
     private Set<ProductVariant> productVariants=new HashSet<ProductVariant>();
+
+    private Boolean deleted=false;
 }

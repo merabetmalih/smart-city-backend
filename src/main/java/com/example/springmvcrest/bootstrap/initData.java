@@ -1,5 +1,6 @@
 package com.example.springmvcrest.bootstrap;
 
+import com.example.springmvcrest.offer.repository.OfferRepository;
 import com.example.springmvcrest.product.repository.ProductRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.context.ApplicationListener;
@@ -11,14 +12,14 @@ import java.util.stream.Collectors;
 @Component
 @AllArgsConstructor
 public class initData implements ApplicationListener<ContextRefreshedEvent> {
-    private final ProductRepository productRepository;
+    private final OfferRepository offerRepository;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        productRepository.findAll()
+        offerRepository.findAll()
                 .stream()
                 .peek(product -> product.setDeleted(false))
-                .map(productRepository::save)
+                .map(offerRepository::save)
                 .collect(Collectors.toList());
     }
 }

@@ -10,10 +10,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.Named;
 
-@Mapper(componentModel = "spring",uses = {ProductMapper.class, ProductVariantMapper.class})
+@Mapper(componentModel = "spring",uses = {ProductVariantMapper.class})
 public interface OrderProductVariantMapper {
 
-    @Mapping(source = "orderProductVariant.orderProductVariant", target = "productVariant")
+    @Mapping(source = "orderProductVariant.orderProductVariant", target = "productVariant",qualifiedByName = "toDtoOrder")
     @Mapping(source = "orderProductVariant.orderProductVariant.product", target = "productImage", qualifiedByName = "getParentProductImage")
     @Mapping(source = "orderProductVariant.orderProductVariant.product", target = "productName", qualifiedByName = "getParentProductName")
     OrderProductVariantDto toDto(OrderProductVariant orderProductVariant);
