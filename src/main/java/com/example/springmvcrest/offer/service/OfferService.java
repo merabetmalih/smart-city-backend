@@ -62,11 +62,22 @@ public class OfferService {
         if(!DateUtil.isValidDate(offerCreationDto.getStartDate()) || !DateUtil.isValidDate(offerCreationDto.getEndDate())){
             throw new DateException("error.date.invalid");
         }
+        Offer oldOffer=offerRepository.findById(offerCreationDto.getId())
+                .orElseThrow(() -> new OfferException("error.offer.notFound"));
+        oldOffer.setDeleted(true);
+
         Optional.of(offerCreationDto)
                 .map(offerMapper::toModel)
+                .map(offer -> setOfferParent(offer,oldOffer))
                 .map(offer-> SetOffer.apply(offer).apply(GetOfferTypes.get()))
                 .map(offerRepository::save);
         return new Response<>("updated.");
+    }
+
+    private Offer setOfferParent(Offer offer,Offer oldOffer){
+        offer.setParentOffer(oldOffer);
+        offer.setId(null);
+        return offer;
     }
 
     public List<OfferDto> getOffersByProviderId(Long id){

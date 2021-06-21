@@ -2,6 +2,7 @@ package com.example.springmvcrest.offer.domain;
 
 import com.example.springmvcrest.product.domain.ProductVariant;
 import com.example.springmvcrest.store.domain.Store;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 
 import javax.persistence.*;
@@ -40,4 +41,9 @@ public class Offer {
     private Set<ProductVariant> productVariants=new HashSet<ProductVariant>();
 
     private Boolean deleted=false;
+
+    @ManyToOne
+    @JoinColumn(referencedColumnName = "id")
+    @JsonBackReference
+    private Offer parentOffer;
 }
