@@ -36,8 +36,8 @@ public class SimpleUser extends User {
 
     @ManyToMany
     @JoinTable(name = "simple_users_category",
-            joinColumns = @JoinColumn(name = "category_id"),
-            inverseJoinColumns = @JoinColumn(name = "users_id"))
+            joinColumns = @JoinColumn(name = "users_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> interestCenter = new HashSet<>();
 
     @Singular

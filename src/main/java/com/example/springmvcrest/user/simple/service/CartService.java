@@ -55,7 +55,10 @@ public class CartService {
                 .map(simpleUserService::findById)
                 .map(SimpleUser::getCart)
                 .map(cartMapper::toDto)
-                .orElseThrow(() -> new CartException("error.cart.userCart"));
+                .orElse(
+                        cartMapper.toDto(
+                                setUserCart(simpleUserService.findById(userId))
+                        ));
     }
 
     private CartProductVariant getCartProductVariant(Long cartId,Long variantId){

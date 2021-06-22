@@ -60,7 +60,6 @@ public class LocalStorageService implements FileStorage {
     private String prepareDirectory(String path) {
         try {
             String dir = String.format("%s/%s", getHomeDirectory(), path);
-            System.out.println(dir);
             Path fullPath = Paths.get(dir);
             if (!fullPath.toFile().exists()) {
                 Files.createDirectory(fullPath);
