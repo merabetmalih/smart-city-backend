@@ -64,7 +64,7 @@ public class OfferService {
         }
         Offer oldOffer=offerRepository.findById(offerCreationDto.getId())
                 .orElseThrow(() -> new OfferException("error.offer.notFound"));
-        oldOffer.setDeleted(true);
+        deleteOffer(oldOffer.getId());
 
         Optional.of(offerCreationDto)
                 .map(offerMapper::toModel)

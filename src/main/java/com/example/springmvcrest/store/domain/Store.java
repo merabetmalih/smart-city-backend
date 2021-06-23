@@ -3,6 +3,7 @@ package com.example.springmvcrest.store.domain;
 import com.example.springmvcrest.offer.domain.Offer;
 import com.example.springmvcrest.order.domain.Order;
 import com.example.springmvcrest.policy.domain.Policies;
+import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.user.provider.domain.Provider;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
@@ -43,10 +44,10 @@ public class Store {
     private Provider provider;
 
     @ManyToMany
-    @JoinTable(name = "store_defaultCategory",
+    @JoinTable(name = "store_category",
             joinColumns = @JoinColumn(name = "store_id"),
-            inverseJoinColumns = @JoinColumn(name = "defaultCategory_id"))
-    private Set<DefaultCategory> defaultCategories =new HashSet<DefaultCategory>();
+            inverseJoinColumns = @JoinColumn(name = "category_id"))
+    private Set<Category> defaultCategories = new HashSet<>();
 
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")

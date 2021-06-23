@@ -1,6 +1,9 @@
 package com.example.springmvcrest.store.service;
 
+import com.example.springmvcrest.product.domain.Category;
+import com.example.springmvcrest.product.service.CategoryService;
 import com.example.springmvcrest.store.api.dto.StoreDto;
+import com.example.springmvcrest.store.api.dto.StoreInformationCreationDto;
 import com.example.springmvcrest.store.api.dto.StoreInformationDto;
 import com.example.springmvcrest.store.api.mapper.StoreInformationMapper;
 import com.example.springmvcrest.store.api.mapper.StoreMapper;
@@ -14,6 +17,8 @@ import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -21,6 +26,8 @@ public class StoreService {
     private final StoreRepository storeRepository;
     private final StoreMapper storeMapper;
     private final StoreInformationMapper storeInformationMapper;
+    private final CategoryService categoryService;
+
 
     @Named("findStoreByProviderId")
     public Store findStoreByProviderId(Long id){
@@ -48,11 +55,16 @@ public class StoreService {
                 .orElseThrow(MultipleStoreException::new);
     }
 
-    public Response<String> setStoreInformation(StoreInformationDto storeInformationDto){
+    public Response<String> setStoreInformation(StoreInformationCreationDto storeInformationDto){
         Store store = findStoreByProviderId(storeInformationDto.getProviderId());
         store.setAddress(storeInformationDto.getAddress());
         store.setTelephoneNumber(storeInformationDto.getTelephoneNumber());
         store.setDefaultTelephoneNumber(storeInformationDto.getDefaultTelephoneNumber());
+
+        Set<Category> collect = storeInformationDto.getDefaultCategories().stream()
+                .map(categoryService::findCategoryByName)
+                .collect(Collectors.toSet());
+        store.setDefaultCategories(collect);
         storeRepository.save(store);
         return new Response<>("created.");
     }

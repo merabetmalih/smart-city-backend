@@ -18,7 +18,7 @@ public class CategoryController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public Results<CategoryDto> searchProduct() {
+    public Results<CategoryDto> getAllCategories() {
         return  new Results<>(categoryService.getAllCategory());
     }
 }

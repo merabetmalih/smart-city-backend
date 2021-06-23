@@ -2,9 +2,9 @@ package com.example.springmvcrest.store.controller;
 
 import com.example.springmvcrest.store.api.dto.CustomCategoryDto;
 import com.example.springmvcrest.store.api.dto.StoreDto;
+import com.example.springmvcrest.store.api.dto.StoreInformationCreationDto;
 import com.example.springmvcrest.store.api.dto.StoreInformationDto;
 import com.example.springmvcrest.store.service.CustomCategoryService;
-import com.example.springmvcrest.store.service.DefaultCategoryService;
 import com.example.springmvcrest.store.service.StoreService;
 import com.example.springmvcrest.utils.FileUploadUtil;
 import com.example.springmvcrest.utils.Response;
@@ -23,7 +23,6 @@ import java.io.IOException;
     @RequestMapping("/api/store")
 public class StoreController {
     private final StoreService storeService;
-    private final DefaultCategoryService defaultCategoryService;
     private final CustomCategoryService customCategoryService;
 
     @PostMapping("/create")
@@ -36,8 +35,8 @@ public class StoreController {
 
     @PostMapping("/Information")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public Response<String> setStoreInformation(@RequestBody StoreInformationDto storeInformationDto){
-        return storeService.setStoreInformation(storeInformationDto);
+    public Response<String> setStoreInformation(@RequestBody StoreInformationCreationDto storeInformationCreationDto){
+        return storeService.setStoreInformation(storeInformationCreationDto);
     }
 
     @GetMapping("/Information/{id}")
@@ -52,11 +51,11 @@ public class StoreController {
         return storeService.getStoreInformationByStoreId(id);
     }
 
-    @GetMapping("/category/all")
+    /*@GetMapping("/category/all")
     @ResponseStatus(value = HttpStatus.OK)
     public Results<String> getAllCategoryStore(){
         return new Results<>(defaultCategoryService.findAll());
-    }
+    }*/
 
 
     @PostMapping("/customCategory/create")
