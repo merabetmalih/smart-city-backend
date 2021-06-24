@@ -4,6 +4,7 @@ import com.example.springmvcrest.bill.api.BillTotalDto;
 import com.example.springmvcrest.bill.doamin.Bill;
 import com.example.springmvcrest.bill.service.BillService;
 import com.example.springmvcrest.notification.domain.Notification;
+import com.example.springmvcrest.notification.domain.NotificationType;
 import com.example.springmvcrest.notification.service.NotificationService;
 import com.example.springmvcrest.offer.domain.Offer;
 import com.example.springmvcrest.order.api.dto.OrderCreationDto;
@@ -235,6 +236,7 @@ public class OrderService {
                 Notification.builder()
                         .title("New order")
                         .message("New order arrived, check it!")
+                        .type(NotificationType.ORDER)
                         .topic("provider-"+order.getStore().getProvider().getEmail().replace("@",""))
                         .build()
         );

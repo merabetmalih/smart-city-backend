@@ -21,7 +21,7 @@ public class FCMService {
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         String jsonOutput = gson.toJson(message);
         String response = sendAndGetResponse(message);
-        log.info("Sent message with data. Topic: " + data.get("topic") + ", " + response+ " msg "+jsonOutput);
+        log.info("Sent message with data. Topic: " + data.get("topic") + ", " + "Type "+ data.get("type")+", "+ response+ " msg "+jsonOutput);
     }
 
     private Message getPreconfiguredMessageWithDataCustomWithTopic(Map<String, String> data, Notification notification) {

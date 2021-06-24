@@ -10,6 +10,7 @@ import lombok.*;
 public class Notification {
     private String title;
     private String message;
+    private NotificationType type;
     private String topic;
     private String token;
 }

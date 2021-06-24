@@ -29,6 +29,12 @@ public class StoreService {
     private final CategoryService categoryService;
 
 
+    @Named("getStoreName")
+    public String getStoreName(Store store) { return  store.getName(); }
+
+    @Named("getStoreAddress")
+    public String getStoreAddress(Store store) { return  store.getAddress(); }
+
     @Named("findStoreByProviderId")
     public Store findStoreByProviderId(Long id){
         return storeRepository.findByProviderId(id)

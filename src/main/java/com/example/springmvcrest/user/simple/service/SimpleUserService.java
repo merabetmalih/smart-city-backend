@@ -1,12 +1,12 @@
 package com.example.springmvcrest.user.simple.service;
 
+import com.example.springmvcrest.flashDeal.api.dto.FlashDealDto;
+import com.example.springmvcrest.flashDeal.api.mapper.FlashDealMapper;
+import com.example.springmvcrest.flashDeal.domain.FlashDeal;
 import com.example.springmvcrest.product.api.dto.CategoryDto;
 import com.example.springmvcrest.product.api.mapper.CategoryMapper;
 import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.product.service.CategoryService;
-import com.example.springmvcrest.store.api.dto.StoreInformationDto;
-import com.example.springmvcrest.store.service.exception.MultipleStoreException;
-import com.example.springmvcrest.store.service.exception.StoreNotFoundException;
 import com.example.springmvcrest.user.api.dto.UserDto;
 import com.example.springmvcrest.user.api.dto.UserRegestrationDto;
 import com.example.springmvcrest.user.api.mapper.UserMapper;
@@ -23,7 +23,7 @@ import com.example.springmvcrest.utils.Response;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.text.SimpleDateFormat;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -38,21 +38,21 @@ public class SimpleUserService {
     private final CategoryService categoryService;
     private final CategoryMapper categoryMapper;
     private final SimpleUserInformationMapper simpleUserInformationMapper;
+    private final FlashDealMapper flashDealMapper;
+
 
     public Optional<SimpleUser> findSimpleUserByEmail(String email) {
         return simpleUserRepository.findByEmail(email);
     }
 
-    public List<SimpleUser> findAllSimpleUsers() {
-        return simpleUserRepository.findAll();
+    public List<SimpleUser> findSimpleUserByInterestCenter(Set<Category> categories) {
+        return simpleUserRepository.findDistinctByInterestCenterIn(categories);
     }
 
     private Boolean isPresentSimpleUserByEmail(String email)
     {
         return simpleUserRepository.findByEmail(email).isPresent();
     }
-
-
 
     public SimpleUser findById(Long id) {
         return simpleUserRepository.findById(id)
@@ -108,5 +108,24 @@ public class SimpleUserService {
                 .map(simpleUserInformationMapper::ToDto)
                 .orElseThrow(() -> new SimpleUserException("error.user.information"));
 
+    }
+
+    public List<FlashDealDto> getUserFlashDeals(Long userId){
+        return findById(userId).getFlashDeals().stream()
+                .map(flashDealMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    private static final int maxFlashDealsList = 3;
+    public void setFlashDeal(SimpleUser simpleUser, FlashDeal flashDeal){
+        if(simpleUser.getFlashDeals().size()>=maxFlashDealsList){
+            FlashDeal oldFlashDeal = simpleUser.getFlashDeals()
+                    .stream()
+                    .min(Comparator.comparing(FlashDeal::getCreateAt, Comparator.naturalOrder()))
+                    .orElse(null);
+            simpleUser.getFlashDeals().remove(oldFlashDeal);
+        }
+        simpleUser.getFlashDeals().add(flashDeal);
+        simpleUserRepository.save(simpleUser);
     }
 }

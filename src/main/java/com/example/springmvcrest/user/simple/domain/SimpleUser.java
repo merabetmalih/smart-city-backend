@@ -1,6 +1,7 @@
 package com.example.springmvcrest.user.simple.domain;
 
 import com.example.springmvcrest.address.domain.Address;
+import com.example.springmvcrest.flashDeal.domain.FlashDeal;
 import com.example.springmvcrest.order.domain.Order;
 import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.user.user.domain.Authority;
@@ -39,6 +40,12 @@ public class SimpleUser extends User {
             joinColumns = @JoinColumn(name = "users_id"),
             inverseJoinColumns = @JoinColumn(name = "category_id"))
     private Set<Category> interestCenter = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "simple_users_flash_deals",
+            joinColumns = @JoinColumn(name = "users_id"),
+            inverseJoinColumns = @JoinColumn(name = "flashDeals_id"))
+    private Set<FlashDeal> flashDeals = new HashSet<>();
 
     @Singular
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)

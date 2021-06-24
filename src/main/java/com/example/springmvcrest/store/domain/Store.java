@@ -1,5 +1,6 @@
 package com.example.springmvcrest.store.domain;
 
+import com.example.springmvcrest.flashDeal.domain.FlashDeal;
 import com.example.springmvcrest.offer.domain.Offer;
 import com.example.springmvcrest.order.domain.Order;
 import com.example.springmvcrest.policy.domain.Policies;
@@ -53,6 +54,9 @@ public class Store {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
     @IndexedEmbedded
     private Set<CustomCategory> customCategories = new HashSet<>();
+
+    @OneToMany(mappedBy = "store",cascade =  {CascadeType.MERGE,CascadeType.REMOVE})
+    private Set<FlashDeal> flashDeals = new HashSet<>();
 
     @OneToMany(mappedBy = "store",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     private Set<Order> orders = new HashSet<>();

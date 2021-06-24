@@ -1,6 +1,7 @@
 package com.example.springmvcrest.user.simple.controller;
 
 
+import com.example.springmvcrest.flashDeal.api.dto.FlashDealDto;
 import com.example.springmvcrest.product.api.dto.CategoryDto;
 import com.example.springmvcrest.user.api.dto.UserDto;
 import com.example.springmvcrest.user.api.dto.UserRegestrationDto;
@@ -50,5 +51,11 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.OK)
     public SimpleUserInformationDto getUserInformation(@PathVariable(value = "id") Long id){
         return simpleUserService.getUserInformation(id);
+    }
+
+    @GetMapping("/flash/{id}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Results<FlashDealDto> getUserFlashDeals(@PathVariable(value = "id") Long id){
+        return new Results<>(simpleUserService.getUserFlashDeals(id));
     }
 }

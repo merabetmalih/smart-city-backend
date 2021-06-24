@@ -18,11 +18,6 @@ public interface OrderMapper {
     @Mapping(source = "order.store", target = "storeName", qualifiedByName = "getStoreName")
     @Mapping(source = "order.store", target = "storeAddress", qualifiedByName = "getStoreAddress")
     OrderDto toDto(Order order);
-    @Named("getStoreName")
-    default String getStoreName(Store store) { return  store.getName(); }
-    @Named("getStoreAddress")
-    default String getStoreAddress(Store store) { return  store.getAddress(); }
-
 
     @Mapping(source = "orderCreationDto.userId", target = "user")
     @Mapping(source = "orderCreationDto.storeId", target = "store", qualifiedByName = "findStoreById")

@@ -26,6 +26,7 @@ public class AndroidFcmNotificationService implements NotificationService{
     private Map<String, String> getSamplePayloadDataCustom(Notification notification) {
         Map<String, String> pushData = new HashMap<>();
         pushData.put("title", notification.getTitle());
+        pushData.put("type",notification.getType().toString());
         pushData.put("message", notification.getMessage());
         return pushData;
     }
