@@ -49,7 +49,12 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
         return returnErrorMessage(e.getMessage(),HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler({FlashDealException.class})
+    public ResponseEntity<Object> handleFlashDealException(FlashDealException e) {
+        return returnErrorMessage(e.getMessage(),HttpStatus.NOT_FOUND);
+    }
+
     private ResponseEntity<Object> returnErrorMessage(String errorMessage,HttpStatus httpStatus){
-        return new ResponseEntity<Object>(new GenericErrorResponse(errorMessage), new HttpHeaders(), httpStatus);
+        return new ResponseEntity<Object>(errorMessage, new HttpHeaders(), httpStatus);
     }
 }

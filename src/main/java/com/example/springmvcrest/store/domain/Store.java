@@ -1,6 +1,7 @@
 package com.example.springmvcrest.store.domain;
 
 import com.example.springmvcrest.flashDeal.domain.FlashDeal;
+import com.example.springmvcrest.flashDeal.domain.PeriodicityFlash;
 import com.example.springmvcrest.offer.domain.Offer;
 import com.example.springmvcrest.order.domain.Order;
 import com.example.springmvcrest.policy.domain.Policies;
@@ -11,6 +12,7 @@ import lombok.*;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -66,4 +68,9 @@ public class Store {
 
     @OneToMany(mappedBy = "store",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     private Set<Offer> offers = new HashSet<>();
+
+    private Long transmittedFlash;
+    private LocalDate lastFlashStart;
+    @Enumerated(EnumType.STRING)
+    private PeriodicityFlash periodicityFlash;
 }

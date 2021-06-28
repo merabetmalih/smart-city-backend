@@ -4,21 +4,36 @@ import com.example.springmvcrest.flashDeal.api.dto.FlashDealCreationDto;
 import com.example.springmvcrest.flashDeal.api.dto.FlashDealDto;
 import com.example.springmvcrest.flashDeal.api.mapper.FlashDealMapper;
 import com.example.springmvcrest.flashDeal.domain.FlashDeal;
+import com.example.springmvcrest.flashDeal.domain.PeriodicityFlash;
 import com.example.springmvcrest.flashDeal.repository.FlashDealRepository;
 import com.example.springmvcrest.notification.domain.Notification;
 import com.example.springmvcrest.notification.domain.NotificationType;
 import com.example.springmvcrest.notification.service.NotificationService;
 import com.example.springmvcrest.product.domain.Category;
+import com.example.springmvcrest.store.domain.Store;
+import com.example.springmvcrest.store.service.StoreService;
 import com.example.springmvcrest.user.simple.service.SimpleUserService;
+import com.example.springmvcrest.utils.Errorhandler.FlashDealException;
 import com.example.springmvcrest.utils.Response;
+import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.TemporalAdjusters;
+import java.time.temporal.WeekFields;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import static com.example.springmvcrest.flashDeal.domain.PeriodicityFlash.*;
 
 @Service
 @AllArgsConstructor
@@ -27,17 +42,25 @@ public class FlashDealService {
     private final FlashDealMapper flashDealMapper;
     private final NotificationService notificationService;
     private final SimpleUserService simpleUserService;
+    private final StoreService storeService;
+
 
     @Transactional
     public Response<String> createFlashDeal(FlashDealCreationDto flashDealCreationDto){
         flashDealCreationDto.setId(null);
 
+        Long maxFlash=2L;
+        PeriodicityFlash periodicityFlash=WEEK;
+
         Optional.of(flashDealCreationDto)
                 .map(flashDealMapper::toModel)
+                .filter(flash ->checkValidFlash(flash,periodicityFlash,maxFlash))
                 .map(this::setCreatAt)
                 .map(flashDealRepository::save)
+                .map(flashDeal -> setFlash(flashDeal,periodicityFlash))
                 .map(this::prepareNotification)
-                .map(this::setFlashDealUser);
+                .map(this::setFlashDealUser)
+                .orElseThrow(() -> new FlashDealException("you can not send more then "+maxFlash));
         return new Response<>("created.");
     }
 
@@ -73,5 +96,99 @@ public class FlashDealService {
         simpleUserService.findSimpleUserByInterestCenter(flashDeal.getStore().getDefaultCategories())
                 .forEach(user -> simpleUserService.setFlashDeal(user,flashDeal));
         return flashDeal;
+    }
+
+    private static Supplier<Pair<LocalDate,LocalDate>> WeekStartEnd= () -> {
+        final DayOfWeek firstDayOfWeek = WeekFields.of(Locale.ENGLISH).getFirstDayOfWeek();
+        final DayOfWeek lastDayOfWeek = DayOfWeek.of(((firstDayOfWeek.getValue() + 5) % DayOfWeek.values().length) + 1);
+        return new Pair<>(
+                LocalDate.now().with(TemporalAdjusters.previousOrSame(firstDayOfWeek)),
+                LocalDate.now().with(TemporalAdjusters.nextOrSame(lastDayOfWeek))
+                );
+    };
+
+    private static Supplier<Pair<LocalDate,LocalDate>> MonthStartEnd= () -> {
+        LocalDate initial = LocalDate.now();
+        LocalDate start = initial.withDayOfMonth(1);
+        LocalDate end = initial.withDayOfMonth(initial.lengthOfMonth());
+        return new Pair<>(
+                start,
+                end
+        );
+    };
+
+    private static Supplier<Pair<LocalDate,LocalDate>> YearStartEnd= () -> {
+        LocalDate initial = LocalDate.now();
+        LocalDate startYear=initial.withDayOfYear(1);
+        LocalDate endYear = initial.withDayOfYear(initial.lengthOfYear());
+        return new Pair<>(
+                startYear,
+                endYear
+        );
+    };
+
+    private static Supplier<List<Pair<PeriodicityFlash,Supplier<Pair<LocalDate,LocalDate>>>>> GetPeriodicity= ()->{
+        List<Pair<PeriodicityFlash,Supplier<Pair<LocalDate,LocalDate>>>> rules=new ArrayList<>();
+        rules.add(new Pair<>(WEEK,WeekStartEnd));
+        rules.add(new Pair<>(MONTH,MonthStartEnd));
+        rules.add(new Pair<>(YEAR,YearStartEnd));
+        return rules;
+    };
+
+    private static Function<PeriodicityFlash,Function<List<Pair<PeriodicityFlash,Supplier<Pair<LocalDate,LocalDate>>>>,//two inputs
+            //output
+            Pair<PeriodicityFlash, Supplier<Pair<LocalDate,LocalDate>>>>> GetPeriodicityQualifier = periodicityFlash ->(periodicityList ->{
+        return periodicityList.stream()
+                .filter(periodicity -> periodicity.getKey().equals(periodicityFlash))
+                .findFirst()
+                .orElseThrow(()-> new FlashDealException("error.flash.periodicity.notFound"));
+    });
+
+    private Boolean checkValidFlash(FlashDeal flashDeal,PeriodicityFlash periodicityFlash,Long maxFlash){
+        initStoreFlash(flashDeal.getStore(),periodicityFlash);
+        Pair<LocalDate,LocalDate> periodicityQualifier = GetPeriodicityQualifier
+                .apply(periodicityFlash)
+                .apply(GetPeriodicity.get()).getValue().get();
+        Store store=flashDeal.getStore();
+        LocalDate now = LocalDate.now();
+        return now.isAfter(periodicityQualifier.getKey()) && now.isBefore(periodicityQualifier.getValue()) && store.getTransmittedFlash() < maxFlash;
+    }
+
+    private FlashDeal setFlash(FlashDeal flashDeal,PeriodicityFlash periodicityFlash){
+        Store store=flashDeal.getStore();
+        Pair<LocalDate,LocalDate> periodicityQualifier = GetPeriodicityQualifier
+                .apply(periodicityFlash)
+                .apply(GetPeriodicity.get()).getValue().get();
+
+        if (!store.getLastFlashStart().equals(periodicityQualifier.getKey())){
+            store.setTransmittedFlash(0L);
+            store=storeService.saveStore(store);
+        }
+
+        store.setTransmittedFlash(
+                store.getTransmittedFlash()+1
+        );
+        store.setLastFlashStart(
+                periodicityQualifier.getKey()
+        );
+
+        storeService.saveStore(store);
+        return flashDeal;
+    }
+
+    private void initStoreFlash(Store store,PeriodicityFlash periodicityFlash){
+        if(store.getTransmittedFlash()==null){
+            store.setTransmittedFlash(0L);
+            storeService.saveStore(store);
+        }
+        if(store.getLastFlashStart()==null || store.getPeriodicityFlash()==null){
+            Pair<LocalDate,LocalDate> periodicityQualifier = GetPeriodicityQualifier
+                    .apply(periodicityFlash)
+                    .apply(GetPeriodicity.get()).getValue().get();
+
+            store.setLastFlashStart(periodicityQualifier.getKey());
+            store.setPeriodicityFlash(periodicityFlash);
+            storeService.saveStore(store);
+        }
     }
 }

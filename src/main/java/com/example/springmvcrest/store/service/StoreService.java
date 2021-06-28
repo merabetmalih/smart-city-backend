@@ -47,6 +47,10 @@ public class StoreService {
                 .orElseThrow(StoreNotFoundException::new);
     }
 
+    public Store saveStore(Store store){
+        return storeRepository.save(store);
+    }
+
     private Boolean hasStore(Long id){
         return storeRepository.findByProviderId(id)
                 .isPresent();
