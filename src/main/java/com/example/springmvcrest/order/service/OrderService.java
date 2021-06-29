@@ -15,6 +15,7 @@ import com.example.springmvcrest.order.repository.OrderProductVariantRepository;
 import com.example.springmvcrest.order.repository.OrderRepository;
 import com.example.springmvcrest.product.domain.ProductVariant;
 import com.example.springmvcrest.product.service.ProductVariantService;
+import com.example.springmvcrest.sse.service.EventPublisherService;
 import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.user.simple.domain.Cart;
 import com.example.springmvcrest.user.simple.domain.CartProductVariant;
@@ -53,6 +54,7 @@ public class OrderService {
     private final NotificationService notificationService;
     private final BillService billService;
     private final ProductVariantService productVariantService;
+    private final EventPublisherService eventPublisherService;
 
     public List<OrderDto> getInProgressOrdersByUserId(Long id){
         return orderRepository.findByUser_Id(id).stream()
@@ -345,9 +347,15 @@ public class OrderService {
                 Notification.builder()
                         .title("Accepted order")
                         .message("Your order is accepted by the store.")
+                        .type(NotificationType.ORDER)
                         .topic("user-"+order.getUser().getEmail().replace("@",""))
                         .build()
         );
+        return order;
+    }
+
+    private Order orderChangePublishEvent(Order order){
+        eventPublisherService.orderChangePublishEvent();
         return order;
     }
 
@@ -356,6 +364,7 @@ public class OrderService {
                 .map(this::setAccepted)
                 .map(this::setNewOrder)
                 .map(orderRepository::save)
+                .map(this::orderChangePublishEvent)
                 .map(this::sendUserNotificationAcceptedOrder);
         return new Response<>("created.");
     }
@@ -364,7 +373,8 @@ public class OrderService {
         Optional.of(findOrderById(id))
                 .map(this::setRejected)
                 .map(this::setNewOrder)
-                .map(orderRepository::save);
+                .map(orderRepository::save)
+                .map(this::orderChangePublishEvent);
         return new Response<>("created.");
     }
 
@@ -373,6 +383,7 @@ public class OrderService {
                 Notification.builder()
                         .title("Ready order")
                         .message("Your order is ready to picked up.")
+                        .type(NotificationType.ORDER)
                         .topic("user-"+order.getUser().getEmail().replace("@",""))
                         .build()
         );
@@ -384,7 +395,8 @@ public class OrderService {
                 .map(this::setReady)
                 .map(orderRepository::save)
                 .filter(order -> order.getOrderType().equals(OrderType.SELFPICKUP))
-                .map(this::sendUserNotificationReadyOrder);
+                .map(this::sendUserNotificationReadyOrder)
+                .map(this::orderChangePublishEvent);
         return new Response<>("created.");
     }
 
@@ -392,7 +404,8 @@ public class OrderService {
         Optional.of(findOrderById(id))
                 .map(this::setDelivered)
                 .map(order -> setComment(order,comment,date))
-                .map(orderRepository::save);
+                .map(orderRepository::save)
+                .map(this::orderChangePublishEvent);
         return new Response<>("created.");
     }
 
@@ -400,7 +413,8 @@ public class OrderService {
         Optional.of(findOrderById(id))
                 .map(this::setPickedUp)
                 .map(order -> setComment(order,comment,date))
-                .map(orderRepository::save);
+                .map(orderRepository::save)
+                .map(this::orderChangePublishEvent);
         return new Response<>("created.");
     }
 
