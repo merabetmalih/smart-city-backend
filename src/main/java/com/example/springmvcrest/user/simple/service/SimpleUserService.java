@@ -40,7 +40,6 @@ public class SimpleUserService {
     private final SimpleUserInformationMapper simpleUserInformationMapper;
     private final FlashDealMapper flashDealMapper;
 
-
     public Optional<SimpleUser> findSimpleUserByEmail(String email) {
         return simpleUserRepository.findByEmail(email);
     }
@@ -69,17 +68,15 @@ public class SimpleUserService {
                 .orElse(null);
     }
 
-
-
-
-
     public Response<String> setUserInterestCenter(SimpleUserDto simpleUserDto){
-        SimpleUser user=findById(simpleUserDto.getId());
-        Set<Category> collect = simpleUserDto.getInterest().stream()
-                .map(categoryService::findCategoryByName)
-                .collect(Collectors.toSet());
-        user.setInterestCenter(collect);
-        simpleUserRepository.save(user);
+        if(simpleUserDto.getInterest()!=null && !simpleUserDto.getInterest().isEmpty()){
+            SimpleUser user=findById(simpleUserDto.getId());
+            Set<Category> collect = simpleUserDto.getInterest().stream()
+                    .map(categoryService::findCategoryByName)
+                    .collect(Collectors.toSet());
+            user.setInterestCenter(collect);
+            simpleUserRepository.save(user);
+        }
         return new Response<>("created.");
     }
 

@@ -4,6 +4,7 @@ import com.example.springmvcrest.product.api.dto.CategoryDto;
 import com.example.springmvcrest.product.api.mapper.CategoryMapper;
 import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.product.repository.CategoryRepository;
+import com.example.springmvcrest.utils.Errorhandler.CategoryException;
 import lombok.AllArgsConstructor;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
@@ -27,7 +28,7 @@ public class CategoryService {
 
     public Category findCategoryByName(String name){
         return categoryRepository.findByName(name)
-                .orElse(null);
+                .orElseThrow(() -> new CategoryException("error.category.notFound"));
     }
 
     @Named("getCategoriesList")

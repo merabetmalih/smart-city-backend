@@ -54,7 +54,7 @@ public class OrderService {
     private final NotificationService notificationService;
     private final BillService billService;
     private final ProductVariantService productVariantService;
-    private final EventPublisherService eventPublisherService;
+
 
     public List<OrderDto> getInProgressOrdersByUserId(Long id){
         return orderRepository.findByUser_Id(id).stream()
@@ -354,17 +354,11 @@ public class OrderService {
         return order;
     }
 
-    private Order orderChangePublishEvent(Order order){
-        eventPublisherService.orderChangePublishEvent();
-        return order;
-    }
-
     public Response<String> acceptOrderByStore(Long id){
         Optional.of(findOrderById(id))
                 .map(this::setAccepted)
                 .map(this::setNewOrder)
                 .map(orderRepository::save)
-                .map(this::orderChangePublishEvent)
                 .map(this::sendUserNotificationAcceptedOrder);
         return new Response<>("created.");
     }
@@ -373,8 +367,7 @@ public class OrderService {
         Optional.of(findOrderById(id))
                 .map(this::setRejected)
                 .map(this::setNewOrder)
-                .map(orderRepository::save)
-                .map(this::orderChangePublishEvent);
+                .map(orderRepository::save);
         return new Response<>("created.");
     }
 
@@ -395,8 +388,7 @@ public class OrderService {
                 .map(this::setReady)
                 .map(orderRepository::save)
                 .filter(order -> order.getOrderType().equals(OrderType.SELFPICKUP))
-                .map(this::sendUserNotificationReadyOrder)
-                .map(this::orderChangePublishEvent);
+                .map(this::sendUserNotificationReadyOrder);
         return new Response<>("created.");
     }
 
@@ -404,8 +396,7 @@ public class OrderService {
         Optional.of(findOrderById(id))
                 .map(this::setDelivered)
                 .map(order -> setComment(order,comment,date))
-                .map(orderRepository::save)
-                .map(this::orderChangePublishEvent);
+                .map(orderRepository::save);
         return new Response<>("created.");
     }
 
@@ -413,8 +404,7 @@ public class OrderService {
         Optional.of(findOrderById(id))
                 .map(this::setPickedUp)
                 .map(order -> setComment(order,comment,date))
-                .map(orderRepository::save)
-                .map(this::orderChangePublishEvent);
+                .map(orderRepository::save);
         return new Response<>("created.");
     }
 
