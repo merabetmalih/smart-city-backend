@@ -19,13 +19,21 @@ public class FlashDealController {
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK)
-    public Response<String> addProductToCart(@RequestBody FlashDealCreationDto flashDealCreationDto ) {
+    public Response<String> createFlashDeal(@RequestBody FlashDealCreationDto flashDealCreationDto ) {
         return flashDealService.createFlashDeal(flashDealCreationDto);
     }
 
     @GetMapping("/current-provider-flash/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public Results<FlashDealDto> addProductToCart(@PathVariable(value = "id") Long id ) {
-        return new Results<>(flashDealService.getFlashDealsStore(id));
+    public Results<FlashDealDto> getRecentFlashDealsStore(@PathVariable(value = "id") Long id ) {
+        return new Results<>(flashDealService.getRecentFlashDealsStore(id));
+    }
+
+    @GetMapping("/current-provider-search-flash")
+    @ResponseStatus(HttpStatus.OK)
+    public Results<FlashDealDto> searchFlashDealsStore(@RequestParam(name = "id") Long id,
+                                                       @RequestParam(name = "startDate") String startDate,
+                                                       @RequestParam(name = "endDate")String endDate) {
+        return new Results<>(flashDealService.searchFlashDealsStore(id,startDate,endDate));
     }
 }

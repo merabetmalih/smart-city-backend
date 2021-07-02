@@ -13,6 +13,8 @@ import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.store.service.StoreService;
 import com.example.springmvcrest.user.simple.service.SimpleUserService;
+import com.example.springmvcrest.utils.DateUtil;
+import com.example.springmvcrest.utils.Errorhandler.DateException;
 import com.example.springmvcrest.utils.Errorhandler.FlashDealException;
 import com.example.springmvcrest.utils.Response;
 import javafx.util.Pair;
@@ -23,12 +25,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -64,8 +64,24 @@ public class FlashDealService {
         return new Response<>("created.");
     }
 
-    public List<FlashDealDto> getFlashDealsStore(Long providerId){
+    public List<FlashDealDto> getRecentFlashDealsStore(Long providerId){
         return flashDealRepository.findByStore_Provider_Id(providerId).stream()
+                .sorted(Comparator.comparing(FlashDeal::getCreateAt, Comparator.reverseOrder()))
+                .limit(10)
+                .map(flashDealMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<FlashDealDto> searchFlashDealsStore(Long providerId,String startDate, String endDate){
+        if(!DateUtil.isValidDate(startDate) || !DateUtil.isValidDate(endDate)){
+            throw new DateException("error.date.invalid");
+        }
+
+        LocalDateTime startOfDate = LocalDateTime.of(LocalDate.parse(startDate), LocalTime.MIDNIGHT);
+        LocalDateTime endOfDate = LocalDateTime.of(LocalDate.parse(endDate), LocalTime.MAX);
+
+        return flashDealRepository.findByStore_Provider_IdAndCreateAtBetween(providerId,startOfDate,endOfDate)
+                .stream()
                 .map(flashDealMapper::toDto)
                 .collect(Collectors.toList());
     }
