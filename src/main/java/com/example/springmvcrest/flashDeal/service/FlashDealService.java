@@ -92,8 +92,10 @@ public class FlashDealService {
     }
 
     private FlashDeal prepareNotification(FlashDeal flashDeal){
-        flashDeal.getStore().getDefaultCategories()
-                .forEach(category -> sendNotification(category,flashDeal));
+        new Thread(() -> {
+            flashDeal.getStore().getDefaultCategories()
+                    .forEach(category -> sendNotification(category,flashDeal));
+        }).start();
         return flashDeal;
     }
 

@@ -1,5 +1,9 @@
 package com.example.springmvcrest.offer.service;
 
+import com.example.springmvcrest.flashDeal.domain.FlashDeal;
+import com.example.springmvcrest.notification.domain.Notification;
+import com.example.springmvcrest.notification.domain.NotificationType;
+import com.example.springmvcrest.notification.service.NotificationService;
 import com.example.springmvcrest.offer.api.dto.OfferCreationDto;
 import com.example.springmvcrest.offer.api.dto.OfferDto;
 import com.example.springmvcrest.offer.api.mapper.OfferMapper;
@@ -9,6 +13,7 @@ import com.example.springmvcrest.offer.domain.OfferType;
 import com.example.springmvcrest.offer.repository.OfferRepository;
 import com.example.springmvcrest.product.api.dto.ProductDTO;
 import com.example.springmvcrest.product.api.mapper.ProductMapper;
+import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.product.domain.Product;
 import com.example.springmvcrest.product.domain.ProductVariant;
 import com.example.springmvcrest.utils.DateUtil;
@@ -35,6 +40,7 @@ public class OfferService {
     private final OfferRepository offerRepository;
     private final OfferMapper offerMapper;
     private final ProductMapper productMapper;
+    private final NotificationService notificationService;
 
     @Transactional
     public Response<String> createOffer(OfferCreationDto offerCreationDto){
@@ -45,8 +51,43 @@ public class OfferService {
         Optional.of(offerCreationDto)
                 .map(offerMapper::toModel)
                 .map(offer-> SetOffer.apply(offer).apply(GetOfferTypes.get()))
-                .map(offerRepository::save);
+                .map(offerRepository::save)
+                .map(this::prepareNotification);
         return new Response<>("created.");
+    }
+
+    private Offer prepareNotification(Offer offer){
+        new Thread(() -> {
+            offer.getStore().getDefaultCategories()
+                    .forEach(category -> sendNotification(category,offer));
+        }).start();
+        return offer;
+    }
+
+    private void sendNotification(Category category, Offer offer){
+        switch (offer.getType()){
+            case FIXED:
+                notificationService.sendNotification(
+                        Notification.builder()
+                                .title("New discount")
+                                .message("Check "+"-"+offer.getNewPrice()+" off at "+offer.getStore().getName())
+                                .type(NotificationType.DISCOUNT)
+                                .topic(category.getName())
+                                .build()
+                );
+                break;
+
+            case PERCENTAGE:
+                notificationService.sendNotification(
+                        Notification.builder()
+                                .title("New discount")
+                                .message("Check "+"-"+offer.getPercentage()+"%"+" off at "+offer.getStore().getName())
+                                .type(NotificationType.DISCOUNT)
+                                .topic(category.getName())
+                                .build()
+                );
+                break;
+        }
     }
 
     @Transactional
