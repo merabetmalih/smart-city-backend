@@ -53,4 +53,9 @@ public class DateUtil {
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         return dateFormat.format(inDate);
     }
+
+    public static String parseStringSimpleFormat(Date inDate){
+        DateFormat dateFormat = new SimpleDateFormat("d MMM");
+        return dateFormat.format(inDate);
+    }
 }

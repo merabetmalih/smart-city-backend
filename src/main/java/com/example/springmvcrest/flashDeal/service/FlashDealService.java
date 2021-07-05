@@ -29,6 +29,8 @@ import java.time.LocalTime;
 import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.WeekFields;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -92,10 +94,10 @@ public class FlashDealService {
     }
 
     private FlashDeal prepareNotification(FlashDeal flashDeal){
-        new Thread(() -> {
-            flashDeal.getStore().getDefaultCategories()
-                    .forEach(category -> sendNotification(category,flashDeal));
-        }).start();
+        ExecutorService threadPool = Executors.newCachedThreadPool();
+        flashDeal.getStore().getDefaultCategories()
+                .forEach(category -> threadPool.submit(() -> sendNotification(category,flashDeal)));
+        threadPool.shutdown();
         return flashDeal;
     }
 

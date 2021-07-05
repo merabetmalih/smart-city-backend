@@ -31,6 +31,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -298,7 +300,8 @@ public class OrderService {
                 price = productVariant.getPrice()-offer.getNewPrice();
             }
             if(offer.getType()==PERCENTAGE){
-                price = productVariant.getPrice()-(productVariant.getPrice()*offer.getPercentage()/100);
+                BigDecimal p=new BigDecimal(productVariant.getPrice()-(productVariant.getPrice()*offer.getPercentage()/100)).setScale(2, RoundingMode.HALF_EVEN);
+                price = p.doubleValue();
             }
         }else {
             price = productVariant.getPrice();

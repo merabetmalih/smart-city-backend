@@ -3,7 +3,10 @@ package com.example.springmvcrest.user.simple.service;
 import com.example.springmvcrest.flashDeal.api.dto.FlashDealDto;
 import com.example.springmvcrest.flashDeal.api.mapper.FlashDealMapper;
 import com.example.springmvcrest.flashDeal.domain.FlashDeal;
+import com.example.springmvcrest.offer.api.mapper.OfferMapper;
+import com.example.springmvcrest.offer.domain.Offer;
 import com.example.springmvcrest.product.api.dto.CategoryDto;
+import com.example.springmvcrest.product.api.dto.ProductDTO;
 import com.example.springmvcrest.product.api.mapper.CategoryMapper;
 import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.product.service.CategoryService;
@@ -21,24 +24,25 @@ import com.example.springmvcrest.utils.Errorhandler.DateException;
 import com.example.springmvcrest.utils.Errorhandler.SimpleUserException;
 import com.example.springmvcrest.utils.Response;
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@Setter(onMethod=@__({@Autowired}))
 public class SimpleUserService {
-    private final SimpleUserRepository simpleUserRepository;
-    private final UserMapper userMapper;
-    private final UserRegestrationMapper userRegestrationMapper;
-    private final CategoryService categoryService;
-    private final CategoryMapper categoryMapper;
-    private final SimpleUserInformationMapper simpleUserInformationMapper;
-    private final FlashDealMapper flashDealMapper;
+    private SimpleUserRepository simpleUserRepository;
+    private UserMapper userMapper;
+    private UserRegestrationMapper userRegestrationMapper;
+    private CategoryService categoryService;
+    private CategoryMapper categoryMapper;
+    private SimpleUserInformationMapper simpleUserInformationMapper;
+    private FlashDealMapper flashDealMapper;
+    private OfferMapper offerMapper;
 
     public Optional<SimpleUser> findSimpleUserByEmail(String email) {
         return simpleUserRepository.findByEmail(email);
@@ -113,6 +117,16 @@ public class SimpleUserService {
                 .collect(Collectors.toList());
     }
 
+    public List<ProductDTO> getUserProductOffers(Long userId){
+        Date todayDate=new Date();
+        return findById(userId).getOffers().stream()
+                .filter(offer -> !offer.getDeleted())
+                .filter(offer -> todayDate.after(offer.getStartDate()) && todayDate.before(offer.getEndDate()))
+                .map(offerMapper::toDto)
+                .flatMap(offerDto -> offerDto.getProducts().stream())
+                .collect(Collectors.toList());
+    }
+
     private static final int maxFlashDealsList = 3;
     public void setFlashDeal(SimpleUser simpleUser, FlashDeal flashDeal){
         if(simpleUser.getFlashDeals().size()>=maxFlashDealsList){
@@ -123,6 +137,11 @@ public class SimpleUserService {
             simpleUser.getFlashDeals().remove(oldFlashDeal);
         }
         simpleUser.getFlashDeals().add(flashDeal);
+        simpleUserRepository.save(simpleUser);
+    }
+
+    public void setOffers(SimpleUser simpleUser, Offer offer){
+        simpleUser.getOffers().add(offer);
         simpleUserRepository.save(simpleUser);
     }
 }

@@ -16,6 +16,7 @@ import com.example.springmvcrest.product.api.mapper.ProductMapper;
 import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.product.domain.Product;
 import com.example.springmvcrest.product.domain.ProductVariant;
+import com.example.springmvcrest.user.simple.service.SimpleUserService;
 import com.example.springmvcrest.utils.DateUtil;
 import com.example.springmvcrest.utils.Errorhandler.DateException;
 import com.example.springmvcrest.utils.Errorhandler.OfferException;
@@ -27,12 +28,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.example.springmvcrest.offer.domain.OfferType.FIXED;
 import static com.example.springmvcrest.offer.domain.OfferType.PERCENTAGE;
+import static com.example.springmvcrest.utils.DateUtil.parseStringSimpleFormat;
 
 @Service
 @AllArgsConstructor
@@ -41,6 +45,7 @@ public class OfferService {
     private final OfferMapper offerMapper;
     private final ProductMapper productMapper;
     private final NotificationService notificationService;
+    private final SimpleUserService simpleUserService;
 
     @Transactional
     public Response<String> createOffer(OfferCreationDto offerCreationDto){
@@ -52,15 +57,22 @@ public class OfferService {
                 .map(offerMapper::toModel)
                 .map(offer-> SetOffer.apply(offer).apply(GetOfferTypes.get()))
                 .map(offerRepository::save)
-                .map(this::prepareNotification);
+                .map(this::prepareNotification)
+                .map(this::setOffersUser);
         return new Response<>("created.");
     }
 
+    private Offer setOffersUser(Offer offer){
+        simpleUserService.findSimpleUserByInterestCenter(offer.getStore().getDefaultCategories())
+                .forEach(user -> simpleUserService.setOffers(user,offer));
+        return offer;
+    }
+
     private Offer prepareNotification(Offer offer){
-        new Thread(() -> {
-            offer.getStore().getDefaultCategories()
-                    .forEach(category -> sendNotification(category,offer));
-        }).start();
+        ExecutorService threadPool = Executors.newCachedThreadPool();
+        offer.getStore().getDefaultCategories()
+                .forEach(category -> threadPool.submit(() -> sendNotification(category,offer)));
+        threadPool.shutdown();
         return offer;
     }
 
@@ -70,7 +82,7 @@ public class OfferService {
                 notificationService.sendNotification(
                         Notification.builder()
                                 .title("New discount")
-                                .message("Check "+"-"+offer.getNewPrice()+" off at "+offer.getStore().getName())
+                                .message("Check "+"-"+offer.getNewPrice()+"$"+" off at "+offer.getStore().getName()+", start on "+parseStringSimpleFormat(offer.getStartDate()))
                                 .type(NotificationType.DISCOUNT)
                                 .topic(category.getName())
                                 .build()
@@ -81,7 +93,7 @@ public class OfferService {
                 notificationService.sendNotification(
                         Notification.builder()
                                 .title("New discount")
-                                .message("Check "+"-"+offer.getPercentage()+"%"+" off at "+offer.getStore().getName())
+                                .message("Check "+"-"+offer.getPercentage()+"%"+" off at "+offer.getStore().getName()+", start on "+parseStringSimpleFormat(offer.getStartDate()))
                                 .type(NotificationType.DISCOUNT)
                                 .topic(category.getName())
                                 .build()
@@ -111,7 +123,8 @@ public class OfferService {
                 .map(offerMapper::toModel)
                 .map(offer -> setOfferParent(offer,oldOffer))
                 .map(offer-> SetOffer.apply(offer).apply(GetOfferTypes.get()))
-                .map(offerRepository::save);
+                .map(offerRepository::save)
+                .map(this::setOffersUser);
         return new Response<>("updated.");
     }
 

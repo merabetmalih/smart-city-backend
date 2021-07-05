@@ -3,6 +3,7 @@ package com.example.springmvcrest.user.simple.controller;
 
 import com.example.springmvcrest.flashDeal.api.dto.FlashDealDto;
 import com.example.springmvcrest.product.api.dto.CategoryDto;
+import com.example.springmvcrest.product.api.dto.ProductDTO;
 import com.example.springmvcrest.user.api.dto.UserDto;
 import com.example.springmvcrest.user.api.dto.UserRegestrationDto;
 import com.example.springmvcrest.user.simple.api.dto.SimpleUserDto;
@@ -57,5 +58,11 @@ public class UserController {
     @ResponseStatus(value = HttpStatus.OK)
     public Results<FlashDealDto> getUserFlashDeals(@PathVariable(value = "id") Long id){
         return new Results<>(simpleUserService.getUserFlashDeals(id));
+    }
+
+    @GetMapping("/offer/{id}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Results<ProductDTO> getUserProductOffers(@PathVariable(value = "id") Long id){
+        return new Results<>(simpleUserService.getUserProductOffers(id));
     }
 }
