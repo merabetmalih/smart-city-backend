@@ -8,6 +8,7 @@ import com.example.springmvcrest.store.api.dto.StoreInformationDto;
 import com.example.springmvcrest.store.api.mapper.StoreInformationMapper;
 import com.example.springmvcrest.store.api.mapper.StoreMapper;
 import com.example.springmvcrest.store.domain.Store;
+import com.example.springmvcrest.store.repository.StoreAddressRepository;
 import com.example.springmvcrest.store.repository.StoreRepository;
 import com.example.springmvcrest.store.service.exception.MultipleStoreException;
 import com.example.springmvcrest.store.service.exception.StoreNotFoundException;
@@ -27,13 +28,14 @@ public class StoreService {
     private final StoreMapper storeMapper;
     private final StoreInformationMapper storeInformationMapper;
     private final CategoryService categoryService;
+    private final StoreAddressRepository storeAddressRepository;
 
 
     @Named("getStoreName")
     public String getStoreName(Store store) { return  store.getName(); }
 
     @Named("getStoreAddress")
-    public String getStoreAddress(Store store) { return  store.getAddress(); }
+    public String getStoreAddress(Store store) { return  store.getStoreAddress().getFullAddress(); }
 
     @Named("findStoreByProviderId")
     public Store findStoreByProviderId(Long id){
@@ -60,14 +62,20 @@ public class StoreService {
         return Optional.of(storeDto)
                 .map(storeMapper::ToModel)
                 .filter(store -> !hasStore(store.getProvider().getId()))
+                .map(this::setStoreAddress)
                 .map(storeRepository::save)
                 .map(storeMapper::ToDto)
                 .orElseThrow(MultipleStoreException::new);
     }
 
+    private Store setStoreAddress(Store store){
+        store.getStoreAddress().setStore(store);
+        return store;
+    }
+
     public Response<String> setStoreInformation(StoreInformationCreationDto storeInformationDto){
         Store store = findStoreByProviderId(storeInformationDto.getProviderId());
-        store.setAddress(storeInformationDto.getAddress());
+       // store.setAddress(storeInformationDto.getAddress());
         store.setTelephoneNumber(storeInformationDto.getTelephoneNumber());
         store.setDefaultTelephoneNumber(storeInformationDto.getDefaultTelephoneNumber());
 

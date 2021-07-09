@@ -32,8 +32,8 @@ public class Store {
     @Lob
     private String description;
 
-    @Lob
-    private String address;
+    @OneToOne(cascade = {CascadeType.PERSIST} , mappedBy = "store")
+    private StoreAddress storeAddress;
 
     private String telephoneNumber;
 

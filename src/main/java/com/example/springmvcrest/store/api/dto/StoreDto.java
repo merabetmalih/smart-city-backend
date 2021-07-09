@@ -9,7 +9,7 @@ import java.util.Set;
 public class StoreDto {
     private String name;
     private String description;
-    private String address;
+    private StoreAddressDto storeAddress;
     private Long provider;
     private String imageStore;
 }

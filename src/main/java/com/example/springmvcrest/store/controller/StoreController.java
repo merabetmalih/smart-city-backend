@@ -27,7 +27,7 @@ public class StoreController {
 
     @PostMapping("/create")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public StoreDto createStore( StoreDto storeDto,
+    public StoreDto createStore(@RequestPart(value = "store") StoreDto storeDto,
                                 @RequestPart("image") MultipartFile multipartFile) throws IOException{
        // storeDto.setImageStore(FileUploadUtil.saveFile(multipartFile));
         return storeService.create(storeDto);
