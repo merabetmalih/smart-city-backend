@@ -2,9 +2,11 @@ package com.example.springmvcrest.store.service;
 
 import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.product.service.CategoryService;
+import com.example.springmvcrest.store.api.dto.StoreAddressDto;
 import com.example.springmvcrest.store.api.dto.StoreDto;
 import com.example.springmvcrest.store.api.dto.StoreInformationCreationDto;
 import com.example.springmvcrest.store.api.dto.StoreInformationDto;
+import com.example.springmvcrest.store.api.mapper.StoreAddressMapper;
 import com.example.springmvcrest.store.api.mapper.StoreInformationMapper;
 import com.example.springmvcrest.store.api.mapper.StoreMapper;
 import com.example.springmvcrest.store.domain.Store;
@@ -28,7 +30,7 @@ public class StoreService {
     private final StoreMapper storeMapper;
     private final StoreInformationMapper storeInformationMapper;
     private final CategoryService categoryService;
-    private final StoreAddressRepository storeAddressRepository;
+    private final StoreAddressMapper storeAddressMapper;
 
 
     @Named("getStoreName")
@@ -36,6 +38,16 @@ public class StoreService {
 
     @Named("getStoreAddress")
     public String getStoreAddress(Store store) { return  store.getStoreAddress().getFullAddress(); }
+
+    @Named("getStoreAddressUpdated")
+    public StoreAddressDto getStoreAddressUpdated(Store store) {
+        return  storeAddressMapper.ToDto(
+                store.getStoreAddress()
+        );
+    }
+
+    @Named("getStoreId")
+    public Long getStoreId(Store store) { return  store.getId(); }
 
     @Named("findStoreByProviderId")
     public Store findStoreByProviderId(Long id){

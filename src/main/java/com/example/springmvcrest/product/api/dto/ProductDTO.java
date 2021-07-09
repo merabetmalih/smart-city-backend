@@ -1,6 +1,7 @@
 package com.example.springmvcrest.product.api.dto;
 
 
+import com.example.springmvcrest.store.api.dto.StoreAddressDto;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -18,4 +19,7 @@ public class ProductDTO {
     private List<ImagesDTO>images = new ArrayList<>();
     private Long customCategory;
     private Set<AttributeDto> attributes = new HashSet<>();
+    private StoreAddressDto storeAddress;
+    private String storeName;
+    private Long storeId;
 }

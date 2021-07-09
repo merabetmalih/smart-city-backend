@@ -82,4 +82,9 @@ public class StoreController {
         return new Results<>(customCategoryService.getAllByProvider(id));
     }
 
+    @GetMapping("/customCategory/store/all/{id}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Results<CustomCategoryDto> getAllCustomCategoryByStore(@PathVariable Long id){
+        return new Results<>(customCategoryService.getAllByStore(id));
+    }
 }

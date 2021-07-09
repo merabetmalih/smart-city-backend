@@ -49,6 +49,14 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    public  List<ProductDTO> getProductByCustomCategoryStoreId(Long id){
+        return productRepository.findAllByCustomCategory_StoreId(id)
+                .stream()
+                .filter(product -> !product.getDeleted())
+                .map(productMapper::ToDto)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public Response<String> deleteProduct(Long id)
     {

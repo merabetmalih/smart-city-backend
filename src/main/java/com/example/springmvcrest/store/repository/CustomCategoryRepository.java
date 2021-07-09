@@ -9,5 +9,5 @@ public interface CustomCategoryRepository extends JpaRepository<CustomCategory,L
 
 
     List<CustomCategory> findByStore_Provider_Id(Long id);
-
+    List<CustomCategory> findByStore_Id(Long id);
 }

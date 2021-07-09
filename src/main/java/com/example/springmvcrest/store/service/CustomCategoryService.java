@@ -55,4 +55,11 @@ public class CustomCategoryService {
                 .map(customCategoryMapper::ToDto)
                 .collect(Collectors.toList());
     }
+
+    public List<CustomCategoryDto> getAllByStore(Long id){
+        return customCategoryRepository.findByStore_Id(id)
+                .stream()
+                .map(customCategoryMapper::ToDto)
+                .collect(Collectors.toList());
+    }
 }

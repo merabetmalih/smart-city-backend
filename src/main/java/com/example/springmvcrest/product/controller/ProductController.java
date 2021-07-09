@@ -67,6 +67,12 @@ public class ProductController {
         return new Results<>(productService.getProductByCustomCategoryStoreProviderId(id));
     }
 
+    @GetMapping("/all/store/{id}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Results<ProductDTO> getProductByCustomCategoryStoreId(@PathVariable("id") long id){
+        return new Results<>(productService.getProductByCustomCategoryStoreId(id));
+    }
+
     @GetMapping(value = "/image/{filename}", produces = MediaType.IMAGE_JPEG_VALUE)
     public byte[] getProductImage(@PathVariable("filename") String filename) {
         return productService.downloadImage(filename);
