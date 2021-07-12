@@ -10,6 +10,7 @@ import com.example.springmvcrest.product.api.dto.ProductDTO;
 import com.example.springmvcrest.product.api.mapper.CategoryMapper;
 import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.product.service.CategoryService;
+import com.example.springmvcrest.store.service.StoreService;
 import com.example.springmvcrest.user.api.dto.UserDto;
 import com.example.springmvcrest.user.api.dto.UserRegestrationDto;
 import com.example.springmvcrest.user.api.mapper.UserMapper;
@@ -43,6 +44,7 @@ public class SimpleUserService {
     private SimpleUserInformationMapper simpleUserInformationMapper;
     private FlashDealMapper flashDealMapper;
     private OfferMapper offerMapper;
+    private StoreService storeService;
 
     public Optional<SimpleUser> findSimpleUserByEmail(String email) {
         return simpleUserRepository.findByEmail(email);
@@ -143,5 +145,38 @@ public class SimpleUserService {
     public void setOffers(SimpleUser simpleUser, Offer offer){
         simpleUser.getOffers().add(offer);
         simpleUserRepository.save(simpleUser);
+    }
+
+    public Response<String> followStore(Long storeId,Long userId){
+        SimpleUser user=findById(userId);
+        user.getFollowedStores().add(
+                storeService.findStoreById(storeId)
+        );
+        simpleUserRepository.save(
+                user
+        );
+        return new Response<>("created.");
+    }
+
+    public Response<String> stopFollowingStore(Long storeId,Long userId){
+        SimpleUser user=findById(userId);
+        user.getFollowedStores().remove(
+                storeService.findStoreById(storeId)
+        );
+        simpleUserRepository.save(
+                user
+        );
+        return new Response<>("deleted.");
+    }
+
+    public Response<String> isFollowingStore(Long storeId,Long userId){
+        SimpleUser user=findById(userId);
+        if(user.getFollowedStores().contains(
+                storeService.findStoreById(storeId)
+        )){
+            return new Response<>("isFollowing");
+        }else {
+            return new Response<>("notFollowing");
+        }
     }
 }

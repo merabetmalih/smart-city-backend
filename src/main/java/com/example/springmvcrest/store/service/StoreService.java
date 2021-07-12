@@ -46,6 +46,11 @@ public class StoreService {
         );
     }
 
+    @Named("getStoreFollowers")
+    public Integer getStoreFollowers(Store store) {
+        return  store.getFollowers().size();
+    }
+
     @Named("getStoreId")
     public Long getStoreId(Store store) { return  store.getId(); }
 

@@ -37,6 +37,7 @@ public interface ProductMapper {
     @Mapping(source = "product.customCategory.store", target = "storeAddress", qualifiedByName = "getStoreAddressUpdated")
     @Mapping(source = "product.customCategory.store", target = "storeName", qualifiedByName = "getStoreName")
     @Mapping(source = "product.customCategory.store", target = "storeId", qualifiedByName = "getStoreId")
+    @Mapping(source = "product.customCategory.store", target = "storeFollowers", qualifiedByName = "getStoreFollowers")
     ProductDTO ToDto(Product product);
 
     @Mapping(source = "productDTO.customCategory", target = "customCategory")

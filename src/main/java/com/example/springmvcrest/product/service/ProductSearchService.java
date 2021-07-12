@@ -118,7 +118,7 @@ public class ProductSearchService {
         if(page>0){
             pageable = PageRequest.of(page-1, PAGE_SIZE);
         }
-        return productRepository.findAll(pageable)
+        return productRepository.findAllByDeleted(false,pageable)
                 .getContent()
                 .stream()
                 .filter(product -> !product.getDeleted())

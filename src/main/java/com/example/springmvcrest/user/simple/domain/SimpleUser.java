@@ -5,6 +5,7 @@ import com.example.springmvcrest.flashDeal.domain.FlashDeal;
 import com.example.springmvcrest.offer.domain.Offer;
 import com.example.springmvcrest.order.domain.Order;
 import com.example.springmvcrest.product.domain.Category;
+import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.user.user.domain.Authority;
 import com.example.springmvcrest.user.user.domain.Role;
 import com.example.springmvcrest.user.user.domain.User;
@@ -16,9 +17,10 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Builder
 @Entity
 public class SimpleUser extends User {
@@ -54,6 +56,12 @@ public class SimpleUser extends User {
             joinColumns = @JoinColumn(name = "users_id"),
             inverseJoinColumns = @JoinColumn(name = "offer_id"))
     private Set<Offer> offers = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(name = "simple_users_store",
+            joinColumns = @JoinColumn(name = "users_id"),
+            inverseJoinColumns = @JoinColumn(name = "store_id"))
+    private Set<Store> followedStores = new HashSet<>();
 
     @Singular
     @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.PERSIST}, fetch = FetchType.EAGER)

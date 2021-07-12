@@ -7,6 +7,7 @@ import com.example.springmvcrest.order.domain.Order;
 import com.example.springmvcrest.policy.domain.Policies;
 import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.user.provider.domain.Provider;
+import com.example.springmvcrest.user.simple.domain.SimpleUser;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.search.mapper.pojo.mapping.definition.annotation.IndexedEmbedded;
@@ -16,10 +17,11 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode(exclude = {"provider"})
+@Getter
+@Setter
 @Builder
 @Entity
 public class Store {
@@ -73,4 +75,8 @@ public class Store {
     private LocalDate lastFlashStart;
     @Enumerated(EnumType.STRING)
     private PeriodicityFlash periodicityFlash;
+
+    @ManyToMany(mappedBy = "followedStores")
+    private Set<SimpleUser> followers=new HashSet<SimpleUser>();
+
 }

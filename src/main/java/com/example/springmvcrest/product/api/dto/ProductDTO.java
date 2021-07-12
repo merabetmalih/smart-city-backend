@@ -22,4 +22,5 @@ public class ProductDTO {
     private StoreAddressDto storeAddress;
     private String storeName;
     private Long storeId;
+    private Integer storeFollowers;
 }

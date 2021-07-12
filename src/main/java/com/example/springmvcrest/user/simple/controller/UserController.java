@@ -65,4 +65,28 @@ public class UserController {
     public Results<ProductDTO> getUserProductOffers(@PathVariable(value = "id") Long id){
         return new Results<>(simpleUserService.getUserProductOffers(id));
     }
+
+    @PostMapping("/follow/store/{id}/{idUser}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Response<String> followStore(
+            @PathVariable(value = "id") Long id,
+            @PathVariable(value = "idUser") Long userId){
+        return simpleUserService.followStore(id,userId);
+    }
+
+    @PostMapping("/stop-follow/store/{id}/{idUser}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Response<String> stopFollowingStore(
+            @PathVariable(value = "id") Long id,
+            @PathVariable(value = "idUser") Long userId){
+        return simpleUserService.stopFollowingStore(id,userId);
+    }
+
+    @GetMapping("/is-follow/store/{id}/{idUser}")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Response<String> isFollowingStore(
+            @PathVariable(value = "id") Long id,
+            @PathVariable(value = "idUser") Long userId){
+        return simpleUserService.isFollowingStore(id,userId);
+    }
 }

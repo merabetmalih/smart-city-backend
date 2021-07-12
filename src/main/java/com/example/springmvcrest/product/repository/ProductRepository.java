@@ -2,6 +2,8 @@ package com.example.springmvcrest.product.repository;
 
 import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.product.domain.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -19,4 +21,6 @@ public interface ProductRepository extends JpaRepository<Product,Long> {
     List<Product> findAllByCustomCategory_Store_Provider_Id(Long id);
 
     List<Product> findAllByCustomCategory_StoreId(Long id);
+
+    Page<Product> findAllByDeleted(Boolean deleted, Pageable pageable);
 }
