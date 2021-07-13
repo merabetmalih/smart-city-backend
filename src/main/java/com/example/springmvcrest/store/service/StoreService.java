@@ -15,10 +15,14 @@ import com.example.springmvcrest.store.repository.StoreRepository;
 import com.example.springmvcrest.store.service.exception.MultipleStoreException;
 import com.example.springmvcrest.store.service.exception.StoreNotFoundException;
 import com.example.springmvcrest.utils.Response;
+import com.example.springmvcrest.utils.Results;
 import lombok.AllArgsConstructor;
 import org.mapstruct.Named;
+import org.springframework.data.geo.Circle;
+import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -114,5 +118,12 @@ public class StoreService {
         return Optional.of(findStoreById(storeId))
                 .map(storeInformationMapper::ToDto)
                 .orElseThrow(StoreNotFoundException::new);
+    }
+
+    public List<StoreDto> findStoreByDistance(double latitude, double longitude, double distance) {
+        return storeRepository.findStoreAround(latitude, longitude, distance)
+                .stream()
+                .map(storeMapper::ToDto)
+                .collect(Collectors.toList());
     }
 }

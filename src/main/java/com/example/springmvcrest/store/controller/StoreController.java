@@ -87,4 +87,12 @@ public class StoreController {
     public Results<CustomCategoryDto> getAllCustomCategoryByStore(@PathVariable Long id){
         return new Results<>(customCategoryService.getAllByStore(id));
     }
+
+    @GetMapping("/store-around")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Results<StoreDto> findStoreByDistance(@RequestParam("distance") double distance,
+                                                 @RequestParam("longitude") double longitude,
+                                                 @RequestParam("latitude") double latitude){
+        return new Results<>(storeService.findStoreByDistance(latitude,longitude,distance));
+    }
 }
