@@ -1,12 +1,8 @@
 package com.example.springmvcrest.store.controller;
 
-import com.example.springmvcrest.store.api.dto.CustomCategoryDto;
-import com.example.springmvcrest.store.api.dto.StoreDto;
-import com.example.springmvcrest.store.api.dto.StoreInformationCreationDto;
-import com.example.springmvcrest.store.api.dto.StoreInformationDto;
+import com.example.springmvcrest.store.api.dto.*;
 import com.example.springmvcrest.store.service.CustomCategoryService;
 import com.example.springmvcrest.store.service.StoreService;
-import com.example.springmvcrest.utils.FileUploadUtil;
 import com.example.springmvcrest.utils.Response;
 import com.example.springmvcrest.utils.Results;
 import lombok.AllArgsConstructor;
@@ -27,10 +23,10 @@ public class StoreController {
 
     @PostMapping("/create")
     @ResponseStatus(value = HttpStatus.CREATED)
-    public StoreDto createStore(@RequestPart(value = "store") StoreDto storeDto,
-                                @RequestPart("image") MultipartFile multipartFile) throws IOException{
+    public StoreCreationDto createStore(@RequestPart(value = "store") StoreCreationDto storeCreationDto,
+                                        @RequestPart("image") MultipartFile multipartFile) throws IOException{
        // storeDto.setImageStore(FileUploadUtil.saveFile(multipartFile));
-        return storeService.create(storeDto);
+        return storeService.create(storeCreationDto);
     }
 
     @PostMapping("/Information")

@@ -1,16 +1,15 @@
 package com.example.springmvcrest.store.api.dto;
 
-import com.example.springmvcrest.product.api.dto.CategoryDto;
 import lombok.Data;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
-public class StoreDto {
-    private Long id;
+public class StoreCreationDto {
     private String name;
     private String description;
     private StoreAddressDto storeAddress;
+    private Long provider;
     private String imageStore;
-    private List<CategoryDto> defaultCategories;
 }

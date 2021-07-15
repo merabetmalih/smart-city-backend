@@ -2,24 +2,17 @@ package com.example.springmvcrest.store.service;
 
 import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.product.service.CategoryService;
-import com.example.springmvcrest.store.api.dto.StoreAddressDto;
-import com.example.springmvcrest.store.api.dto.StoreDto;
-import com.example.springmvcrest.store.api.dto.StoreInformationCreationDto;
-import com.example.springmvcrest.store.api.dto.StoreInformationDto;
+import com.example.springmvcrest.store.api.dto.*;
 import com.example.springmvcrest.store.api.mapper.StoreAddressMapper;
 import com.example.springmvcrest.store.api.mapper.StoreInformationMapper;
 import com.example.springmvcrest.store.api.mapper.StoreMapper;
 import com.example.springmvcrest.store.domain.Store;
-import com.example.springmvcrest.store.repository.StoreAddressRepository;
 import com.example.springmvcrest.store.repository.StoreRepository;
 import com.example.springmvcrest.store.service.exception.MultipleStoreException;
 import com.example.springmvcrest.store.service.exception.StoreNotFoundException;
 import com.example.springmvcrest.utils.Response;
-import com.example.springmvcrest.utils.Results;
 import lombok.AllArgsConstructor;
 import org.mapstruct.Named;
-import org.springframework.data.geo.Circle;
-import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -79,8 +72,8 @@ public class StoreService {
                 .isPresent();
     }
 
-    public StoreDto create(StoreDto storeDto) {
-        return Optional.of(storeDto)
+    public StoreCreationDto create(StoreCreationDto storeCreationDto) {
+        return Optional.of(storeCreationDto)
                 .map(storeMapper::ToModel)
                 .filter(store -> !hasStore(store.getProvider().getId()))
                 .map(this::setStoreAddress)
@@ -123,7 +116,7 @@ public class StoreService {
     public List<StoreDto> findStoreByDistance(double latitude, double longitude, double distance) {
         return storeRepository.findStoreAround(latitude, longitude, distance)
                 .stream()
-                .map(storeMapper::ToDto)
+                .map(storeMapper::toDto)
                 .collect(Collectors.toList());
     }
 }
