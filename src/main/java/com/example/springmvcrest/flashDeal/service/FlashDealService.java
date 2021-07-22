@@ -171,7 +171,7 @@ public class FlashDealService {
                 .apply(GetPeriodicity.get()).getValue().get();
         Store store=flashDeal.getStore();
         LocalDate now = LocalDate.now();
-        return now.isAfter(periodicityQualifier.getKey()) && now.isBefore(periodicityQualifier.getValue()) && store.getTransmittedFlash() < maxFlash;
+        return ((now.isAfter(periodicityQualifier.getKey().minusDays(1))) && (now.isBefore(periodicityQualifier.getValue().plusDays(1))) && (store.getTransmittedFlash() < maxFlash));
     }
 
     private FlashDeal setFlash(FlashDeal flashDeal,PeriodicityFlash periodicityFlash){
