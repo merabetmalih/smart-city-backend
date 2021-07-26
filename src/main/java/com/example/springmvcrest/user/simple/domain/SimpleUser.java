@@ -29,6 +29,10 @@ public class SimpleUser extends User {
     private String lastName;
     private Date birthDay;
 
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "city_id")
+    private City defaultCity;
+
     @OneToMany(mappedBy = "user",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     private Set<Address> addressSet=new HashSet<>();
 

@@ -15,8 +15,10 @@ import com.example.springmvcrest.user.api.dto.UserDto;
 import com.example.springmvcrest.user.api.dto.UserRegestrationDto;
 import com.example.springmvcrest.user.api.mapper.UserMapper;
 import com.example.springmvcrest.user.api.mapper.UserRegestrationMapper;
+import com.example.springmvcrest.user.simple.api.dto.CityDto;
 import com.example.springmvcrest.user.simple.api.dto.SimpleUserDto;
 import com.example.springmvcrest.user.simple.api.dto.SimpleUserInformationDto;
+import com.example.springmvcrest.user.simple.api.mapper.CityMapper;
 import com.example.springmvcrest.user.simple.api.mapper.SimpleUserInformationMapper;
 import com.example.springmvcrest.user.simple.domain.SimpleUser;
 import com.example.springmvcrest.user.simple.repository.SimpleUserRepository;
@@ -45,6 +47,7 @@ public class SimpleUserService {
     private FlashDealMapper flashDealMapper;
     private OfferMapper offerMapper;
     private StoreService storeService;
+    private CityMapper cityMapper;
 
     public Optional<SimpleUser> findSimpleUserByEmail(String email) {
         return simpleUserRepository.findByEmail(email);
@@ -178,5 +181,12 @@ public class SimpleUserService {
         }else {
             return new Response<>("notFollowing");
         }
+    }
+
+    public Response<String> setUserDefaultCity(CityDto cityDto){
+        SimpleUser user=findById(cityDto.getUserId());
+        user.setDefaultCity(cityMapper.toModel(cityDto));
+        simpleUserRepository.save(user);
+        return new Response<>("created");
     }
 }

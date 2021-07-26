@@ -6,6 +6,7 @@ import com.example.springmvcrest.product.api.dto.CategoryDto;
 import com.example.springmvcrest.product.api.dto.ProductDTO;
 import com.example.springmvcrest.user.api.dto.UserDto;
 import com.example.springmvcrest.user.api.dto.UserRegestrationDto;
+import com.example.springmvcrest.user.simple.api.dto.CityDto;
 import com.example.springmvcrest.user.simple.api.dto.SimpleUserDto;
 import com.example.springmvcrest.user.simple.api.dto.SimpleUserInformationDto;
 import com.example.springmvcrest.user.simple.service.SimpleUserService;
@@ -88,5 +89,11 @@ public class UserController {
             @PathVariable(value = "id") Long id,
             @PathVariable(value = "idUser") Long userId){
         return simpleUserService.isFollowingStore(id,userId);
+    }
+
+    @PostMapping("/default-city")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Response<String> setUserDefaultCity(@RequestBody CityDto cityDto){
+        return simpleUserService.setUserDefaultCity(cityDto);
     }
 }
