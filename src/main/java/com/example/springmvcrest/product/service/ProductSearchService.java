@@ -4,6 +4,8 @@ import com.example.springmvcrest.product.api.dto.ProductDTO;
 import com.example.springmvcrest.product.api.mapper.ProductMapper;
 import com.example.springmvcrest.product.domain.Product;
 import com.example.springmvcrest.product.repository.ProductRepository;
+import com.example.springmvcrest.user.simple.domain.SimpleUser;
+import com.example.springmvcrest.user.simple.service.SimpleUserService;
 import lombok.AllArgsConstructor;
 import org.hibernate.search.engine.search.common.BooleanOperator;
 import org.hibernate.search.engine.search.predicate.dsl.PredicateFinalStep;
@@ -31,6 +33,7 @@ public class ProductSearchService {
 
     private final ProductMapper productMapper;
     private final ProductRepository productRepository;
+    private final SimpleUserService simpleUserService;
     private final int PAGE_SIZE = 10;
 
     @Transactional(readOnly = true)
@@ -113,15 +116,25 @@ public class ProductSearchService {
         ).getContent();
     }
 
-    public List<ProductDTO> findAllProduct(int page) {
+
+    public List<ProductDTO> findProductAround(Long userId,int page) {
+        double distance=12.0;
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
         if(page>0){
             pageable = PageRequest.of(page-1, PAGE_SIZE);
         }
-        return productRepository.findAllByDeleted(false,pageable)
+
+        SimpleUser user=simpleUserService.findById(userId);
+        Double latitude=user.getDefaultCity().getLatitude();
+        Double longitude=user.getDefaultCity().getLongitude();
+
+        List<Long> productIds=productRepository.findProductAround(latitude,longitude,distance,pageable)
                 .getContent()
                 .stream()
-                .filter(product -> !product.getDeleted())
+                .map(Product::getId)
+                .collect(Collectors.toList());
+
+        return productRepository.findAllById(productIds).stream()
                 .map(productMapper::ToDto)
                 .collect(Collectors.toList());
     }

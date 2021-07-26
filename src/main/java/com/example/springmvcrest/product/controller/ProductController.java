@@ -25,10 +25,11 @@ public class ProductController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public Results<ProductDTO> searchProduct(@RequestParam(name = "search", required = false) String query,
-                                             @RequestParam(name = "page",defaultValue = "1",required = false) int page) {
+                                             @RequestParam(name = "page",defaultValue = "1",required = false) int page,
+                                             @RequestParam(name = "id") Long userId) {
         if (query != null && !query.equals(""))
             return new Results<>(productSearchService.search(query,page));
-        return  new Results<>(productSearchService.findAllProduct(page));
+        return  new Results<>(productSearchService.findProductAround(userId,page));
     }
 
     @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
