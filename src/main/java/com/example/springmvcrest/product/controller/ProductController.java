@@ -32,6 +32,13 @@ public class ProductController {
         return  new Results<>(productSearchService.findProductAround(userId,page));
     }
 
+    @GetMapping("/interest")
+    @ResponseStatus(HttpStatus.OK)
+    public Results<ProductDTO> getProductInterest(@RequestParam(name = "page",defaultValue = "1",required = false) int page,
+                                                  @RequestParam(name = "id") Long userId) {
+        return  new Results<>(productSearchService.findProductAroundMayInterest(userId,page));
+    }
+
     @PostMapping(value = "/create",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(value = HttpStatus.CREATED)
     public ProductDTO createProduct(@RequestPart(value = "product") ProductDTO productDTO,

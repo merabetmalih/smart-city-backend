@@ -138,4 +138,27 @@ public class ProductSearchService {
                 .map(productMapper::ToDto)
                 .collect(Collectors.toList());
     }
+
+    public List<ProductDTO> findProductAroundMayInterest(Long userId,int page) {
+        double distance=12.0;
+        Pageable pageable = PageRequest.of(page, PAGE_SIZE);
+        if(page>0){
+            pageable = PageRequest.of(page-1, PAGE_SIZE);
+        }
+
+        SimpleUser user=simpleUserService.findById(userId);
+        Double latitude=user.getDefaultCity().getLatitude();
+        Double longitude=user.getDefaultCity().getLongitude();
+
+        List<Long> productIds=productRepository.findProductAround(latitude,longitude,distance,pageable)
+                .getContent()
+                .stream()
+                .map(Product::getId)
+                .collect(Collectors.toList());
+
+        return productRepository.findAllById(productIds).stream()
+                .filter(product -> product.getCustomCategory().getStore().getDefaultCategories().stream().anyMatch(user.getInterestCenter()::contains))
+                .map(productMapper::ToDto)
+                .collect(Collectors.toList());
+    }
 }
