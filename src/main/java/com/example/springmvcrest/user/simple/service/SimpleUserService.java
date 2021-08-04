@@ -189,4 +189,11 @@ public class SimpleUserService {
         simpleUserRepository.save(user);
         return new Response<>("created");
     }
+
+    public CityDto getUserDefaultCity(Long UserId){
+        SimpleUser user=findById(UserId);
+        return Optional.of(user.getDefaultCity())
+                .map(cityMapper::toDto)
+                .orElseThrow(() -> new SimpleUserException("error.user.city.notfound"));
+    }
 }

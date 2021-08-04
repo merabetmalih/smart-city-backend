@@ -96,4 +96,10 @@ public class UserController {
     public Response<String> setUserDefaultCity(@RequestBody CityDto cityDto){
         return simpleUserService.setUserDefaultCity(cityDto);
     }
+
+    @GetMapping("/default-city")
+    @ResponseStatus(value = HttpStatus.OK)
+    public CityDto getUserDefaultCity(@RequestParam(name = "id") Long id){
+        return simpleUserService.getUserDefaultCity(id);
+    }
 }
