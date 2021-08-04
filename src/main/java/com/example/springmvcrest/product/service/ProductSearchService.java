@@ -37,7 +37,7 @@ public class ProductSearchService {
     private final int PAGE_SIZE = 10;
 
     @Transactional(readOnly = true)
-    public List<ProductDTO> search(String query,int page) {
+    public List<ProductDTO> search(Long userId,String query,int page) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
         SearchSession session = Search.session(entityManager);
         SearchScope<Product> scope = session.scope( Product.class );
@@ -109,6 +109,7 @@ public class ProductSearchService {
                 result.hits()
                         .stream()
                         .filter(product -> !product.getDeleted())
+                        .filter(product -> isAround(userId,product))
                         .map(productMapper::ToDto)
                         .collect(Collectors.toList()),
                 pageable,
@@ -116,6 +117,30 @@ public class ProductSearchService {
         ).getContent();
     }
 
+    private Boolean isAround(Long userId, Product product){
+        double distance=12.0;
+        SimpleUser user=simpleUserService.findById(userId);
+        Double latitude=user.getDefaultCity().getLatitude();
+        Double longitude=user.getDefaultCity().getLongitude();
+
+        return distFrom(
+                latitude,
+                longitude,
+                product.getCustomCategory().getStore().getStoreAddress().getLatitude(),
+                product.getCustomCategory().getStore().getStoreAddress().getLongitude()) < distance;
+    }
+
+     private Double distFrom(Double lat1, Double lng1, Double lat2, Double lng2) {
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+         return  (earthRadius * c);
+    }
 
     public List<ProductDTO> findProductAround(Long userId,int page) {
         double distance=12.0;
