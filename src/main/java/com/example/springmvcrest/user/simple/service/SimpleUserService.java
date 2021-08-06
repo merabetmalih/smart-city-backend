@@ -32,6 +32,9 @@ import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -116,8 +119,14 @@ public class SimpleUserService {
 
     }
 
-    public List<FlashDealDto> getUserFlashDeals(Long userId){
+    public List<FlashDealDto> getUserFlashDeals(Long userId,String date){
+        if(!DateUtil.isValidDate(date)){
+            throw new DateException("error.date.invalid");
+        }
+        LocalDateTime startOfDate = LocalDateTime.of(LocalDate.parse(date), LocalTime.MIDNIGHT);
+        LocalDateTime endOfDate = LocalDateTime.of(LocalDate.parse(date), LocalTime.MAX);
         return findById(userId).getFlashDeals().stream()
+                .filter(flash -> flash.getCreateAt().isAfter(startOfDate) && flash.getCreateAt().isBefore(endOfDate))
                 .map(flashDealMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -132,15 +141,7 @@ public class SimpleUserService {
                 .collect(Collectors.toList());
     }
 
-    private static final int maxFlashDealsList = 3;
     public void setFlashDeal(SimpleUser simpleUser, FlashDeal flashDeal){
-        if(simpleUser.getFlashDeals().size()>=maxFlashDealsList){
-            FlashDeal oldFlashDeal = simpleUser.getFlashDeals()
-                    .stream()
-                    .min(Comparator.comparing(FlashDeal::getCreateAt, Comparator.naturalOrder()))
-                    .orElse(null);
-            simpleUser.getFlashDeals().remove(oldFlashDeal);
-        }
         simpleUser.getFlashDeals().add(flashDeal);
         simpleUserRepository.save(simpleUser);
     }

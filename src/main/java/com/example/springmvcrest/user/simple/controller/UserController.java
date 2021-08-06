@@ -55,10 +55,11 @@ public class UserController {
         return simpleUserService.getUserInformation(id);
     }
 
-    @GetMapping("/flash/{id}")
+    @GetMapping("/flash")
     @ResponseStatus(value = HttpStatus.OK)
-    public Results<FlashDealDto> getUserFlashDeals(@PathVariable(value = "id") Long id){
-        return new Results<>(simpleUserService.getUserFlashDeals(id));
+    public Results<FlashDealDto> getUserFlashDeals(@RequestParam(value = "id") Long id,
+                                                   @RequestParam(value = "date") String date){
+        return new Results<>(simpleUserService.getUserFlashDeals(id,date));
     }
 
     @GetMapping("/offer/{id}")

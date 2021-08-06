@@ -16,5 +16,7 @@ public interface FlashDealMapper {
 
     @Mapping(source = "flashDeal.store", target = "storeName", qualifiedByName = "getStoreName")
     @Mapping(source = "flashDeal.store", target = "storeAddress", qualifiedByName = "getStoreAddress")
+    @Mapping(source = "flashDeal.store", target = "latitude", qualifiedByName = "getStoreAddressLat")
+    @Mapping(source = "flashDeal.store", target = "longitude", qualifiedByName = "getStoreAddressLon")
     FlashDealDto toDto(FlashDeal flashDeal);
 }

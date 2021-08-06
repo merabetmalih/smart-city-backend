@@ -12,4 +12,6 @@ public class FlashDealDto {
     private LocalDateTime createAt;
     private String storeName;
     private String storeAddress;
+    private Double latitude;
+    private Double longitude;
 }

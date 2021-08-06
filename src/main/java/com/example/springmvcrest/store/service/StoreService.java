@@ -36,6 +36,11 @@ public class StoreService {
     @Named("getStoreAddress")
     public String getStoreAddress(Store store) { return  store.getStoreAddress().getFullAddress(); }
 
+    @Named("getStoreAddressLat")
+    public Double getStoreAddressLat(Store store) { return  store.getStoreAddress().getLatitude(); }
+    @Named("getStoreAddressLon")
+    public Double getStoreAddressLon(Store store) { return  store.getStoreAddress().getLongitude(); }
+
     @Named("getStoreAddressUpdated")
     public StoreAddressDto getStoreAddressUpdated(Store store) {
         return  storeAddressMapper.ToDto(
