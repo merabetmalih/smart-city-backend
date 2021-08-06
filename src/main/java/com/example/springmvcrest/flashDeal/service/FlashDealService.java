@@ -113,7 +113,7 @@ public class FlashDealService {
     }
 
     private FlashDeal setFlashDealUser(FlashDeal flashDeal){
-        simpleUserService.findSimpleUserByInterestCenter(flashDeal.getStore().getDefaultCategories())
+        simpleUserService.findSimpleUserByInterestCenterAndAround(flashDeal.getStore())
                 .forEach(user -> simpleUserService.setFlashDeal(user,flashDeal));
         return flashDeal;
     }

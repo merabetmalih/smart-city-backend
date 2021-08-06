@@ -10,6 +10,7 @@ import com.example.springmvcrest.product.api.dto.ProductDTO;
 import com.example.springmvcrest.product.api.mapper.CategoryMapper;
 import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.product.service.CategoryService;
+import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.store.service.StoreService;
 import com.example.springmvcrest.user.api.dto.UserDto;
 import com.example.springmvcrest.user.api.dto.UserRegestrationDto;
@@ -26,8 +27,6 @@ import com.example.springmvcrest.utils.DateUtil;
 import com.example.springmvcrest.utils.Errorhandler.DateException;
 import com.example.springmvcrest.utils.Errorhandler.SimpleUserException;
 import com.example.springmvcrest.utils.Response;
-import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -35,7 +34,10 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -56,8 +58,34 @@ public class SimpleUserService {
         return simpleUserRepository.findByEmail(email);
     }
 
-    public List<SimpleUser> findSimpleUserByInterestCenter(Set<Category> categories) {
-        return simpleUserRepository.findDistinctByInterestCenterIn(categories);
+    public List<SimpleUser> findSimpleUserByInterestCenterAndAround(Store store) {
+        return simpleUserRepository.findDistinctByInterestCenterIn(store.getDefaultCategories()).stream()
+                .filter(user -> isAround(user,store))
+                .collect(Collectors.toList());
+    }
+
+    private Boolean isAround(SimpleUser user, Store store){
+        double distance=12.0;
+        Double latitude=user.getDefaultCity().getLatitude();
+        Double longitude=user.getDefaultCity().getLongitude();
+
+        return distFrom(
+                latitude,
+                longitude,
+                store.getStoreAddress().getLatitude(),
+                store.getStoreAddress().getLongitude()) < distance;
+    }
+
+    private Double distFrom(Double lat1, Double lng1, Double lat2, Double lng2) {
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        return  (earthRadius * c);
     }
 
     private Boolean isPresentSimpleUserByEmail(String email)

@@ -1,6 +1,5 @@
 package com.example.springmvcrest.offer.service;
 
-import com.example.springmvcrest.flashDeal.domain.FlashDeal;
 import com.example.springmvcrest.notification.domain.Notification;
 import com.example.springmvcrest.notification.domain.NotificationType;
 import com.example.springmvcrest.notification.service.NotificationService;
@@ -63,7 +62,7 @@ public class OfferService {
     }
 
     private Offer setOffersUser(Offer offer){
-        simpleUserService.findSimpleUserByInterestCenter(offer.getStore().getDefaultCategories())
+        simpleUserService.findSimpleUserByInterestCenterAndAround(offer.getStore())
                 .forEach(user -> simpleUserService.setOffers(user,offer));
         return offer;
     }
