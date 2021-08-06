@@ -8,5 +8,6 @@ public class CityDto {
     private Double latitude;
     private Double longitude;
     private String name;
+    private String displayName;
     private Long userId;
 }

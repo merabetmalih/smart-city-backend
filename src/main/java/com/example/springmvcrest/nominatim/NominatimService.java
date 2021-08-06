@@ -16,10 +16,18 @@ import java.util.stream.Collectors;
 @Service
 public class NominatimService {
     private static final String NOMINATIM_URL = "https://nominatim.openstreetmap.org/?addressdetails=1&country={country}&city={city}&format=json&limit=3";
+    private static final String NOMINATIM_REVERSE_URL = "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat={latitude}&lon={longitude}&zoom=10";
     private final RestTemplate restTemplate;
 
     public NominatimService(RestTemplateBuilder restTemplateBuilder) {
         this.restTemplate = restTemplateBuilder.build();
+    }
+
+    public String getCityName(Double latitude,Double longitude){
+        String responseJson=restTemplate.getForObject(NOMINATIM_REVERSE_URL, String.class, latitude,longitude);
+        Gson gson = new GsonBuilder().create();
+        NominatimCityNameResponse response = gson.fromJson(responseJson , NominatimCityNameResponse.class);
+        return response.getName();
     }
 
     public List<City> getCityInformation(String country, String city) {

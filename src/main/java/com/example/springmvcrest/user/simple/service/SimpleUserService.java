@@ -3,6 +3,7 @@ package com.example.springmvcrest.user.simple.service;
 import com.example.springmvcrest.flashDeal.api.dto.FlashDealDto;
 import com.example.springmvcrest.flashDeal.api.mapper.FlashDealMapper;
 import com.example.springmvcrest.flashDeal.domain.FlashDeal;
+import com.example.springmvcrest.nominatim.NominatimService;
 import com.example.springmvcrest.offer.api.mapper.OfferMapper;
 import com.example.springmvcrest.offer.domain.Offer;
 import com.example.springmvcrest.product.api.dto.CategoryDto;
@@ -53,6 +54,7 @@ public class SimpleUserService {
     private OfferMapper offerMapper;
     private StoreService storeService;
     private CityMapper cityMapper;
+    private NominatimService nominatimService;
 
     public Optional<SimpleUser> findSimpleUserByEmail(String email) {
         return simpleUserRepository.findByEmail(email);
@@ -213,6 +215,8 @@ public class SimpleUserService {
     }
 
     public Response<String> setUserDefaultCity(CityDto cityDto){
+        String cityName=nominatimService.getCityName(cityDto.getLatitude(),cityDto.getLongitude());
+        cityDto.setDisplayName(cityName);
         SimpleUser user=findById(cityDto.getUserId());
         user.setDefaultCity(cityMapper.toModel(cityDto));
         simpleUserRepository.save(user);

@@ -15,7 +15,7 @@ public class NominatimController {
 
     @GetMapping("/search")
     @ResponseStatus(HttpStatus.OK)
-    public Results<City> getUserAddress(
+    public Results<City> getCityInformation(
             @RequestParam(name = "country") String country,
             @RequestParam(name = "city") String city
     ) {
