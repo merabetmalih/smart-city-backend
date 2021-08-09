@@ -211,4 +211,32 @@ public class FlashDealService {
             storeService.saveStore(store);
         }
     }
+
+    public List<FlashDealDto> searchFlashByPosition(Double lat,Double lon){
+        return flashDealRepository.findAll().stream()
+                .filter(flash -> isAround(lat,lon,flash.getStore()))
+                .map(flashDealMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    private Boolean isAround(Double latitude,Double longitude,Store store){
+        double distance=12.0;
+        return distFrom(
+                latitude,
+                longitude,
+                store.getStoreAddress().getLatitude(),
+                store.getStoreAddress().getLongitude()) < distance;
+    }
+
+    private Double distFrom(Double lat1, Double lng1, Double lat2, Double lng2) {
+        double earthRadius = 6371000; //meters
+        double dLat = Math.toRadians(lat2-lat1);
+        double dLng = Math.toRadians(lng2-lng1);
+        double a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(Math.toRadians(lat1)) * Math.cos(Math.toRadians(lat2)) *
+                        Math.sin(dLng/2) * Math.sin(dLng/2);
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+
+        return  (earthRadius * c);
+    }
 }

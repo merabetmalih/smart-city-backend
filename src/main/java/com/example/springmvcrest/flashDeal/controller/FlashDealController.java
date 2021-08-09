@@ -36,4 +36,11 @@ public class FlashDealController {
                                                        @RequestParam(name = "endDate")String endDate) {
         return new Results<>(flashDealService.searchFlashDealsStore(id,startDate,endDate));
     }
+
+    @GetMapping("/search-flash")
+    @ResponseStatus(HttpStatus.OK)
+    public Results<FlashDealDto> searchFlashByPosition(@RequestParam(name = "latitude") Double latitude,
+                                                       @RequestParam(name = "longitude") Double longitude) {
+        return new Results<>(flashDealService.searchFlashByPosition(latitude,longitude));
+    }
 }

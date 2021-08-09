@@ -40,4 +40,11 @@ public class OfferController {
     public Results<OfferDto> getOrdersByProviderId(@RequestParam("id") Long id){
         return new Results<>(offerService.getOffersByProviderId(id));
     }
+
+    @GetMapping("/current-provider-offers")
+    @ResponseStatus(HttpStatus.OK)
+    public Results<OfferDto> searchOfferByPosition(@RequestParam(name = "latitude") Double latitude,
+                                                   @RequestParam(name = "longitude") Double longitude){
+        return new Results<>(offerService.searchOfferByPosition(latitude,longitude));
+    }
 }
