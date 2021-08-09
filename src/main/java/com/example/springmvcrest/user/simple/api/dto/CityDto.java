@@ -9,5 +9,6 @@ public class CityDto {
     private Double longitude;
     private String name;
     private String displayName;
+    private String country;
     private Long userId;
 }

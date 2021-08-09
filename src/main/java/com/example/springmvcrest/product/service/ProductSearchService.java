@@ -139,7 +139,7 @@ public class ProductSearchService {
                         Math.sin(dLng/2) * Math.sin(dLng/2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-         return  (earthRadius * c);
+         return  (earthRadius * c)/1000;
     }
 
     public List<ProductDTO> findProductAround(Long userId,int page) {

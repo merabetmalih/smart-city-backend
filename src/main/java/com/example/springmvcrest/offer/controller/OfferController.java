@@ -3,6 +3,7 @@ package com.example.springmvcrest.offer.controller;
 import com.example.springmvcrest.offer.api.dto.OfferCreationDto;
 import com.example.springmvcrest.offer.api.dto.OfferDto;
 import com.example.springmvcrest.offer.service.OfferService;
+import com.example.springmvcrest.product.api.dto.ProductDTO;
 import com.example.springmvcrest.utils.Response;
 import com.example.springmvcrest.utils.Results;
 import lombok.AllArgsConstructor;
@@ -41,10 +42,10 @@ public class OfferController {
         return new Results<>(offerService.getOffersByProviderId(id));
     }
 
-    @GetMapping("/current-provider-offers")
+    @GetMapping("/search-offer")
     @ResponseStatus(HttpStatus.OK)
-    public Results<OfferDto> searchOfferByPosition(@RequestParam(name = "latitude") Double latitude,
-                                                   @RequestParam(name = "longitude") Double longitude){
+    public Results<ProductDTO> searchOfferByPosition(@RequestParam(name = "latitude") Double latitude,
+                                                     @RequestParam(name = "longitude") Double longitude){
         return new Results<>(offerService.searchOfferByPosition(latitude,longitude));
     }
 }

@@ -201,10 +201,14 @@ public class OfferService {
                 .collect(Collectors.toList());
     }
 
-    public List<OfferDto> searchOfferByPosition(Double lat,Double lon){
+    public List<ProductDTO> searchOfferByPosition(Double lat,Double lon){
+        Date todayDate=new Date();
         return offerRepository.findAll().stream()
+                .filter(offer -> !offer.getDeleted())
+                .filter(offer -> todayDate.after(offer.getStartDate()) && todayDate.before(offer.getEndDate()))
                 .filter(offer -> isAround(lat,lon,offer.getStore()))
                 .map(offerMapper::toDto)
+                .flatMap(offerDto -> offerDto.getProducts().stream())
                 .collect(Collectors.toList());
     }
 
@@ -226,6 +230,6 @@ public class OfferService {
                         Math.sin(dLng/2) * Math.sin(dLng/2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-        return  (earthRadius * c);
+        return  (earthRadius * c)/1000;
     }
 }

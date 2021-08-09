@@ -3,6 +3,7 @@ package com.example.springmvcrest.user.simple.service;
 import com.example.springmvcrest.flashDeal.api.dto.FlashDealDto;
 import com.example.springmvcrest.flashDeal.api.mapper.FlashDealMapper;
 import com.example.springmvcrest.flashDeal.domain.FlashDeal;
+import com.example.springmvcrest.nominatim.NominatimCityNameResponse;
 import com.example.springmvcrest.nominatim.NominatimService;
 import com.example.springmvcrest.offer.api.mapper.OfferMapper;
 import com.example.springmvcrest.offer.domain.Offer;
@@ -87,7 +88,7 @@ public class SimpleUserService {
                         Math.sin(dLng/2) * Math.sin(dLng/2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-        return  (earthRadius * c);
+        return  (earthRadius * c)/1000;
     }
 
     private Boolean isPresentSimpleUserByEmail(String email)
@@ -215,8 +216,9 @@ public class SimpleUserService {
     }
 
     public Response<String> setUserDefaultCity(CityDto cityDto){
-        String cityName=nominatimService.getCityName(cityDto.getLatitude(),cityDto.getLongitude());
-        cityDto.setDisplayName(cityName);
+        NominatimCityNameResponse cityName=nominatimService.getCityName(cityDto.getLatitude(),cityDto.getLongitude());
+        cityDto.setDisplayName(cityName.getName());
+        cityDto.setCountry(cityName.getAddress().getCountry());
         SimpleUser user=findById(cityDto.getUserId());
         user.setDefaultCity(cityMapper.toModel(cityDto));
         simpleUserRepository.save(user);

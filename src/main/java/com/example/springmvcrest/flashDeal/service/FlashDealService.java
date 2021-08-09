@@ -212,9 +212,15 @@ public class FlashDealService {
         }
     }
 
-    public List<FlashDealDto> searchFlashByPosition(Double lat,Double lon){
+    public List<FlashDealDto> searchFlashByPosition(Double lat,Double lon,String date){
+        if(!DateUtil.isValidDate(date)){
+            throw new DateException("error.date.invalid");
+        }
+        LocalDateTime startOfDate = LocalDateTime.of(LocalDate.parse(date), LocalTime.MIDNIGHT);
+        LocalDateTime endOfDate = LocalDateTime.of(LocalDate.parse(date), LocalTime.MAX);
         return flashDealRepository.findAll().stream()
                 .filter(flash -> isAround(lat,lon,flash.getStore()))
+                .filter(flash -> flash.getCreateAt().isAfter(startOfDate) && flash.getCreateAt().isBefore(endOfDate))
                 .map(flashDealMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -237,6 +243,6 @@ public class FlashDealService {
                         Math.sin(dLng/2) * Math.sin(dLng/2);
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 
-        return  (earthRadius * c);
+        return  (earthRadius * c)/1000;
     }
 }

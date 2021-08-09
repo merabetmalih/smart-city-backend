@@ -23,11 +23,11 @@ public class NominatimService {
         this.restTemplate = restTemplateBuilder.build();
     }
 
-    public String getCityName(Double latitude,Double longitude){
+    public NominatimCityNameResponse getCityName(Double latitude,Double longitude){
         String responseJson=restTemplate.getForObject(NOMINATIM_REVERSE_URL, String.class, latitude,longitude);
         Gson gson = new GsonBuilder().create();
         NominatimCityNameResponse response = gson.fromJson(responseJson , NominatimCityNameResponse.class);
-        return response.getName();
+        return response;
     }
 
     public List<City> getCityInformation(String country, String city) {

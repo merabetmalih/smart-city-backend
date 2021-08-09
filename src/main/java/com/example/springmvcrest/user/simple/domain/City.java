@@ -21,4 +21,5 @@ public class City {
     private Double latitude;
     private Double longitude;
     private String displayName;
+    private String country;
 }
