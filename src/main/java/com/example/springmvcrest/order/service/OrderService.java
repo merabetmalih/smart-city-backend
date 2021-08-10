@@ -57,16 +57,38 @@ public class OrderService {
     private final BillService billService;
     private final ProductVariantService productVariantService;
 
+    private Sort sortOrdersByProperty(String dateFilter, String amountFilter){
+        if(!dateFilter.equals("NONE")){
+            return Sort.by(new Sort.Order(getSortDirection(dateFilter),"createAt"));
+        }
+        if(!amountFilter.equals("NONE")){
+            return Sort.by(new Sort.Order(getSortDirection(amountFilter),"bill.total"));
+        }
+        throw new OrderException("error.sort.invalid");
+    }
 
-    public List<OrderDto> getInProgressOrdersByUserId(Long id){
-        return orderRepository.findByUser_Id(id).stream()
+    private Boolean filterOrdersByType(String type,Order order){
+        if (type.equals("NONE")){
+            return true;
+        }
+        else {
+            return type.equals(order.getOrderType().name());
+        }
+    }
+
+    public List<OrderDto> getInProgressOrdersByUserId(Long id,String dateFilter, String amountFilter, String type){
+        Sort sort= sortOrdersByProperty(dateFilter,amountFilter);
+        return orderRepository.findByUser_Id(id,sort).stream()
+                .filter(order -> filterOrdersByType(type,order))
                 .filter(order -> !order.getOrderState().isRejected() && !order.getOrderState().isReceived())
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<OrderDto> getFinalizedOrdersByUserId(Long id){
-        return orderRepository.findByUser_Id(id).stream()
+    public List<OrderDto> getFinalizedOrdersByUserId(Long id,String dateFilter, String amountFilter, String type){
+        Sort sort= sortOrdersByProperty(dateFilter,amountFilter);
+        return orderRepository.findByUser_Id(id,sort).stream()
+                .filter(order -> filterOrdersByType(type,order))
                 .filter(order -> order.getOrderState().isRejected() || order.getOrderState().isReceived())
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());

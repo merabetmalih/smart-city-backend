@@ -15,7 +15,7 @@ public interface OrderRepository extends JpaRepository<Order,Long> {
 
     List<Order> findByStore_Provider_Id(Long id, Sort sort);
 
-    List<Order> findByUser_Id(Long id);
+    List<Order> findByUser_Id(Long id, Sort sort);
 
     List<Order> findByStore_Provider_IdAndCreateAtBetween(Long id,LocalDateTime start, LocalDateTime end, Sort sort);
 }

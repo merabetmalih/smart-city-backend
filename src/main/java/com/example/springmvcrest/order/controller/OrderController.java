@@ -3,6 +3,7 @@ package com.example.springmvcrest.order.controller;
 import com.example.springmvcrest.order.api.dto.OrderCreationDto;
 import com.example.springmvcrest.order.api.dto.OrderDto;
 import com.example.springmvcrest.order.domain.OrderStep;
+import com.example.springmvcrest.order.domain.OrderType;
 import com.example.springmvcrest.order.service.OrderService;
 import com.example.springmvcrest.utils.Response;
 import com.example.springmvcrest.utils.Results;
@@ -59,16 +60,25 @@ public class OrderController {
         return new Results<>(orderService.getBetweenOrdersByCreatAtByProviderId(id,startDate,endDate,dateFilter,amountFilter,step));
     }
 
-    @GetMapping("/current-user/{id}/inProgress")
+    @GetMapping("/current-user/inProgress")
     @ResponseStatus(HttpStatus.OK)
-    public Results<OrderDto> getInProgressOrdersByUserId(@PathVariable("id") long id ) {
-        return new Results<>(orderService.getInProgressOrdersByUserId(id));
+    public Results<OrderDto> getInProgressOrdersByUserId(
+            @RequestParam("id") long id,
+            @RequestParam(name = "date",defaultValue = "NONE",required = false) String dateFilter,
+            @RequestParam(name = "amount",defaultValue = "NONE",required = false) String amountFilter,
+            @RequestParam(name = "type",defaultValue = "NONE",required = false) String type) {
+        return new Results<>(orderService.getInProgressOrdersByUserId(id,dateFilter, amountFilter, type));
     }
 
-    @GetMapping("/current-user/{id}/finalized")
+    @GetMapping("/current-user/finalized")
     @ResponseStatus(HttpStatus.OK)
-    public Results<OrderDto> getFinalizedOrdersByUserId(@PathVariable("id") long id ) {
-        return new Results<>(orderService.getFinalizedOrdersByUserId(id));
+    public Results<OrderDto> getFinalizedOrdersByUserId(
+            @RequestParam("id") long id,
+            @RequestParam(name = "date",defaultValue = "NONE",required = false) String dateFilter,
+            @RequestParam(name = "amount",defaultValue = "NONE",required = false) String amountFilter,
+            @RequestParam(name = "type",defaultValue = "NONE",required = false) String type
+    ) {
+        return new Results<>(orderService.getFinalizedOrdersByUserId(id,dateFilter, amountFilter, type));
     }
 
     @PutMapping("/current-store/{id}/accept")
