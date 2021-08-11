@@ -76,6 +76,23 @@ public class OrderService {
         }
     }
 
+    private Boolean filterOrdersByStatus(String status,Order order){
+        if (status.equals("NONE")){
+            return true;
+        }
+        else {
+            if(status.equals("ACCEPTED") && order.getOrderState().isAccepted()){
+                return true;
+            }
+
+            if(status.equals("REJECTED") && order.getOrderState().isRejected()){
+                return true;
+            }
+
+            return false;
+        }
+    }
+
     public List<OrderDto> getInProgressOrdersByUserId(Long id,String dateFilter, String amountFilter, String type){
         Sort sort= sortOrdersByProperty(dateFilter,amountFilter);
         return orderRepository.findByUser_Id(id,sort).stream()
@@ -85,11 +102,12 @@ public class OrderService {
                 .collect(Collectors.toList());
     }
 
-    public List<OrderDto> getFinalizedOrdersByUserId(Long id,String dateFilter, String amountFilter, String type){
+    public List<OrderDto> getFinalizedOrdersByUserId(Long id,String dateFilter, String amountFilter, String type,String status){
         Sort sort= sortOrdersByProperty(dateFilter,amountFilter);
         return orderRepository.findByUser_Id(id,sort).stream()
                 .filter(order -> filterOrdersByType(type,order))
                 .filter(order -> order.getOrderState().isRejected() || order.getOrderState().isReceived())
+                .filter(order -> filterOrdersByStatus(status,order))
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }

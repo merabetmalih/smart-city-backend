@@ -76,9 +76,10 @@ public class OrderController {
             @RequestParam("id") long id,
             @RequestParam(name = "date",defaultValue = "NONE",required = false) String dateFilter,
             @RequestParam(name = "amount",defaultValue = "NONE",required = false) String amountFilter,
-            @RequestParam(name = "type",defaultValue = "NONE",required = false) String type
+            @RequestParam(name = "type",defaultValue = "NONE",required = false) String type,
+            @RequestParam(name = "status",defaultValue = "NONE",required = false) String status
     ) {
-        return new Results<>(orderService.getFinalizedOrdersByUserId(id,dateFilter, amountFilter, type));
+        return new Results<>(orderService.getFinalizedOrdersByUserId(id,dateFilter, amountFilter, type,status));
     }
 
     @PutMapping("/current-store/{id}/accept")
