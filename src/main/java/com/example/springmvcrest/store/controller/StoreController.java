@@ -88,7 +88,8 @@ public class StoreController {
     @ResponseStatus(value = HttpStatus.OK)
     public Results<StoreDto> findStoreByDistance(@RequestParam("distance") double distance,
                                                  @RequestParam("longitude") double longitude,
-                                                 @RequestParam("latitude") double latitude){
-        return new Results<>(storeService.findStoreByDistance(latitude,longitude,distance));
+                                                 @RequestParam("latitude") double latitude,
+                                                 @RequestParam(value = "category", required = false, defaultValue = "") String category){
+        return new Results<>(storeService.findStoreByDistance(latitude,longitude,distance,category));
     }
 }

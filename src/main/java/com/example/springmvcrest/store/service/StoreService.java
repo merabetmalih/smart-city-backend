@@ -118,10 +118,19 @@ public class StoreService {
                 .orElseThrow(StoreNotFoundException::new);
     }
 
-    public List<StoreDto> findStoreByDistance(double latitude, double longitude, double distance) {
+    public List<StoreDto> findStoreByDistance(double latitude, double longitude, double distance, String category) {
         return storeRepository.findStoreAround(latitude, longitude, distance)
                 .stream()
+                .filter(store -> checkCategory(store,category))
                 .map(storeMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    private Boolean checkCategory(Store store,String category){
+        if (category.equals("")){
+            return true;
+        }
+        Category savedCategory = categoryService.findCategoryByName(category);
+        return store.getDefaultCategories().contains(savedCategory);
     }
 }
