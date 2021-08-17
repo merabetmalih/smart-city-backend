@@ -23,6 +23,7 @@ import com.example.springmvcrest.user.simple.api.dto.SimpleUserDto;
 import com.example.springmvcrest.user.simple.api.dto.SimpleUserInformationDto;
 import com.example.springmvcrest.user.simple.api.mapper.CityMapper;
 import com.example.springmvcrest.user.simple.api.mapper.SimpleUserInformationMapper;
+import com.example.springmvcrest.user.simple.domain.City;
 import com.example.springmvcrest.user.simple.domain.SimpleUser;
 import com.example.springmvcrest.user.simple.repository.SimpleUserRepository;
 import com.example.springmvcrest.utils.DateUtil;
@@ -69,6 +70,10 @@ public class SimpleUserService {
 
     private Boolean isAround(SimpleUser user, Store store){
         double distance=12.0;
+        City city = user.getDefaultCity();
+        if(city == null){
+            return false;
+        }
         Double latitude=user.getDefaultCity().getLatitude();
         Double longitude=user.getDefaultCity().getLongitude();
 
