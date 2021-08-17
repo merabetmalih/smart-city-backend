@@ -24,6 +24,7 @@ import com.example.springmvcrest.utils.Response;
 import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 import org.mapstruct.Named;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -134,11 +135,18 @@ public class OfferService {
         return offer;
     }
 
-    public List<OfferDto> getOffersByProviderId(Long id){
+    public List<OfferDto> getOffersByProviderId(Long id,OfferState offerState){
         return offerRepository.findByStore_Provider_Id(id).stream()
                 .filter(offer -> !offer.getDeleted())
+                .filter(offer -> filterOrdersByStatus(offerState,offer))
                 .map(offerMapper::toDto)
                 .collect(Collectors.toList());
+    }
+
+    private Boolean filterOrdersByStatus(OfferState offerState, Offer offer){
+        return Optional.ofNullable(offerState)
+                .map(state -> state.equals(setOfferState(offer)))
+                .orElse(true);
     }
 
     private static Function<Offer, Offer> SetOfferFixed= offer -> {

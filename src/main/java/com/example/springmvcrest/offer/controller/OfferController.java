@@ -2,6 +2,7 @@ package com.example.springmvcrest.offer.controller;
 
 import com.example.springmvcrest.offer.api.dto.OfferCreationDto;
 import com.example.springmvcrest.offer.api.dto.OfferDto;
+import com.example.springmvcrest.offer.domain.OfferState;
 import com.example.springmvcrest.offer.service.OfferService;
 import com.example.springmvcrest.product.api.dto.ProductDTO;
 import com.example.springmvcrest.utils.Response;
@@ -38,8 +39,9 @@ public class OfferController {
 
     @GetMapping("/current-provider-offers")
     @ResponseStatus(HttpStatus.OK)
-    public Results<OfferDto> getOrdersByProviderId(@RequestParam("id") Long id){
-        return new Results<>(offerService.getOffersByProviderId(id));
+    public Results<OfferDto> getOrdersByProviderId(@RequestParam("id") Long id,
+                                                   @RequestParam(value = "status", required = false) OfferState status){
+        return new Results<>(offerService.getOffersByProviderId(id,status));
     }
 
     @GetMapping("/search-offer")
