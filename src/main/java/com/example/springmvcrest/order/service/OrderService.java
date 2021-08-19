@@ -45,6 +45,7 @@ import static com.example.springmvcrest.offer.domain.OfferType.FIXED;
 import static com.example.springmvcrest.offer.domain.OfferType.PERCENTAGE;
 import static com.example.springmvcrest.order.domain.OrderStep.*;
 import static com.example.springmvcrest.order.domain.OrderType.DELIVERY;
+import static com.example.springmvcrest.utils.DateUtil.addDaysToDate;
 
 @Service
 @AllArgsConstructor
@@ -56,6 +57,38 @@ public class OrderService {
     private final NotificationService notificationService;
     private final BillService billService;
     private final ProductVariantService productVariantService;
+
+    public List<Order> toConfirmedOrders(){
+        Date todayDate=new Date();
+        return orderRepository.findAll().stream()
+                .filter(order -> order.getProviderDate() != null)
+                .filter(order -> todayDate.after(addDaysToDate(order.getProviderDate(),3)))
+                .filter(order -> order.getOrderState().isAccepted() && order.getOrderState().isReady() && !order.getOrderState().isReceived())
+                .filter(order -> order.getOrderState().isDelivered() || order.getOrderState().isPickedUp())
+                .collect(Collectors.toList());
+    }
+
+    public void toSendUserNotification(){
+        Date todayDate=new Date();
+        List<Order> collect = orderRepository.findAll().stream()
+                .filter(order -> order.getProviderDate() != null)
+                .filter(order -> todayDate.before(addDaysToDate(order.getProviderDate(), 3)))
+                .filter(order -> order.getOrderState().isAccepted() && order.getOrderState().isReady() && !order.getOrderState().isReceived())
+                .filter(order -> order.getOrderState().isDelivered() || order.getOrderState().isPickedUp())
+                .collect(Collectors.toList());
+        collect.forEach(this::sendUserNotificationConfirmReceiveOrder);
+    }
+
+    private void sendUserNotificationConfirmReceiveOrder(Order order){
+        notificationService.sendNotification(
+                Notification.builder()
+                        .title("Confirm reception")
+                        .message("When you receive your order confirm it.")
+                        .type(NotificationType.ORDER)
+                        .topic("user-"+order.getUser().getEmail().replace("@",""))
+                        .build()
+        );
+    }
 
     private Sort sortOrdersByProperty(String dateFilter, String amountFilter){
         if(!dateFilter.equals("NONE")){

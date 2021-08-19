@@ -7,6 +7,7 @@ import com.example.springmvcrest.user.api.mapper.UserRegestrationMapper;
 import com.example.springmvcrest.user.provider.domain.Provider;
 import com.example.springmvcrest.user.provider.repository.ProviderRepository;
 import com.example.springmvcrest.user.provider.service.exception.ProviderNotFoundException;
+import com.example.springmvcrest.utils.Errorhandler.SimpleUserException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +51,6 @@ public class ProviderService {
                 .map(providerRepository::save)
                 .map(providerMapper::ToDto)
                 .map(userRegestrationMapper::ToRegestrationDto)
-                .orElse(null);
+                .orElseThrow(()-> new SimpleUserException("This email used before"));
     }
 }

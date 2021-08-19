@@ -5,6 +5,7 @@ import org.mapstruct.Named;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 public class DateUtil {
@@ -57,5 +58,12 @@ public class DateUtil {
     public static String parseStringSimpleFormat(Date inDate){
         DateFormat dateFormat = new SimpleDateFormat("d MMM");
         return dateFormat.format(inDate);
+    }
+
+    public static Date addDaysToDate(Date date,Integer days){
+        Calendar c = Calendar.getInstance();
+        c.setTime(date);
+        c.add(Calendar.DAY_OF_MONTH, days);
+        return c.getTime();
     }
 }
