@@ -3,7 +3,6 @@ package com.example.springmvcrest.order.controller;
 import com.example.springmvcrest.order.api.dto.OrderCreationDto;
 import com.example.springmvcrest.order.api.dto.OrderDto;
 import com.example.springmvcrest.order.domain.OrderStep;
-import com.example.springmvcrest.order.domain.OrderType;
 import com.example.springmvcrest.order.service.OrderService;
 import com.example.springmvcrest.utils.Response;
 import com.example.springmvcrest.utils.Results;
@@ -11,8 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @Slf4j
@@ -32,20 +29,22 @@ public class OrderController {
     @ResponseStatus(HttpStatus.OK)
     public Results<OrderDto> getOrderByProviderId(
             @RequestParam("id") long id,
-            @RequestParam(name = "date",defaultValue = "DESC",required = false) String dateFilter,
-            @RequestParam(name = "amount",defaultValue = "ASC",required = false) String amountFilter,
+            @RequestParam(name = "date",defaultValue = "NONE",required = false) String dateFilter,
+            @RequestParam(name = "amount",defaultValue = "NONE",required = false) String amountFilter,
+            @RequestParam(name = "type",defaultValue = "NONE",required = false) String type,
             @RequestParam(name = "step") OrderStep step) {
-        return new Results<>(orderService.getOrderByProviderId(id,dateFilter,amountFilter,step));
+        return new Results<>(orderService.getOrderByProviderId(id,dateFilter,amountFilter,step,type));
     }
 
     @GetMapping("/current-provider-today-orders")
     @ResponseStatus(HttpStatus.OK)
     public Results<OrderDto> getTodayOrdersByProviderId(
             @RequestParam("id") long id,
-            @RequestParam(name = "date",defaultValue = "DESC",required = false) String dateFilter,
-            @RequestParam(name = "amount",defaultValue = "ASC",required = false) String amountFilter,
+            @RequestParam(name = "date",defaultValue = "NONE",required = false) String dateFilter,
+            @RequestParam(name = "amount",defaultValue = "NONE",required = false) String amountFilter,
+            @RequestParam(name = "type",defaultValue = "NONE",required = false) String type,
             @RequestParam(name = "step") OrderStep step) {
-        return new Results<>(orderService.getTodayOrdersByProviderId(id,dateFilter,amountFilter,step));
+        return new Results<>(orderService.getTodayOrdersByProviderId(id,dateFilter,amountFilter,step,type));
     }
 
     @GetMapping("/current-provider-dates-orders")
@@ -54,10 +53,11 @@ public class OrderController {
             @RequestParam(name = "id") Long id,
             @RequestParam(name = "startDate") String startDate,
             @RequestParam(name = "endDate")String endDate,
-            @RequestParam(name = "date",defaultValue = "DESC",required = false) String dateFilter,
-            @RequestParam(name = "amount",defaultValue = "ASC",required = false) String amountFilter,
+            @RequestParam(name = "date",defaultValue = "NONE",required = false) String dateFilter,
+            @RequestParam(name = "amount",defaultValue = "NONE",required = false) String amountFilter,
+            @RequestParam(name = "type",defaultValue = "NONE",required = false) String type,
             @RequestParam(name = "step") OrderStep step) {
-        return new Results<>(orderService.getBetweenOrdersByCreatAtByProviderId(id,startDate,endDate,dateFilter,amountFilter,step));
+        return new Results<>(orderService.getBetweenOrdersByCreatAtByProviderId(id,startDate,endDate,dateFilter,amountFilter,step,type));
     }
 
     @GetMapping("/current-user/inProgress")

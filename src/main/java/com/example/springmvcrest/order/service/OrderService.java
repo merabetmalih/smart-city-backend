@@ -15,7 +15,6 @@ import com.example.springmvcrest.order.repository.OrderProductVariantRepository;
 import com.example.springmvcrest.order.repository.OrderRepository;
 import com.example.springmvcrest.product.domain.ProductVariant;
 import com.example.springmvcrest.product.service.ProductVariantService;
-import com.example.springmvcrest.sse.service.EventPublisherService;
 import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.user.simple.domain.Cart;
 import com.example.springmvcrest.user.simple.domain.CartProductVariant;
@@ -190,22 +189,22 @@ public class OrderService {
                         .orElseThrow(()-> new OrderException("error.order.step.notFound"));
     });
 
-    public List<OrderDto> getOrderByProviderId(Long id,String dateFilter,String amountFilter,OrderStep step){
+    public List<OrderDto> getOrderByProviderId(Long id,String dateFilter,String amountFilter,OrderStep step,String type){
         Pair<OrderStep, Function<Order, Boolean>> stepQualifier = GetStepQualifier.apply(step).apply(GetSteps.get());
 
-        Sort sort= sortOrdersByProperties(dateFilter,amountFilter);
+        Sort sort= sortOrdersByProperty(dateFilter,amountFilter);
 
-        return orderRepository.findByStore_Provider_Id(id,sort)
-                .stream()
+        return orderRepository.findByStore_Provider_Id(id,sort).stream()
                 .filter(order -> stepQualifier.getValue().apply(order))
+                .filter(order -> filterOrdersByType(type,order))
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<OrderDto> getTodayOrdersByProviderId(Long id,String dateFilter,String amountFilter,OrderStep step){
+    public List<OrderDto> getTodayOrdersByProviderId(Long id,String dateFilter,String amountFilter,OrderStep step,String type){
         Pair<OrderStep, Function<Order, Boolean>> stepQualifier = GetStepQualifier.apply(step).apply(GetSteps.get());
 
-        Sort sort= sortOrdersByProperties(dateFilter,amountFilter);
+        Sort sort= sortOrdersByProperty(dateFilter,amountFilter);
         LocalDateTime today = LocalDateTime.now();
         LocalDateTime startOfDate = today
                 .toLocalDate().atTime(LocalTime.MIDNIGHT);
@@ -214,22 +213,24 @@ public class OrderService {
         return orderRepository.findByStore_Provider_IdAndCreateAtBetween(id,startOfDate,endOfDate,sort)
                 .stream()
                 .filter(order -> stepQualifier.getValue().apply(order))
+                .filter(order -> filterOrdersByType(type,order))
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
 
-    public List<OrderDto> getBetweenOrdersByCreatAtByProviderId(Long id,String startDate, String endDate,String dateFilter,String amountFilter,OrderStep step){
+    public List<OrderDto> getBetweenOrdersByCreatAtByProviderId(Long id,String startDate, String endDate,String dateFilter,String amountFilter,OrderStep step,String type){
         if(!DateUtil.isValidDate(startDate) || !DateUtil.isValidDate(endDate)){
             throw new DateException("error.date.invalid");
         }
         Pair<OrderStep, Function<Order, Boolean>> stepQualifier = GetStepQualifier.apply(step).apply(GetSteps.get());
 
-        Sort sort= sortOrdersByProperties(dateFilter,amountFilter);
+        Sort sort= sortOrdersByProperty(dateFilter,amountFilter);
         LocalDateTime startOfDate = LocalDateTime.of(LocalDate.parse(startDate), LocalTime.MIDNIGHT);
         LocalDateTime endOfDate = LocalDateTime.of(LocalDate.parse(endDate), LocalTime.MAX);
         return orderRepository.findByStore_Provider_IdAndCreateAtBetween(id,startOfDate,endOfDate,sort)
                 .stream()
                 .filter(order -> stepQualifier.getValue().apply(order))
+                .filter(order -> filterOrdersByType(type,order))
                 .map(orderMapper::toDto)
                 .collect(Collectors.toList());
     }
@@ -247,13 +248,13 @@ public class OrderService {
         }
     }
 
-    private Sort sortOrdersByProperties(String dateFilter, String amountFilter){
+   /* private Sort sortOrdersByProperties(String dateFilter, String amountFilter){
         return Sort.by(Arrays.asList(
                 new Sort.Order(getSortDirection(dateFilter),"createAt"),
                 new Sort.Order(getSortDirection(amountFilter),"bill.total")
                 )
         );
-    }
+    }*/
 
     @Transactional
     public Response<String> createOrder(OrderCreationDto orderCreationDto){
