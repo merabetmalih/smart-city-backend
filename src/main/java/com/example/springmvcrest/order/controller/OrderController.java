@@ -25,6 +25,31 @@ public class OrderController {
          return orderService.createOrder(orderCreationDto);
     }
 
+    @GetMapping("/current-provider-search-orders-id")
+    @ResponseStatus(HttpStatus.OK)
+    public Results<OrderDto> searchProviderOrdersById(
+            @RequestParam("id") long id,
+            @RequestParam(name = "orderId") Long orderId) {
+        return new Results<>(orderService.searchProviderOrdersById(id,orderId));
+    }
+
+    @GetMapping("/current-provider-search-orders-receiver")
+    @ResponseStatus(HttpStatus.OK)
+    public Results<OrderDto> searchProviderOrdersByReceiver(
+            @RequestParam("id") long id,
+            @RequestParam(name = "firstName") String firstName,
+            @RequestParam(name = "lastName") String lastName) {
+        return new Results<>(orderService.searchProviderOrdersByReceiver(id,firstName ,lastName));
+    }
+
+    @GetMapping("/current-provider-search-orders-date")
+    @ResponseStatus(HttpStatus.OK)
+    public Results<OrderDto> searchProviderOrdersByDate(
+            @RequestParam("id") long id,
+            @RequestParam(name = "date") String date) {
+        return new Results<>(orderService.searchProviderOrdersByDate(id,date));
+    }
+
     @GetMapping("/current-provider-orders")
     @ResponseStatus(HttpStatus.OK)
     public Results<OrderDto> getOrderByProviderId(

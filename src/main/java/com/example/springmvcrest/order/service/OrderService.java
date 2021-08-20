@@ -57,6 +57,35 @@ public class OrderService {
     private final BillService billService;
     private final ProductVariantService productVariantService;
 
+    public List<OrderDto> searchProviderOrdersById(Long providerId,Long orderId){
+        Sort sort= sortOrdersByProperty("DESC","NONE");
+        return orderRepository.findByStore_Provider_Id(providerId,sort).stream()
+                .filter(order -> order.getId().equals(orderId))
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<OrderDto> searchProviderOrdersByReceiver(Long providerId,String receiverFirstName,String receiverLastName){
+        Sort sort= sortOrdersByProperty("DESC","NONE");
+        return orderRepository.findByStore_Provider_Id(providerId,sort).stream()
+                .filter(order -> order.getReceiverFirstName().toLowerCase().equals(receiverFirstName.toLowerCase()) && order.getReceiverLastName().toLowerCase().equals(receiverLastName.toLowerCase()))
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
+    public List<OrderDto> searchProviderOrdersByDate(Long providerId,String date){
+        Sort sort= sortOrdersByProperty("DESC","NONE");
+        if(!DateUtil.isValidDate(date)){
+            throw new DateException("error.date.invalid");
+        }
+        LocalDateTime startOfDate = LocalDateTime.of(LocalDate.parse(date), LocalTime.MIDNIGHT);
+        LocalDateTime endOfDate = LocalDateTime.of(LocalDate.parse(date), LocalTime.MAX);
+
+        return orderRepository.findByStore_Provider_IdAndCreateAtBetween(providerId,startOfDate,endOfDate,sort).stream()
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList());
+    }
+
     public List<Order> toConfirmedOrders(){
         Date todayDate=new Date();
         return orderRepository.findAll().stream()
