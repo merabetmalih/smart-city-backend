@@ -50,6 +50,13 @@ public class OrderController {
         return new Results<>(orderService.searchProviderOrdersByDate(id,date));
     }
 
+    @GetMapping("/current-provider-past-orders")
+    @ResponseStatus(HttpStatus.OK)
+    public Results<OrderDto> getPastOrderByProviderId(
+            @RequestParam("id") long id) {
+        return new Results<>(orderService.getPastOrders(id));
+    }
+
     @GetMapping("/current-provider-orders")
     @ResponseStatus(HttpStatus.OK)
     public Results<OrderDto> getOrderByProviderId(

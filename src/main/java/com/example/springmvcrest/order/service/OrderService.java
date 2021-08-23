@@ -210,8 +210,12 @@ public class OrderService {
     private static Function<Order, Boolean> ConfirmationOrderQualifier= order -> {
         return (order.getOrderState().isPickedUp() || order.getOrderState().isDelivered())&&
                 order.getOrderState().isAccepted() &&
-                order.getOrderState().isReady()&&
-                order.getOrderState().isReceived();
+                order.getOrderState().isReady();
+    };
+
+    private static Function<Order, Boolean> PastOrderQualifier= order -> {
+        return (order.getOrderState().isRejected() ||
+                order.getOrderState().isReceived());
     };
 
     private static Supplier<List<Pair<OrderStep,Function<Order, Boolean>>>> GetSteps= ()->{
@@ -231,6 +235,14 @@ public class OrderService {
                         .findFirst()
                         .orElseThrow(()-> new OrderException("error.order.step.notFound"));
     });
+
+    public List<OrderDto> getPastOrders(Long id){
+        Sort sort= sortOrdersByProperty("DESC","NONE");
+        return orderRepository.findByStore_Provider_Id(id,sort).stream()
+                .filter(order -> PastOrderQualifier.apply(order))
+                .map(orderMapper::toDto)
+                .collect(Collectors.toList());
+    }
 
     public List<OrderDto> getOrderByProviderId(Long id,String dateFilter,String amountFilter,OrderStep step,String type){
         Pair<OrderStep, Function<Order, Boolean>> stepQualifier = GetStepQualifier.apply(step).apply(GetSteps.get());
