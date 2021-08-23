@@ -61,6 +61,9 @@ public class Order {
     private Long validDuration;
 
     @Lob
+    private String providerNote;
+
+    @Lob
     private String providerComment;
     private Date providerDate;
 }

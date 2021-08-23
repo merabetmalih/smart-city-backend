@@ -24,4 +24,5 @@ public class OrderDto {
     Long validDuration;
     String storeName;
     String storeAddress;
+    String providerNote;
 }

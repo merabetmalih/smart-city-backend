@@ -141,6 +141,13 @@ public class OrderController {
         return orderService.pickedUpOrderByStore(id,comment,date);
     }
 
+    @PutMapping("/current-store-note")
+    @ResponseStatus(HttpStatus.OK)
+    public Response<String> setOrderNote(@RequestParam(name = "id") Long id,
+                                         @RequestParam(name = "note") String note) {
+        return orderService.setNote(id,note);
+    }
+
     @PutMapping("/current-user/{id}/received")
     @ResponseStatus(HttpStatus.OK)
     public Response<String> deliveredOrderByStoreConfirmed(@PathVariable("id") Long id) {

@@ -57,6 +57,20 @@ public class OrderService {
     private final BillService billService;
     private final ProductVariantService productVariantService;
 
+
+    @NotNull
+    public Response<String> setNote(Long orderId,String note){
+        Optional.of(findOrderById(orderId))
+                .map(order -> setProviderNote(order,note))
+                .map(orderRepository::save);
+        return new Response<>("created.");
+    }
+
+    private Order setProviderNote(Order order,String note){
+         order.setProviderNote(note);
+         return order;
+    }
+
     public List<OrderDto> searchProviderOrdersById(Long providerId,Long orderId){
         Sort sort= sortOrdersByProperty("DESC","NONE");
         return orderRepository.findByStore_Provider_Id(providerId,sort).stream()
