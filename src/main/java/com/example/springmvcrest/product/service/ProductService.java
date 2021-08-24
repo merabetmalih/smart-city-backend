@@ -6,6 +6,7 @@ import com.example.springmvcrest.product.domain.*;
 import com.example.springmvcrest.product.repository.*;
 import com.example.springmvcrest.storage.FileStorage;
 import com.example.springmvcrest.storage.FileStorageException;
+import com.example.springmvcrest.store.domain.CustomCategory;
 import com.example.springmvcrest.store.service.CustomCategoryService;
 import com.example.springmvcrest.store.service.exception.CustomCategoryNotFoundExeption;
 import com.example.springmvcrest.utils.Response;
@@ -32,6 +33,25 @@ public class ProductService {
 
     private final FileStorage fileStorage;
 
+    public Response<String> updateProductsCustomCategory(List<Long> productIds,Long newCustomCategoryId){
+        CustomCategory newCategory = customCategoryService.findById(newCustomCategoryId);
+        List<Product> collect = productIds.stream()
+                .map(this::findProductById)
+                .map(product -> setNewCustomCategory(product, newCategory))
+                .map(productRepository::save)
+                .collect(Collectors.toList());
+        return new Response<>("updated.");
+    }
+
+    private Product setNewCustomCategory(Product product,CustomCategory customCategory){
+        product.setCustomCategory(customCategory);
+        return product;
+    }
+
+    public Product findProductById(Long id){
+       return productRepository.findById(id)
+                .orElseThrow(CustomCategoryNotFoundExeption::new);
+    }
 
     public List<ProductDTO> getProductByCustomCategoryId(Long id){
         return productRepository.findAllByCustomCategory_Id(id)

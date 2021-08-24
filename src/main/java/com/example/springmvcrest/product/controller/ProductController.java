@@ -85,4 +85,11 @@ public class ProductController {
     public byte[] getProductImage(@PathVariable("filename") String filename) {
         return productService.downloadImage(filename);
     }
+
+    @PutMapping("/move-category")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Response<String> updateProductsCustomCategory(@RequestParam(name = "products") List<Long> productIds,
+                                                         @RequestParam(name = "category") Long newCustomCategoryId){
+        return productService.updateProductsCustomCategory(productIds,newCustomCategoryId);
+    }
 }
