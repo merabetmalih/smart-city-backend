@@ -1,7 +1,11 @@
 package com.example.springmvcrest.store.service;
 
+import com.example.springmvcrest.product.api.dto.CategoryDto;
+import com.example.springmvcrest.product.api.mapper.CategoryMapper;
 import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.product.service.CategoryService;
+import com.example.springmvcrest.storage.FileStorage;
+import com.example.springmvcrest.storage.FileStorageException;
 import com.example.springmvcrest.store.api.dto.*;
 import com.example.springmvcrest.store.api.mapper.StoreAddressMapper;
 import com.example.springmvcrest.store.api.mapper.StoreInformationMapper;
@@ -14,7 +18,10 @@ import com.example.springmvcrest.utils.Response;
 import lombok.AllArgsConstructor;
 import org.mapstruct.Named;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -28,7 +35,8 @@ public class StoreService {
     private final StoreInformationMapper storeInformationMapper;
     private final CategoryService categoryService;
     private final StoreAddressMapper storeAddressMapper;
-
+    private final FileStorage fileStorage;
+    private CategoryMapper categoryMapper;
 
     @Named("getStoreName")
     public String getStoreName(Store store) { return  store.getName(); }
@@ -77,7 +85,33 @@ public class StoreService {
                 .isPresent();
     }
 
-    public StoreCreationDto create(StoreCreationDto storeCreationDto) {
+    public Response<String> setStoreCategory(Long providerId,List<String> categories){
+        if(categories!=null && !categories.isEmpty()){
+            Store store=findStoreByProviderId(providerId);
+            Set<Category> collect = categories.stream()
+                    .map(categoryService::findCategoryByName)
+                    .collect(Collectors.toSet());
+            store.setDefaultCategories(collect);
+            storeRepository.save(store);
+        }
+        return new Response<>("created.");
+    }
+
+    public List<CategoryDto> getStoreCategories(Long providerId){
+        Store store = storeRepository.findByProviderId(providerId)
+                .orElse(null);
+
+        return store != null ? store.getDefaultCategories()
+                .stream()
+                .map(categoryMapper::toDto)
+                .collect(Collectors.toList()) : new ArrayList<CategoryDto>();
+    }
+
+    public StoreCreationDto create(StoreCreationDto storeCreationDto, MultipartFile storeImage) {
+        if(storeImage!=null){
+            saveStoreImage(storeImage);
+        }
+
         return Optional.of(storeCreationDto)
                 .map(storeMapper::ToModel)
                 .filter(store -> !hasStore(store.getProvider().getId()))
@@ -85,6 +119,18 @@ public class StoreService {
                 .map(storeRepository::save)
                 .map(storeMapper::ToDto)
                 .orElseThrow(MultipleStoreException::new);
+    }
+
+    private void saveStoreImage(MultipartFile image) {
+        try {
+            if (image != null) {
+                fileStorage.upload(image.getOriginalFilename(),
+                        "smartCity-files", image.getInputStream());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new FileStorageException("error.file.upload");
+        }
     }
 
     private Store setStoreAddress(Store store){

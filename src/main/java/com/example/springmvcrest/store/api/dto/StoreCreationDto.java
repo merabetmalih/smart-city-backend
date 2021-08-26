@@ -12,4 +12,6 @@ public class StoreCreationDto {
     private StoreAddressDto storeAddress;
     private Long provider;
     private String imageStore;
+    private String telephoneNumber;
+    private String defaultTelephoneNumber;
 }

@@ -1,5 +1,6 @@
 package com.example.springmvcrest.store.controller;
 
+import com.example.springmvcrest.product.api.dto.CategoryDto;
 import com.example.springmvcrest.store.api.dto.*;
 import com.example.springmvcrest.store.service.CustomCategoryService;
 import com.example.springmvcrest.store.service.StoreService;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -25,8 +27,20 @@ public class StoreController {
     @ResponseStatus(value = HttpStatus.CREATED)
     public StoreCreationDto createStore(@RequestPart(value = "store") StoreCreationDto storeCreationDto,
                                         @RequestPart("image") MultipartFile multipartFile) throws IOException{
-       // storeDto.setImageStore(FileUploadUtil.saveFile(multipartFile));
-        return storeService.create(storeCreationDto);
+        return storeService.create(storeCreationDto,multipartFile);
+    }
+
+    @PostMapping("/category")
+    @ResponseStatus(value = HttpStatus.CREATED)
+    public Response<String> setStoreCategory(@RequestParam(value = "id") Long id,
+                                             @RequestParam(value = "categories") List<String> categories){
+        return storeService.setStoreCategory(id,categories);
+    }
+
+    @GetMapping("/category")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Results<CategoryDto> getStoreCategories(@RequestParam(value = "id") Long id){
+        return new Results<>(storeService.getStoreCategories(id));
     }
 
     @PostMapping("/Information")
@@ -46,13 +60,6 @@ public class StoreController {
     public StoreInformationDto getStoreInformationById(@PathVariable(value = "id") Long id){
         return storeService.getStoreInformationByStoreId(id);
     }
-
-    /*@GetMapping("/category/all")
-    @ResponseStatus(value = HttpStatus.OK)
-    public Results<String> getAllCategoryStore(){
-        return new Results<>(defaultCategoryService.findAll());
-    }*/
-
 
     @PostMapping("/customCategory/create")
     @ResponseStatus(value = HttpStatus.CREATED)

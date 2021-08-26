@@ -34,7 +34,7 @@ public class Store {
     @Lob
     private String description;
 
-    @OneToOne(cascade = {CascadeType.PERSIST} , mappedBy = "store")
+    @OneToOne(cascade = {CascadeType.PERSIST,CascadeType.REMOVE} , mappedBy = "store")
     private StoreAddress storeAddress;
 
     private String telephoneNumber;
@@ -45,7 +45,6 @@ public class Store {
 
 
     @OneToOne
-    @JsonBackReference
     private Provider provider;
 
     @ManyToMany
