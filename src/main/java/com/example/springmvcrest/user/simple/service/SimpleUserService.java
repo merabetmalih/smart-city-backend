@@ -116,6 +116,12 @@ public class SimpleUserService {
                 .orElse(null);
     }
 
+    public void saveUser(SimpleUser user){
+        simpleUserRepository.save(
+                user
+        );
+    }
+
     public Response<String> setUserInterestCenter(SimpleUserDto simpleUserDto){
         if(simpleUserDto.getInterest()!=null && !simpleUserDto.getInterest().isEmpty()){
             SimpleUser user=findById(simpleUserDto.getId());

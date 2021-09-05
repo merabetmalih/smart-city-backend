@@ -33,6 +33,9 @@ public class SimpleUser extends User {
     @JoinColumn(name = "city_id")
     private City defaultCity;
 
+    @OneToMany(mappedBy = "user",cascade = {CascadeType.MERGE,CascadeType.REMOVE,CascadeType.PERSIST})
+    private Set<SearchQuery> searchQueries=new HashSet<>();
+
     @OneToMany(mappedBy = "user",cascade = {CascadeType.MERGE,CascadeType.REMOVE})
     private Set<Address> addressSet=new HashSet<>();
 

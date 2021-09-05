@@ -5,6 +5,7 @@ import com.example.springmvcrest.product.api.mapper.ProductMapper;
 import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.product.domain.Product;
 import com.example.springmvcrest.product.repository.ProductRepository;
+import com.example.springmvcrest.user.simple.domain.SearchQuery;
 import com.example.springmvcrest.user.simple.domain.SimpleUser;
 import com.example.springmvcrest.user.simple.service.SimpleUserService;
 import lombok.AllArgsConstructor;
@@ -38,7 +39,7 @@ public class ProductSearchService {
     private final SimpleUserService simpleUserService;
     private final int PAGE_SIZE = 10;
 
-    @Transactional(readOnly = true)
+    @Transactional
     public List<ProductDTO> search(Long userId,String query,int page) {
         Pageable pageable = PageRequest.of(page, PAGE_SIZE);
         SearchSession session = Search.session(entityManager);
@@ -104,8 +105,16 @@ public class ProductSearchService {
             }
         }
 
-
-
+        SimpleUser user=simpleUserService.findById(userId);
+        user.getSearchQueries().add(
+                SearchQuery.builder()
+                        .user(user)
+                        .value(query)
+                        .build()
+        );
+        simpleUserService.saveUser(
+                user
+        );
 
         return new PageImpl<>(
                 result.hits()
