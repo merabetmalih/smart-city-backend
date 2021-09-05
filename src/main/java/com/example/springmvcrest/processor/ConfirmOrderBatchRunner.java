@@ -18,7 +18,7 @@ public class ConfirmOrderBatchRunner implements CommandLineRunner {
     Job job;
 
 
-    @Scheduled(cron = "0 51 11 * * *")
+    @Scheduled(cron = "0 56 11 * * *")
     public void perform() throws Exception {
         JobParameters params = new JobParametersBuilder()
                 .addString("JobID", String.valueOf(System.currentTimeMillis()))

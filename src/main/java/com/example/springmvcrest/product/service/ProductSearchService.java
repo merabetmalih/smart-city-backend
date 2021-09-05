@@ -2,6 +2,7 @@ package com.example.springmvcrest.product.service;
 
 import com.example.springmvcrest.product.api.dto.ProductDTO;
 import com.example.springmvcrest.product.api.mapper.ProductMapper;
+import com.example.springmvcrest.product.domain.Category;
 import com.example.springmvcrest.product.domain.Product;
 import com.example.springmvcrest.product.repository.ProductRepository;
 import com.example.springmvcrest.user.simple.domain.SimpleUser;
@@ -22,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -160,8 +162,15 @@ public class ProductSearchService {
                 .collect(Collectors.toList());
 
         return productRepository.findAllById(productIds).stream()
+                .filter(product -> getParentCategories(product.getCustomCategory().getStore().getDefaultCategories()).stream().anyMatch(getParentCategories(user.getInterestCenter())::contains))
                 .map(productMapper::ToDto)
                 .collect(Collectors.toList());
+    }
+
+    private Set<Category> getParentCategories(Set<Category> subCategories){
+        return subCategories.stream()
+                .map(Category::getParentCategory)
+                .collect(Collectors.toSet());
     }
 
     public List<ProductDTO> findProductAroundMayInterest(Long userId,int page) {
