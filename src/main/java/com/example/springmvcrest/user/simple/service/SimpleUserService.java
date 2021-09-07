@@ -63,7 +63,7 @@ public class SimpleUserService {
     }
 
     public List<SimpleUser> findSimpleUserByInterestCenterAndAround(Store store) {
-        return simpleUserRepository.findDistinctByInterestCenterIn(store.getDefaultCategories()).stream()
+        return simpleUserRepository.findDistinctByInterestCenterInOrFollowedStoresContaining(store.getDefaultCategories(),store).stream()
                 .filter(user -> isAround(user,store))
                 .collect(Collectors.toList());
     }
