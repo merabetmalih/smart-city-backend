@@ -5,6 +5,7 @@ import com.example.springmvcrest.flashDeal.domain.FlashDeal;
 import com.example.springmvcrest.offer.domain.Offer;
 import com.example.springmvcrest.order.domain.Order;
 import com.example.springmvcrest.product.domain.Category;
+import com.example.springmvcrest.product.domain.Product;
 import com.example.springmvcrest.store.domain.Store;
 import com.example.springmvcrest.user.user.domain.Authority;
 import com.example.springmvcrest.user.user.domain.Role;
@@ -28,6 +29,12 @@ public class SimpleUser extends User {
     private String firstName;
     private String lastName;
     private Date birthDay;
+
+    @ManyToMany
+    @JoinTable(name = "simple_users_clicked_product",
+            joinColumns = @JoinColumn(name = "users_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id"))
+    private Set<Product> clickedProducts = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "city_id")

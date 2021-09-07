@@ -59,6 +59,11 @@ public class GlobalErrorHandler extends ResponseEntityExceptionHandler {
         return returnErrorMessage(e.getMessage(),HttpStatus.NOT_FOUND);
     }
 
+    @ExceptionHandler({ProductException.class})
+    public ResponseEntity<Object> handleProductException(ProductException e) {
+        return returnErrorMessage(e.getMessage(),HttpStatus.NOT_FOUND);
+    }
+
     private ResponseEntity<Object> returnErrorMessage(String errorMessage,HttpStatus httpStatus){
         return new ResponseEntity<Object>(errorMessage, new HttpHeaders(), httpStatus);
     }

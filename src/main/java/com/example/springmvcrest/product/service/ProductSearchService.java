@@ -8,6 +8,8 @@ import com.example.springmvcrest.product.repository.ProductRepository;
 import com.example.springmvcrest.user.simple.domain.SearchQuery;
 import com.example.springmvcrest.user.simple.domain.SimpleUser;
 import com.example.springmvcrest.user.simple.service.SimpleUserService;
+import com.example.springmvcrest.utils.Errorhandler.ProductException;
+import com.example.springmvcrest.utils.Response;
 import lombok.AllArgsConstructor;
 import org.hibernate.search.engine.search.common.BooleanOperator;
 import org.hibernate.search.engine.search.predicate.dsl.PredicateFinalStep;
@@ -126,6 +128,24 @@ public class ProductSearchService {
                 pageable,
                 pageable.getPageSize()
         ).getContent();
+    }
+
+    public Response<String> saveClickedProduct(Long userId,Long productId){
+        SimpleUser user=simpleUserService.findById(userId);
+        user.getClickedProducts().add(
+                findProductById(
+                        productId
+                )
+        );
+        simpleUserService.saveUser(
+                user
+        );
+        return new Response<>("created.");
+    }
+
+    private Product findProductById(Long id){
+        return productRepository.findById(id)
+                .orElseThrow(() -> new ProductException("error.product.notfound"));
     }
 
     private Boolean isAround(Long userId, Product product){

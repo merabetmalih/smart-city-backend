@@ -92,4 +92,11 @@ public class ProductController {
                                                          @RequestParam(name = "category") Long newCustomCategoryId){
         return productService.updateProductsCustomCategory(productIds,newCustomCategoryId);
     }
+
+    @PutMapping("/clicked")
+    @ResponseStatus(value = HttpStatus.OK)
+    public Response<String> saveClickedProduct(@RequestParam(name = "userId") long id,
+                                               @RequestParam(name = "productId") long productId){
+        return productSearchService.saveClickedProduct(id,productId);
+    }
 }
