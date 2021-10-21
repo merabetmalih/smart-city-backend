@@ -33,12 +33,9 @@ public class BillService {
             Policies policies=policiesService.findPoliciesById(billTotalDto.getPolicyId());
             switch (policies.getSelfPickUpOption()){
                 case SELF_PICK_UP_TOTAL:
-
-                case SELF_PICK_UP_EXTEND_PERCENTAGE:
                     return BillTotalDto.builder()
                             .total(billTotalDto.getTotal())
                             .build();
-
                 case SELF_PICK_UP_PART_PERCENTAGE:
                     return BillTotalDto.builder()
                             .total(percentageCalculate(billTotalDto.getTotal(),policies.getTax()))

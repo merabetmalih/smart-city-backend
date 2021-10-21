@@ -12,7 +12,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static com.example.springmvcrest.policy.domain.SelfPickUpOptions.*;
@@ -84,9 +87,6 @@ public class PoliciesService {
             case SELF_PICK_UP:
                 return checkSelfPickUp(policies);
 
-            case SELF_PICK_UP_EXTEND_PERCENTAGE:
-                return checkSelfPickUpExtendPercentage(policies);
-
             case SELF_PICK_UP_PART_RANGE:
                 return checkSelfPickUpPartRange(policies);
 
@@ -102,12 +102,6 @@ public class PoliciesService {
     private Policies checkSelfPickUp(Policies policies){
         policies.setSelfPickUpOption(SELF_PICK_UP);
         policies.setTax(0);
-        policies.setTaxRanges(Collections.emptySet());
-        return policies;
-    }
-
-    private Policies checkSelfPickUpExtendPercentage(Policies policies){
-        policies.setSelfPickUpOption(SELF_PICK_UP_EXTEND_PERCENTAGE);
         policies.setTaxRanges(Collections.emptySet());
         return policies;
     }
