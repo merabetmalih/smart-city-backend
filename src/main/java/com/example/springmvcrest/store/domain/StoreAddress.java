@@ -1,5 +1,4 @@
 package com.example.springmvcrest.store.domain;
-
 import lombok.*;
 
 import javax.persistence.*;
